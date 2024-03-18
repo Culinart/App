@@ -6,15 +6,19 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialogDefaults.shape
@@ -81,27 +85,43 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
             .fillMaxSize()
             .background(Color(249, 251, 251))
     ) {
-        // Imagens posicionadas conforme solicitado
+
         Image(
             painter = painterResource(id = R.mipmap.ondalaranjaforte),
             contentDescription = "Onda Laranja Forte",
-            modifier = Modifier.align(Alignment.BottomEnd)
+            modifier = Modifier
+                .fillMaxWidth(fraction = 0.5F)
+                .wrapContentHeight(align = Alignment.Bottom)
+                .align(Alignment.BottomEnd)
         )
 
         Image(
             painter = painterResource(id = R.mipmap.ondalaranjamedio),
             contentDescription = "Onda Laranja Médio",
-            modifier = Modifier.align(Alignment.BottomStart)
+            modifier = Modifier
+                .fillMaxWidth(fraction = 0.35F)
+                .wrapContentHeight(align = Alignment.Bottom)
+                .wrapContentWidth(align = Alignment.Start)
+                .align(Alignment.BottomStart)
         )
 
         Image(
             painter = painterResource(id = R.mipmap.ondalaranjaclaro),
             contentDescription = "Onda Laranja Claro",
-            modifier = Modifier.align(Alignment.TopEnd)
+            modifier = Modifier
+                .align(Alignment.TopEnd)
         )
     }
 
-    Column() {
+    Row(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             "Crie sua conta e",
             modifier = Modifier.fillMaxWidth(),
@@ -123,7 +143,9 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
             )
         )
 
-        Column (
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -134,11 +156,11 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                     Text("Nome")
                 },
                 placeholder = { Text("Nome Completo") },
-                colors = TextFieldDefaults.colors (
+                colors = TextFieldDefaults.colors(
                     unfocusedLabelColor = Color(4, 93, 83),
                     focusedLabelColor = Color(4, 93, 83),
                     unfocusedContainerColor = Color(249, 251, 251),
-                    focusedContainerColor = Color(232,240,239)
+                    focusedContainerColor = Color(232, 240, 239)
                 ),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text
@@ -149,11 +171,11 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                 onValueChange = { email.value = it },
                 label = { Text("Email") },
                 placeholder = { Text("example@email.com") },
-                colors = TextFieldDefaults.colors (
+                colors = TextFieldDefaults.colors(
                     unfocusedLabelColor = Color(4, 93, 83),
                     focusedLabelColor = Color(4, 93, 83),
                     unfocusedContainerColor = Color(249, 251, 251),
-                    focusedContainerColor = Color(232,240,239)
+                    focusedContainerColor = Color(232, 240, 239)
                 ),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email
@@ -164,11 +186,11 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                 onValueChange = { telefone.value = it },
                 label = { Text("Telefone") },
                 placeholder = { Text("(99) 99999-9999") },
-                colors = TextFieldDefaults.colors (
+                colors = TextFieldDefaults.colors(
                     unfocusedLabelColor = Color(4, 93, 83),
                     focusedLabelColor = Color(4, 93, 83),
                     unfocusedContainerColor = Color(249, 251, 251),
-                    focusedContainerColor = Color(232,240,239)
+                    focusedContainerColor = Color(232, 240, 239)
                 ),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
@@ -179,32 +201,36 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                 onValueChange = { senha.value = it },
                 label = { Text("Senha") },
                 placeholder = { Text("********") },
-                colors = TextFieldDefaults.colors (
+                colors = TextFieldDefaults.colors(
                     unfocusedLabelColor = Color(4, 93, 83),
                     focusedLabelColor = Color(4, 93, 83),
                     unfocusedContainerColor = Color(249, 251, 251),
-                    focusedContainerColor = Color(232,240,239)
+                    focusedContainerColor = Color(232, 240, 239)
                 ),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password
                 )
             )
-            Button(onClick = { /*TODO*/ },
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Button(
+                onClick = { /*TODO*/ },
                 modifier = Modifier.width(250.dp),
                 shape = RoundedCornerShape(10.dp),
-                elevation = ButtonDefaults.buttonElevation (
+                elevation = ButtonDefaults.buttonElevation(
                     defaultElevation = 8.dp,
                     pressedElevation = 4.dp
                 ),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(255,159,28),
+                    containerColor = Color(255, 159, 28),
                     contentColor = Color.White
                 )
             ) {
                 Text("Cadastrar")
             }
 
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Canvas(
@@ -228,16 +254,19 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                 }
             }
 
-            Text("Entre na sua conta",
+            Text(
+                "Entre na sua conta",
                 modifier = Modifier.fillMaxWidth(),
                 style = TextStyle(
                     Color(46, 196, 182),
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     textDecoration = TextDecoration.Underline
-                ))
+                )
+            )
 
         }
+    }
 
     }
 }
