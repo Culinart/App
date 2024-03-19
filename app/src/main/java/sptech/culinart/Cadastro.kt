@@ -230,6 +230,8 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                 Text("Cadastrar")
             }
 
+            Spacer(modifier = Modifier.height(15.dp))
+
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -242,7 +244,18 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                         cornerRadius = CornerRadius(100f)
                     )
                 }
-                Text("ou")
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Text("ou",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        fontSize = 25.sp
+                    ))
+
+                Spacer(modifier = Modifier.width(10.dp))
+
                 Canvas(
                     modifier = Modifier
                         .size(100.dp, 2.dp)
@@ -254,6 +267,8 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                 }
             }
 
+            Spacer(modifier = Modifier.height(10.dp))
+
             Text(
                 "Entre na sua conta",
                 modifier = Modifier.fillMaxWidth(),
@@ -261,7 +276,8 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                     Color(46, 196, 182),
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    textDecoration = TextDecoration.Underline
+                    textDecoration = TextDecoration.Underline,
+                    fontSize = 15.sp
                 )
             )
 
