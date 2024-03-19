@@ -1,5 +1,6 @@
 package sptech.culinart
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,6 +40,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -66,6 +68,8 @@ class Cadastro : ComponentActivity() {
 
 @Composable
 fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
+
+    val contexto = LocalContext.current
 
     val nome = remember {
         mutableStateOf("")
@@ -269,17 +273,27 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Text(
-                "Entre na sua conta",
-                modifier = Modifier.fillMaxWidth(),
-                style = TextStyle(
-                    Color(46, 196, 182),
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    textDecoration = TextDecoration.Underline,
-                    fontSize = 15.sp
+            Button(onClick =
+            {val login = Intent(contexto, MainActivity::class.java)
+
+                contexto.startActivity(login)
+            },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent
                 )
-            )
+            ) {
+                Text(
+                    "Entre na sua conta",
+                    modifier = Modifier.fillMaxWidth(),
+                    style = TextStyle(
+                        Color(46, 196, 182),
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        textDecoration = TextDecoration.Underline,
+                        fontSize = 15.sp
+                    )
+                )
+            }
 
         }
     }
