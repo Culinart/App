@@ -169,6 +169,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         keyboardType = KeyboardType.Email
                     )
                 )
+                Spacer(modifier = Modifier.height(15.dp))
                 TextField(
                     value = senha.value,
                     onValueChange = { senha.value = it },

@@ -170,6 +170,7 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                     keyboardType = KeyboardType.Text
                 )
             )
+            Spacer(modifier = Modifier.height(10.dp))
             TextField(
                 value = email.value,
                 onValueChange = { email.value = it },
@@ -185,6 +186,7 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                     keyboardType = KeyboardType.Email
                 )
             )
+            Spacer(modifier = Modifier.height(10.dp))
             TextField(
                 value = telefone.value,
                 onValueChange = { telefone.value = it },
@@ -200,6 +202,7 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                     keyboardType = KeyboardType.Number
                 )
             )
+            Spacer(modifier = Modifier.height(10.dp))
             TextField(
                 value = senha.value,
                 onValueChange = { senha.value = it },
