@@ -95,7 +95,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
             painter = painterResource(id = R.mipmap.ondalaranjaforte),
             contentDescription = "Onda Laranja Forte",
             modifier = Modifier
-                .fillMaxWidth(fraction = 0.5F)
+                .fillMaxWidth(fraction = 0.4F)
                 .wrapContentHeight(align = Alignment.Bottom)
                 .align(Alignment.BottomEnd)
         )
@@ -163,7 +163,9 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         unfocusedLabelColor = Color(4, 93, 83),
                         focusedLabelColor = Color(4, 93, 83),
                         unfocusedContainerColor = Color(249, 251, 251),
-                        focusedContainerColor = Color(232, 240, 239)
+                        focusedContainerColor = Color(232, 240, 239),
+                        unfocusedTextColor = Color(107, 107, 107, 255),
+                        focusedTextColor = Color.Black
                     ),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email
@@ -179,7 +181,9 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         unfocusedLabelColor = Color(4, 93, 83),
                         focusedLabelColor = Color(4, 93, 83),
                         unfocusedContainerColor = Color(249, 251, 251),
-                        focusedContainerColor = Color(232, 240, 239)
+                        focusedContainerColor = Color(232, 240, 239),
+                        unfocusedTextColor = Color(107, 107, 107, 255),
+                        focusedTextColor = Color.Black
                     ),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password
@@ -225,7 +229,8 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
-                            fontSize = 25.sp
+                            fontSize = 25.sp,
+                            color = Color.Black
                         ))
 
                     Spacer(modifier = Modifier.width(10.dp))
