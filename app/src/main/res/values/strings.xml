@@ -2,4 +2,6 @@
     <string name="app_name">Culinart</string>
     <string name="title_activity_cadastro">Cadastro</string>
     <string name="title_activity_login">Login</string>
+    <string name="title_activity_cadastro_endereco">CadastroEndereco</string>
+    <string name="title_activity_input">Input</string>
 </resources>
