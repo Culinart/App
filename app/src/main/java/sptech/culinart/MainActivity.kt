@@ -193,7 +193,11 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
+
+                            contexto.startActivity(cadastroEndereco)
+                    },
                     modifier = Modifier.width(250.dp),
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(

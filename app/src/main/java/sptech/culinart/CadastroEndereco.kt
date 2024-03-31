@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -85,6 +88,15 @@ fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
         mutableStateOf("")
     }
 
+    val estados = listOf(
+        "AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA",
+        "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN",
+        "RO", "RR", "RS", "SC", "SE", "SP", "TO"
+    )
+
+    val estadoSelecionado = remember { mutableStateOf("") }
+    val expandida = remember { mutableStateOf(false) }
+
 
     Column(
         modifier = modifier
@@ -102,7 +114,7 @@ fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        Text( // This Text is now part of the outer Column, ensuring it's placed below the Image.
+        Text(
             "Onde fica sua cozinha, Chef?",
             modifier = Modifier.fillMaxWidth(),
             style = TextStyle(

@@ -4,4 +4,6 @@
     <string name="title_activity_login">Login</string>
     <string name="title_activity_cadastro_endereco">CadastroEndereco</string>
     <string name="title_activity_input">Input</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_activity_cadastro_plano">CadastroPlano</string>
 </resources>
