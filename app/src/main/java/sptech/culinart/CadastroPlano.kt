@@ -55,7 +55,33 @@ class CadastroPlano : ComponentActivity() {
 @Composable
 fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
 
-    var isCarnesClicked = remember { mutableStateOf(false) }
+    val isCarnesClicked = remember { mutableStateOf(false) }
+
+    val cardBorderCarnes = if (isCarnesClicked.value) {
+        BorderStroke(2.dp, Color(255, 159, 28))
+    } else {
+        BorderStroke(2.dp, Color(228, 228, 228))
+    }
+
+    val cardBackgroundCarnes = if (isCarnesClicked.value) {
+        Color(255, 241, 221)
+    } else {
+        Color.White
+    }
+
+    val isVegetarianoClicked = remember { mutableStateOf(false) }
+
+    val cardBorderVegetariano = if (isVegetarianoClicked.value) {
+        BorderStroke(2.dp, Color(255, 159, 28))
+    } else {
+        BorderStroke(2.dp, Color(228, 228, 228))
+    }
+
+    val cardBackgroundVegetariano = if (isVegetarianoClicked.value) {
+        Color(255, 241, 221)
+    } else {
+        Color.White
+    }
 
     Column(
         modifier = modifier
@@ -106,14 +132,16 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
             Card (modifier = modifier
                 .weight(1f),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                    containerColor = cardBackgroundCarnes
                 ),
-                border = BorderStroke(2.dp,Color(228,228,228)),
+                border = cardBorderCarnes,
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 4.dp
                 )
             ){
-                TextButton(onClick = {  }) {
+                TextButton(onClick = {
+                    isCarnesClicked.value = !isCarnesClicked.value
+                }) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Image(painter = painterResource(id = R.mipmap.iconecarnes), contentDescription = "Ícone de Carnes")
                         Text(
@@ -135,14 +163,16 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
             Card (modifier = modifier
                 .weight(1f),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                    containerColor = cardBackgroundVegetariano
                 ),
-                border = BorderStroke(2.dp,Color(228,228,228)),
+                border = cardBorderVegetariano,
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 4.dp
                 )
             ){
-                TextButton(onClick = {  }) {
+                TextButton(onClick = { 
+                    isVegetarianoClicked.value = !isVegetarianoClicked.value
+                }) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Image(painter = painterResource(id = R.mipmap.iconevegetariano), contentDescription = "Ícone de Vegetariano")
                         Text(
