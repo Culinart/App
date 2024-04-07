@@ -73,7 +73,6 @@ class Header : ComponentActivity() {
 @Composable
 fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
     val isColumnVisible = remember { mutableStateOf(false) }
-    Text(text = "Texto")
     Row (
         modifier = modifier
             .background(Color(0, 174, 158))
