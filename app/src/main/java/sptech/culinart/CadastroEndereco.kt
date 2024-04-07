@@ -112,7 +112,7 @@ fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
                 .wrapContentHeight()
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(60.dp))
 
         Text(
             "Onde fica sua cozinha, Chef?",
