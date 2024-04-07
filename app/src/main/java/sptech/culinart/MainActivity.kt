@@ -193,7 +193,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {/* TODO */},
                     modifier = Modifier.width(250.dp),
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(
@@ -205,7 +205,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         contentColor = Color.White
                     )
                 ) {
-                    Text("Cadastrar")
+                    Text("Entrar")
                 }
 
                 Spacer(modifier = Modifier.height(15.dp))
