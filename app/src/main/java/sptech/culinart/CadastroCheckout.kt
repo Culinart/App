@@ -165,13 +165,16 @@ fun TelaCadastroCheckout(name: String, modifier: Modifier = Modifier) {
         ) {
             Text("Finalizar Assinatura")
         }
+
+        Spacer(modifier = Modifier.height(40.dp))
+
     }
 }
 
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview2() {
+fun TelaCadastroCheckoutPreview() {
     CulinartTheme {
         TelaCadastroCheckout("Android")
     }

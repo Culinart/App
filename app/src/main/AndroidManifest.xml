@@ -15,6 +15,11 @@
         android:theme="@style/Theme.Culinart"
         tools:targetApi="31">
         <activity
+            android:name=".Plano"
+            android:exported="false"
+            android:label="@string/title_activity_plano"
+            android:theme="@style/Theme.Culinart" />
+        <activity
             android:name=".CadastroCheckout"
             android:exported="false"
             android:label="@string/title_activity_cadastro_checkout"
