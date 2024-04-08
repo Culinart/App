@@ -193,10 +193,10 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Button(
-                    onClick = {
-                        val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
+                    onClick =
+                    {val login = Intent(contexto, CadastroEndereco::class.java)
 
-                            contexto.startActivity(cadastroEndereco)
+                        contexto.startActivity(login)
                     },
                     modifier = Modifier.width(250.dp),
                     shape = RoundedCornerShape(10.dp),
@@ -209,7 +209,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         contentColor = Color.White
                     )
                 ) {
-                    Text("Cadastrar")
+                    Text("Entrar")
                 }
 
                 Spacer(modifier = Modifier.height(15.dp))

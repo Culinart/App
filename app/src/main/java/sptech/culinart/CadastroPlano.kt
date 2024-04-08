@@ -1,5 +1,6 @@
 package sptech.culinart
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -61,6 +63,9 @@ class CadastroPlano : ComponentActivity() {
 
 @Composable
 fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
+
+    val contexto = LocalContext.current
+
 
     val selectedDay = remember { mutableStateOf("") }
 
@@ -619,36 +624,40 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
-
             Spacer(modifier = Modifier.width(20.dp))
 
-            val days = listOf("S", "T", "Q", "Q", "S")
+            val days = listOf("SEGUNDA", "TERCA", "QUARTA", "QUINTA", "SEXTA")
             days.forEach { day ->
+                val dayInitial = day[0].toString()
                 Card(
                     modifier = Modifier
                         .width(45.dp)
                         .height(45.dp),
                     shape = RoundedCornerShape(50),
                     colors =  CardDefaults.cardColors(
-                        containerColor = if (selectedDay.value == day) Color(255, 159, 28) else Color.White
+                        containerColor = if (selectedDay.value == day) Color(255, 241, 221) else Color.White
                     ),
                     border = if (selectedDay.value == day) BorderStroke(2.dp, Color(255, 159, 28)) else BorderStroke(1.dp, Color(140, 140, 140))
                 ) {
                     TextButton(onClick = { selectedDay.value = day }) {
-                        Text(text = day, color = Color.Black)
+                        Text(text = dayInitial, color = Color.Black)
                     }
                 }
             }
 
             Spacer(modifier = Modifier.width(20.dp))
-
         }
+
 
         Spacer(modifier = Modifier.height(40.dp))
 
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick =
+            {val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
+
+                contexto.startActivity(cadastroCheckout)
+            },
             modifier = Modifier.width(250.dp),
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
@@ -658,6 +667,8 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
         ) {
             Text("Confirmar")
         }
+
+        Spacer(modifier = Modifier.height(40.dp))
 
     }
 }
