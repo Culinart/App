@@ -8,7 +8,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -25,6 +28,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -86,6 +91,14 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
     val isRapidoFacilClicked = remember { mutableStateOf(false) }
 
     val isFitSaudavelClicked = remember { mutableStateOf(false) }
+
+    val horarios = listOf(
+        "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
+        "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
+        "18:00", "19:00", "20:00", "21:00", "22:00"
+    )
+    val selectedHorario = remember { mutableStateOf("") }
+    val expanded = remember { mutableStateOf(false) }
 
 
     Column(
@@ -647,6 +660,78 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.width(20.dp))
         }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                "Horário para a Entrega",
+                style = TextStyle(
+                    Color(220,119,38),
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Start,
+                    fontSize = 18.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.weight(5f))
+
+        }
+
+        Spacer(modifier = Modifier.height(15.dp))
+
+        Column {
+            Column(
+                modifier = Modifier
+                    .width(150.dp)
+            ) {
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Box() {
+                    TextButton(onClick = { expanded.value = !expanded.value }) {
+
+                        Text(
+                            text = if (selectedHorario.value.isNotEmpty()) selectedHorario.value else "Horário",
+                            color = if (selectedHorario.value.isNotEmpty()) Color.Black else Color.Gray
+                        )
+                    }
+
+                }
+                DropdownMenu(
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false },
+                    modifier = Modifier
+                        .background(Color.White)
+                        .border(1.dp, Color(160, 160, 160))
+                        .height(300.dp)
+                ) {
+                    horarios.forEach { horario ->
+                        DropdownMenuItem(
+                            text = { Text(horario, color = Color.Black) },
+                            onClick = {
+                                selectedHorario.value = horario
+                                expanded.value = false
+                            }
+                        )
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(1.dp)
+                        .background(color = Color.Black)
+                )
+            }
+        }
+
 
 
         Spacer(modifier = Modifier.height(40.dp))

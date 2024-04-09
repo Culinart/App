@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -24,9 +26,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -59,6 +64,7 @@ class CadastroEndereco : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
 
@@ -97,9 +103,8 @@ fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
         "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN",
         "RO", "RR", "RS", "SC", "SE", "SP", "TO"
     )
-
-    val estadoSelecionado = remember { mutableStateOf("") }
-    val expandida = remember { mutableStateOf(false) }
+    val selectedEstado = remember { mutableStateOf("") }
+    val expanded = remember { mutableStateOf(false) }
 
 
     Column(
@@ -157,7 +162,52 @@ fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
 
                 Spacer(modifier = Modifier.width(30.dp))
 
-                TextField(
+                Column {
+                    Column(
+                        modifier = Modifier
+                            .width(150.dp)
+                    ) {
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Box() {
+                            TextButton(onClick = { expanded.value = !expanded.value }) {
+
+                                Text(
+                                    text = if (selectedEstado.value.isNotEmpty()) selectedEstado.value else "Estado",
+                                    color = if (selectedEstado.value.isNotEmpty()) Color.Black else Color.Gray
+                                )
+                            }
+
+                        }
+                        DropdownMenu(
+                            expanded = expanded.value,
+                            onDismissRequest = { expanded.value = false },
+                            modifier = Modifier
+                                .background(Color.White)
+                                .border(1.dp, Color(160, 160, 160))
+                                .height(300.dp)
+                        ) {
+                            estados.forEach { estado ->
+                                DropdownMenuItem(
+                                    text = { Text(estado, color = Color.Black) },
+                                    onClick = {
+                                        selectedEstado.value = estado
+                                        expanded.value = false
+                                    }
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .width(180.dp)
+                                .height(1.dp)
+                                .background(color = Color.Black)
+                        )
+                    }
+                }
+
+                /*TextField(
                     value = estado.value,
                     onValueChange = { estado.value = it },
                     label = {
@@ -176,7 +226,8 @@ fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
                         keyboardType = KeyboardType.Text
                     ),
                     modifier = Modifier.weight(1f)
-                )
+                )*/
+
                 Spacer(modifier = Modifier.width(30.dp))
             }
 
