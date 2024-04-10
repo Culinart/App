@@ -101,7 +101,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             )
         }
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         Row (
             modifier = Modifier.fillMaxWidth(),
@@ -112,11 +112,12 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             Image(painter = painterResource(id = R.mipmap.setaesquerda), contentDescription = "Seta Esquerda")
 
             Card (modifier = modifier
-                .height(100.dp)
-                .width(70.dp),
+                .height(110.dp)
+                .width(90.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color(255, 241, 221)
                 ),
+                shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(2.dp, Color(255, 159, 28)),
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 4.dp
@@ -138,6 +139,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                             )
                         )
 
+                        Spacer(modifier = Modifier.height(6.dp))
+
                         Text(
                             "4",
                             modifier = Modifier.fillMaxWidth(),
@@ -145,9 +148,11 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                                 Color(4, 93, 83),
                                 fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.Center,
-                                fontSize = 16.sp
+                                fontSize = 22.sp
                             )
                         )
+
+                        Spacer(modifier = Modifier.height(6.dp))
 
                         Text(
                             "AGO",
@@ -167,7 +172,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
         }
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         Column (
             modifier = Modifier
