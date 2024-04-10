@@ -48,10 +48,10 @@ class Header : ComponentActivity() {
 }
 
 @Composable
-fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
-    val isColumnVisible = remember { mutableStateOf(false) }
+fun ComponenteHader(name: String) {
+    val isHeaderVisible = remember { mutableStateOf(false) }
     Row (
-        modifier = modifier
+        modifier = Modifier
             .background(Color(0, 174, 158))
             .fillMaxWidth()
             .height(68.dp),
@@ -67,7 +67,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
                 .size(35.dp, 35.dp)
                 .padding(top = 5.dp)
                 .clickable {
-                    isColumnVisible.value = true
+                    isHeaderVisible.value = !isHeaderVisible.value
                 }
         )
         Text("Culinart",
@@ -78,7 +78,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
             modifier = Modifier.padding(end = 45.dp, top = 2.dp)
         )
     }
-    if (isColumnVisible.value) {
+    if (isHeaderVisible.value) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,21 +88,8 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center
         ) {
 
-            Icon(
-                painter = painterResource(id = R.mipmap.menu),
-                contentDescription = "Menu",
-                tint = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth(fraction = 0.3F)
-                    .size(40.dp, 40.dp)
-                    .padding(bottom = 15.dp)
-                    .clickable {
-                        isColumnVisible.value = false
-                    }
-            )
-
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .width(150.dp),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
@@ -127,7 +114,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(25.dp))
 
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .width(150.dp),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
@@ -152,7 +139,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(25.dp))
 
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .width(150.dp),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
@@ -179,7 +166,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(25.dp))
 
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .width(150.dp),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
@@ -205,7 +192,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(25.dp))
 
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .width(150.dp),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
@@ -230,7 +217,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(25.dp))
 
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .width(150.dp),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically

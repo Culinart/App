@@ -60,9 +60,13 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 68.dp, bottom = 30.dp),
+            .padding(bottom = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
+        ComponenteHader("Android")
+
+        Spacer(modifier = Modifier.height(10.dp))
+
         Text(text = "Bulgogi",
             style = TextStyle(
                 Color(220, 119, 30),
@@ -71,7 +75,7 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
             )
         )
 
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Column (
             modifier = Modifier
@@ -214,7 +218,6 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
                 CardModoDePreparo(onSwipe = { showIngredients.value = true })
             }
         }
-
   }
 }
 
@@ -248,7 +251,7 @@ fun CardIngredientes(onSwipe: () -> Unit){
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(240.dp)
+                .height(230.dp)
                 .padding(top = 10.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
