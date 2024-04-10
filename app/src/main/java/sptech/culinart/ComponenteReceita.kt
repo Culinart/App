@@ -15,17 +15,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -49,28 +54,28 @@ class ComponenteReceita : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
+    var showIngredients = remember { mutableStateOf(true) }
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 68.dp),
+            .padding(top = 68.dp, bottom = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text(text = "Bulgogi",
             style = TextStyle(
                 Color(220, 119, 30),
-                fontSize = 20.sp,
+                fontSize = 32.sp,
                 fontWeight = FontWeight.Bold
             )
         )
 
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
         Column (
             modifier = Modifier
-                .width(200.dp),
+                .width(320.dp),
             horizontalAlignment = Alignment.End
         ){
             Row(
@@ -83,14 +88,14 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
             ){
                 Text(text = "5.0",
                     style = TextStyle(
-                        fontSize = 8.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.ExtraLight
                     ),
                     modifier = Modifier.padding(end = 1.5.dp)
                 )
                 Text(text = "(100)",
                     style = TextStyle(
-                        fontSize = 8.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.ExtraLight
                     ),
                     modifier = Modifier.padding(end = 1.5.dp)
@@ -99,27 +104,27 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.estrela_avaliacao_12dp),
+                        painter = painterResource(id = R.drawable.icon_estrela_avaliacao_14dp),
                         contentDescription = "Estrela da avaliação de receita",
                         tint = Color(android.graphics.Color.parseColor("#FCDC7C")).copy(0.8f)
                     )
                     Icon(
-                        painter = painterResource(id = R.drawable.estrela_avaliacao_12dp),
+                        painter = painterResource(id = R.drawable.icon_estrela_avaliacao_14dp),
                         contentDescription = "Estrela da avaliação de receita",
                         tint = Color(android.graphics.Color.parseColor("#FCDC7C")).copy(0.8f)
                     )
                     Icon(
-                        painter = painterResource(id = R.drawable.estrela_avaliacao_12dp),
+                        painter = painterResource(id = R.drawable.icon_estrela_avaliacao_14dp),
                         contentDescription = "Estrela da avaliação de receita",
                         tint = Color(android.graphics.Color.parseColor("#FCDC7C")).copy(0.8f)
                     )
                     Icon(
-                        painter = painterResource(id = R.drawable.estrela_avaliacao_12dp),
+                        painter = painterResource(id = R.drawable.icon_estrela_avaliacao_14dp),
                         contentDescription = "Estrela da avaliação de receita",
                         tint = Color(android.graphics.Color.parseColor("#FCDC7C")).copy(0.8f)
                     )
                     Icon(
-                        painter = painterResource(id = R.drawable.estrela_avaliacao_12dp),
+                        painter = painterResource(id = R.drawable.icon_estrela_avaliacao_14dp),
                         contentDescription = "Estrela da avaliação de receita",
                         tint = Color(android.graphics.Color.parseColor("#FCDC7C")).copy(0.8f)
                     )
@@ -131,6 +136,7 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
                 contentDescription = "Imagem de receita para o componente Receita",
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(170.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .padding(top = 1.2.dp),
                 contentScale = ContentScale.FillBounds
@@ -146,34 +152,33 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
                     text ="Categoria:",
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
-                        fontSize = 8.5.sp
+                        fontSize = 16.sp
                     ),
                     modifier = Modifier.padding(end = 2.5.dp)
                 )
                 Box(
                     modifier = Modifier
-                        .width(40.dp)
-                        .height(12.dp)
+                        .width(70.dp)
+                        .height(20.dp)
                         .border(
                             width = 0.25.dp,
                             color = Color.Black,
-                            shape = RoundedCornerShape(5.dp)
+                            shape = RoundedCornerShape(8.dp)
                         )
                         .background(
                             color = Color(android.graphics.Color.parseColor("#001581")).copy(0.26f),
-                            shape = RoundedCornerShape(5.dp)
+                            shape = RoundedCornerShape(8.dp)
                         ),
                     contentAlignment = Alignment.Center
                 ){
                     Text(
                         text = "Koreana",
                         style = TextStyle(
-                            fontSize = 7.sp
+                            fontSize = 14.sp
                         )
                     )
                 }
             }
-
 
             Row (
                 modifier = Modifier
@@ -186,17 +191,184 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
                     text ="Tempo de preparo:",
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
-                        fontSize = 8.5.sp
+                        fontSize = 16.sp
                     ),
                     modifier = Modifier.padding(end = 2.dp)
                 )
                 Text(
                     text = "1 hora e 20 minutos",
-                    style = TextStyle(fontSize = 8.5.sp)
+                    style = TextStyle(fontSize = 16.sp)
                 )
             }
         }
+        Box(
+            modifier = Modifier
+                .padding(top = 15.dp)
+                .shadow(elevation = 3.dp, shape = RoundedCornerShape(4.dp))
+                .padding(8.dp)
+                .size(width = 320.dp, height = 355.dp)
+        ){
+            if (showIngredients.value) {
+                CardIngredientes(onSwipe = { showIngredients.value = false })
+            } else {
+                CardModoDePreparo(onSwipe = { showIngredients.value = true })
+            }
+        }
+
   }
+}
+
+@Composable
+fun CardIngredientes(onSwipe: () -> Unit){
+    val ingredientes = listOf(
+        "300 gramas de alcatra",
+        "½ cebola pequena",
+        "2 dentes de alho",
+        "½ pera",
+        "2 cebolinhas",
+        "1  colher de sopa de açúcar mascavo",
+        "40 mililitros de molho shoyu",
+        "1 colher de sopa de óleo de gergelim",
+        "1 colher de sopa de sementes de gergelim",
+        "pimenta do reino à gosto",
+    )
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 5.dp, top = 5.dp)
+    ){
+        Text(
+            text = "Ingredientes",
+            style = TextStyle(
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color =  Color(android.graphics.Color.parseColor("#DC7726"))
+            )
+        )
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(240.dp)
+                .padding(top = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            items(ingredientes) { ingrediente ->
+                Text(
+                    text = "•  $ingrediente",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                    ),
+                    modifier = Modifier.padding(start = 2.dp, top = 1.2.dp)
+                )
+            }
+        }
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp, end = 3.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text(
+                text = "Ingredientes para render 4 porções",
+                style = TextStyle(
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+            )
+            Row (
+                modifier = Modifier
+                    .width(90.dp)
+                    .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Box(
+                    modifier = Modifier
+                        .width(42.dp)
+                        .height(1.75.dp)
+                        .background(Color(android.graphics.Color.parseColor("#959595")))
+                )
+
+                Box(
+                    modifier = Modifier
+                        .width(42.dp)
+                        .height(1.75.dp)
+                        .background(Color(android.graphics.Color.parseColor("#E2E2E2")))
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CardModoDePreparo(onSwipe: () -> Unit){
+    val passos = listOf(
+        "Em uma tigela grande, misture todos os ingredientes da marinada.",
+        "Adicione a carne e misture bem para que todos os pedaços estejam cobertos pela marinada.",
+        "Leve à geladeira por pelo menos 30 minutos, ou até 24 horas",
+        "Aqueça uma frigideira ou grelha em fogo médio-alto.",
+        "Retire a carne da marinada e reserve a marinada.",
+        "Grelhe a carne por 2-3 minutos de cada lado, ou até que esteja cozida ao ponto desejado.",
+        "Sirva imediatamente com arroz branco, legumes e uma guarnição de sua escolha.",
+    )
+
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 3.dp, top = 3.dp)
+    ){
+        Text(
+            text = "Modo de preparo",
+            style = TextStyle(
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                color =  Color(android.graphics.Color.parseColor("#DC7726"))
+            )
+        )
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            items(passos) { passo ->
+                Text(
+                    text = "•  $passo",
+                    style = TextStyle(
+                        fontSize = 7.sp,
+                    ),
+                    modifier = Modifier.padding(start = 2.dp, top = 1.2.dp)
+                )
+            }
+        }
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, end = 3.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Row (
+                modifier = Modifier
+                    .width(90.dp)
+                    .padding(top = 17.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Box(
+                    modifier = Modifier
+                        .width(32.dp)
+                        .height(1.75.dp)
+                        .background(Color(android.graphics.Color.parseColor("#E2E2E2")))
+                )
+
+                Box(
+                    modifier = Modifier
+                        .width(32.dp)
+                        .height(1.75.dp)
+                        .background(Color(android.graphics.Color.parseColor("#959595")))
+
+                )
+            }
+        }
+    }
 }
 
 @Preview(showBackground = true)
