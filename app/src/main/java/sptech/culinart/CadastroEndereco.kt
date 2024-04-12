@@ -49,6 +49,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import sptech.culinart.api.RetrofitService
+import sptech.culinart.model.Endereco
 import sptech.culinart.ui.theme.CulinartTheme
 
 class CadastroEndereco : ComponentActivity() {
@@ -67,6 +72,8 @@ class CadastroEndereco : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
+
+    val feedback = remember { mutableStateOf("") }
 
     val contexto = LocalContext.current
 
@@ -369,9 +376,28 @@ fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
 
             Button(
                 onClick =
-                {val cadastroPlano = Intent(contexto, CadastroPlano::class.java)
+                {
+                    val api = RetrofitService.getApiEnderecoService()
+                    val endereco = Endereco("04619001", 253, "ap 330")
+                    //val call = api.createEndereco(1, endereco)
+                    val call = api.createEndereco(endereco)
 
-                    contexto.startActivity(cadastroPlano)
+                    call.enqueue(object : Callback<Endereco> {
+                        override fun onResponse(call: Call<Endereco>, response: Response<Endereco>) {
+                            if (response.isSuccessful) {
+                                feedback.value = "Usuário cadastrado com sucesso"
+
+                                val cadastroPlano = Intent(contexto, CadastroPlano::class.java)
+                                contexto.startActivity(cadastroPlano)
+
+                            } else {
+                                feedback.value = "Erro ao cadastrar usuário"
+                            }
+                        }
+                        override fun onFailure(call: Call<Endereco>, t: Throwable) {
+                            feedback.value = "Erro: ${t.message}"
+                        }
+                    })
                 },
                 modifier = Modifier.width(250.dp),
                 shape = RoundedCornerShape(10.dp),

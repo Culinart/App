@@ -9,7 +9,11 @@ import sptech.culinart.model.Endereco
 
 interface ApiEndereco {
 
-    @POST("/enderecos/{idUsuario}")
-    fun createEndereco(@Path("idUsuario") idUsuario: Int): Call<Endereco>
+    //@POST("/enderecos/{idUsuario}")
+    //fun createEndereco(@Path("idUsuario") idUsuario: Int, @Body endereco: Endereco): Call<Endereco>
+
+    @POST("/enderecos/")
+    fun createEndereco(@Body endereco: Endereco): Call<Endereco>
+
 
 }
