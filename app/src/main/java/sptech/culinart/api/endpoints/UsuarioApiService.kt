@@ -3,6 +3,8 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import sptech.culinart.api.data.usuario.UsuarioLoginDTO
+import sptech.culinart.api.data.usuario.UsuarioTokenDTO
 
 interface UsuarioApiService {
 
@@ -11,6 +13,6 @@ interface UsuarioApiService {
     fun getUsuarios(): Call<List<UsuarioApiService>>
 
     // Define o método POST para o login de usuário
-    @POST("/login")
-    fun login(@Body credenciais: CredenciaisLogin): Call<UsuarioTokenDto>
+    @POST("/usuarios/login")
+    fun login(@Body credenciais: UsuarioLoginDTO): Call<UsuarioTokenDTO>
 }

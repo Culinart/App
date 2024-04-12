@@ -6,24 +6,35 @@ import sptech.culinart.api.endpoints.UsuarioApiService
 
 object RetrofitInstance {
     //local
-    private const val BASE_URL = "https://sua-api.com/"
+    val BASE_URL = "http://localhost:8080/api/"
     //internet
     //private const val BASE_URL = "https://sua-api.com/"
 
 
     // Cria uma instância Retrofit
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+//    private var retrofit = Retrofit.Builder()
+//        .baseUrl(BASE_URL)
+//        .addConverterFactory(GsonConverterFactory.create())
+//        .build()
+//
+//    // Cria uma instância do serviço Retrofit para end points de usuarios
+//    fun getUsuarioApiService(): UsuarioApiService {
+//        return retrofit.create(UsuarioApiService::class.java)
+//    }
+//
+//    fun getReceitaApiService(): UsuarioApiService {
+//        return retrofit.create(UsuarioApiService::class.java)
+//    }
 
-    // Cria uma instância do serviço Retrofit para end points de usuarios
     fun getUsuarioApiService(): UsuarioApiService {
-        return retrofit.create(UsuarioApiService::class.java)
-    }
+        val cliente =
+            Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(UsuarioApiService::class.java)
 
-    fun getReceitaApiService(): UsuarioApiService {
-        return retrofit.create(UsuarioApiService::class.java)
+        return cliente
     }
 
 }

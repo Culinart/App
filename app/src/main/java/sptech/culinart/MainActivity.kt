@@ -2,12 +2,12 @@ package sptech.culinart
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,14 +15,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -35,14 +33,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -51,7 +45,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import sptech.culinart.api.RetrofitInstance
+import sptech.culinart.api.data.usuario.UsuarioLoginDTO
 import sptech.culinart.ui.theme.CulinartTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import sptech.culinart.api.data.usuario.UsuarioTokenDTO
+import sptech.culinart.api.endpoints.UsuarioApiService
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -193,10 +194,48 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Button(
-                    onClick =
-                    {
-                        val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
-                        contexto.startActivity(cadastroEndereco)
+                    onClick = {
+                        val usuarioApiService = RetrofitInstance.getUsuarioApiService()
+                        val get = usuarioApiService.getUsuarios()
+
+                        // Aqui você pode fazer chamadas aos métodos do usuarioApiService
+                        // Por exemplo, para chamar o método de login, você pode fazer algo assim:
+//                        val credenciais = UsuarioLoginDTO(email = email.value, senha = senha.value)
+//                        usuarioApiService.login(credenciais).enqueue(object : Callback<UsuarioTokenDTO> {
+//                            override fun onResponse(call: Call<UsuarioTokenDTO>, response: Response<UsuarioTokenDTO>) {
+//                                if (response.isSuccessful) {
+//                                    val usuarioTokenDTO = response.body()
+//                                    println(response.body())
+//                                    // Faça algo com o token de usuário retornado
+//                                } else {
+//                                    // Trate os erros de login aqui
+//                                    println("Deu ruim")
+//                                }
+//                            }
+//
+//                            override fun onFailure(call: Call<UsuarioTokenDTO>, t: Throwable) {
+//                                // Trate os erros de rede aqui
+//                                println(t)
+//                            }
+//                        })
+                        get.enqueue(object : Callback<List<UsuarioApiService>> {
+                            override fun onResponse(call: Call<List<UsuarioApiService>>, response: Response<List<UsuarioApiService>>) {
+                                if (response.isSuccessful) {
+                                    if (response.body()!!.isNotEmpty()) {
+                                        println(response.body())
+                                    }
+                                    println("vazio")
+                                } else {
+                                    println("erro")
+                                }
+                            }
+
+                            override fun onFailure(call: Call<List<UsuarioApiService>>, t: Throwable) {
+                                Log.e("api", "Erro na chamada da API nessa porra: ${t.message}")
+
+                            }
+
+                        })
                     },
                     modifier = Modifier.width(250.dp),
                     shape = RoundedCornerShape(10.dp),
