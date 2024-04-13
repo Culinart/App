@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import sptech.culinart.ui.theme.CulinartTheme
 
 class ComponenteReceita : ComponentActivity() {
@@ -46,7 +47,10 @@ class ComponenteReceita : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CulinartTheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
                     ComponenteReceita("Android")
                 }
             }
@@ -55,19 +59,22 @@ class ComponenteReceita : ComponentActivity() {
 }
 
 @Composable
-fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
+fun ComponenteReceita(name: String, modifier: Modifier = Modifier) {
     var showIngredients = remember { mutableStateOf(true) }
-    Column (
+
+    ComponenteHader("Android", modifier = Modifier.zIndex(99f))
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 30.dp),
+            .padding(top = 70.dp, bottom = 30.dp)
+            .zIndex(1f),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        ComponenteHader("Android")
+    ) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Text(text = "Bulgogi",
+        Text(
+            text = "Bulgogi",
             style = TextStyle(
                 Color(220, 119, 30),
                 fontSize = 32.sp,
@@ -77,11 +84,11 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Column (
+        Column(
             modifier = Modifier
                 .width(320.dp),
             horizontalAlignment = Alignment.End
-        ){
+        ) {
             Row(
                 modifier = Modifier
                     .width(105.dp)
@@ -89,22 +96,24 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
 
-            ){
-                Text(text = "5.0",
+            ) {
+                Text(
+                    text = "5.0",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.ExtraLight
                     ),
                     modifier = Modifier.padding(end = 1.5.dp)
                 )
-                Text(text = "(100)",
+                Text(
+                    text = "(100)",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.ExtraLight
                     ),
                     modifier = Modifier.padding(end = 1.5.dp)
                 )
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Icon(
@@ -145,15 +154,15 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
                     .padding(top = 1.2.dp),
                 contentScale = ContentScale.FillBounds
             )
-            Row (
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
-            ){
+            ) {
                 Text(
-                    text ="Categoria:",
+                    text = "Categoria:",
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
@@ -170,11 +179,13 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
                             shape = RoundedCornerShape(8.dp)
                         )
                         .background(
-                            color = Color(android.graphics.Color.parseColor("#001581")).copy(0.26f),
+                            color = Color(android.graphics.Color.parseColor("#001581")).copy(
+                                0.26f
+                            ),
                             shape = RoundedCornerShape(8.dp)
                         ),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     Text(
                         text = "Koreana",
                         style = TextStyle(
@@ -184,15 +195,15 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
                 }
             }
 
-            Row (
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 11.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
-            ){
+            ) {
                 Text(
-                    text ="Tempo de preparo:",
+                    text = "Tempo de preparo:",
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
@@ -211,18 +222,19 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier){
                 .shadow(elevation = 3.dp, shape = RoundedCornerShape(4.dp))
                 .padding(8.dp)
                 .size(width = 320.dp, height = 355.dp)
-        ){
+        ) {
             if (showIngredients.value) {
                 CardIngredientes(onSwipe = { showIngredients.value = false })
             } else {
                 CardModoDePreparo(onSwipe = { showIngredients.value = true })
             }
         }
-  }
+    }
 }
 
+
 @Composable
-fun CardIngredientes(onSwipe: () -> Unit){
+fun CardIngredientes(onSwipe: () -> Unit) {
     val ingredientes = listOf(
         "300 gramas de alcatra",
         "½ cebola pequena",
@@ -235,17 +247,17 @@ fun CardIngredientes(onSwipe: () -> Unit){
         "1 colher de sopa de sementes de gergelim",
         "pimenta do reino à gosto",
     )
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 5.dp, top = 5.dp)
-    ){
+    ) {
         Text(
             text = "Ingredientes",
             style = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color =  Color(android.graphics.Color.parseColor("#DC7726"))
+                color = Color(android.graphics.Color.parseColor("#DC7726"))
             )
         )
         LazyColumn(
@@ -265,12 +277,12 @@ fun CardIngredientes(onSwipe: () -> Unit){
                 )
             }
         }
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp, end = 3.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Text(
                 text = "Ingredientes para render 4 porções",
                 style = TextStyle(
@@ -278,12 +290,12 @@ fun CardIngredientes(onSwipe: () -> Unit){
                     fontSize = 14.sp
                 )
             )
-            Row (
+            Row(
                 modifier = Modifier
                     .width(90.dp)
                     .padding(top = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
+            ) {
                 Box(
                     modifier = Modifier
                         .width(42.dp)
@@ -303,7 +315,7 @@ fun CardIngredientes(onSwipe: () -> Unit){
 }
 
 @Composable
-fun CardModoDePreparo(onSwipe: () -> Unit){
+fun CardModoDePreparo(onSwipe: () -> Unit) {
     val passos = listOf(
         "Em uma tigela grande, misture todos os ingredientes da marinada.",
         "Adicione a carne e misture bem para que todos os pedaços estejam cobertos pela marinada.",
@@ -314,17 +326,17 @@ fun CardModoDePreparo(onSwipe: () -> Unit){
         "Sirva imediatamente com arroz branco, legumes e uma guarnição de sua escolha.",
     )
 
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 3.dp, top = 3.dp)
-    ){
+    ) {
         Text(
             text = "Modo de preparo",
             style = TextStyle(
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
-                color =  Color(android.graphics.Color.parseColor("#DC7726"))
+                color = Color(android.graphics.Color.parseColor("#DC7726"))
             )
         )
         LazyColumn(
@@ -343,18 +355,18 @@ fun CardModoDePreparo(onSwipe: () -> Unit){
                 )
             }
         }
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp, end = 3.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Row (
+        ) {
+            Row(
                 modifier = Modifier
                     .width(90.dp)
                     .padding(top = 17.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
+            ) {
                 Box(
                     modifier = Modifier
                         .width(32.dp)

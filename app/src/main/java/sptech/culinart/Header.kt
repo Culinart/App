@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import sptech.culinart.ui.theme.CulinartTheme
 
 class Header : ComponentActivity() {
@@ -52,7 +54,7 @@ class Header : ComponentActivity() {
 }
 
 @Composable
-fun ComponenteHader(name: String) {
+fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
     val isHeaderVisible = remember { mutableStateOf(false) }
     if (!isHeaderVisible.value) {
         Row(
@@ -90,7 +92,16 @@ fun ComponenteHader(name: String) {
             modifier = Modifier
                 .fillMaxWidth(0.4f)
                 .fillMaxHeight()
-                .background(Color(0, 174, 158)),
+                .background(
+                    color = Color(0, 174, 158),
+                    shape = RoundedCornerShape(
+                        topStart = 0.dp,
+                        topEnd = 20.dp,
+                        bottomEnd = 20.dp,
+                        bottomStart = 0.dp
+                    )
+                )
+                .zIndex(100f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
