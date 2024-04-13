@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,194 +51,212 @@ class Header : ComponentActivity() {
 @Composable
 fun ComponenteHader(name: String) {
     val isHeaderVisible = remember { mutableStateOf(false) }
-    Row (
-        modifier = Modifier
-            .background(Color(0, 174, 158))
-            .fillMaxWidth()
-            .height(68.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ){
-        Icon(
-            painter = painterResource(id = R.mipmap.menu),
-            contentDescription = "Menu",
-            tint = Color.White,
+    if (!isHeaderVisible.value){
+        Row (
             modifier = Modifier
-                .fillMaxWidth(fraction = 0.3F)
-                .size(35.dp, 35.dp)
-                .padding(top = 5.dp)
-                .clickable {
-                    isHeaderVisible.value = !isHeaderVisible.value
-                }
-        )
-        Text("Culinart",
-            style = TextStyle(
-                Color(255 , 255, 255),
-                fontSize = 25.sp
-            ),
-            modifier = Modifier.padding(end = 45.dp, top = 2.dp)
-        )
-    }
-    if (isHeaderVisible.value) {
+                .background(Color(0, 174, 158))
+                .fillMaxWidth()
+                .height(68.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(
+                painter = painterResource(id = R.mipmap.menu),
+                contentDescription = "Menu",
+                tint = Color.White,
+                modifier = Modifier
+                    .fillMaxWidth(fraction = 0.3F)
+                    .size(35.dp, 35.dp)
+                    .padding(top = 5.dp)
+                    .clickable {
+                        isHeaderVisible.value = !isHeaderVisible.value
+                    }
+            )
+            Text("Culinart",
+                style = TextStyle(
+                    Color(255 , 255, 255),
+                    fontSize = 25.sp
+                ),
+                modifier = Modifier.padding(end = 45.dp, top = 2.dp)
+            )
+        }
+    } else {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .background(Color(0, 174, 158)),
+            .fillMaxWidth(0.4f)
+            .fillMaxHeight()
+            .background(Color(0, 174, 158)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
-        ) {
-
-            Row(
+        ){
+            Icon(
+                painter = painterResource(id = R.mipmap.menu),
+                contentDescription = "Menu",
+                tint = Color.White,
                 modifier = Modifier
-                    .width(150.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_pedidos_header),
-                    contentDescription = "Icone de pedido do Header",
-                    tint = Color.White,
-                )
-
-                Text(
-                    text = "Pedidos",
-                    style = TextStyle(
-                        Color(255, 255, 255),
-                        fontSize = 20.sp
-                    ),
-                    modifier = Modifier.padding(start = 8.5.dp, end=0.5.dp, top = 2.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(25.dp))
-
-            Row(
+                    .size(50.dp, 40.dp)
+                    .clickable {
+                        isHeaderVisible.value = !isHeaderVisible.value
+                    }
+            )
+            Column(
                 modifier = Modifier
-                    .width(150.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.85f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(.8f),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_receitas_header),
-                    contentDescription = "Icone de receita do Header",
-                    tint = Color.White
-                )
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_pedidos_header),
+                        contentDescription = "Icone de pedido do Header",
+                        tint = Color.White,
+                    )
 
-                Text(
-                    text = "Receitas",
-                    style = TextStyle(
-                        Color(255, 255, 255),
-                        fontSize = 20.sp
-                    ),
-                    modifier = Modifier.padding(start = 8.dp, top = 2.dp)
-                )
-            }
+                    Text(
+                        text = "Pedidos",
+                        style = TextStyle(
+                            Color(255, 255, 255),
+                            fontSize = 18.sp
+                        ),
+                        modifier = Modifier.padding(start = 8.5.dp, end=0.5.dp, top = 2.dp)
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(25.dp))
+                Spacer(modifier = Modifier.height(50.dp))
 
-            Row(
-                modifier = Modifier
-                    .width(150.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(.8f),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_meu_plano_header),
-                    contentDescription = "Icone de Meu Plano do Header",
-                    tint = Color.White,
-                    modifier = Modifier.padding(start = 1.75.dp)
-                )
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_receitas_header),
+                        contentDescription = "Icone de receita do Header",
+                        tint = Color.White
+                    )
 
-                Text(
-                    text = "Meu Plano",
-                    style = TextStyle(
-                        Color(255, 255, 255),
-                        fontSize = 18.sp
-                    ),
-                    modifier = Modifier.padding(start = 11.25.dp)
-                )
+                    Text(
+                        text = "Receitas",
+                        style = TextStyle(
+                            Color(255, 255, 255),
+                            fontSize = 18.sp
+                        ),
+                        modifier = Modifier.padding(start = 8.dp, top = 2.dp)
+                    )
+                }
 
-            }
+                Spacer(modifier = Modifier.height(50.dp))
 
-            Spacer(modifier = Modifier.height(25.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(.8f),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-            Row(
-                modifier = Modifier
-                    .width(150.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_meu_plano_header),
+                        contentDescription = "Icone de Meu Plano do Header",
+                        tint = Color.White,
+                        modifier = Modifier.padding(start = 1.75.dp)
+                    )
 
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_suporte_header),
-                    contentDescription = "Icone de Suporte do Header",
-                    tint = Color.White
-                )
+                    Text(
+                        text = "Meu Plano",
+                        style = TextStyle(
+                            Color(255, 255, 255),
+                            fontSize = 18.sp
+                        ),
+                        modifier = Modifier.padding(start = 11.25.dp)
+                    )
 
-                Text(
-                    text = "Suporte",
-                    style = TextStyle(
-                        Color(255, 255, 255),
-                        fontSize = 20.sp
-                    ),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
+                }
+
+                Spacer(modifier = Modifier.height(50.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(.8f),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_suporte_header),
+                        contentDescription = "Icone de Suporte do Header",
+                        tint = Color.White
+                    )
+
+                    Text(
+                        text = "Suporte",
+                        style = TextStyle(
+                            Color(255, 255, 255),
+                            fontSize = 18.sp
+                        ),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
 
 
-            Spacer(modifier = Modifier.height(25.dp))
+                Spacer(modifier = Modifier.height(50.dp))
 
-            Row(
-                modifier = Modifier
-                    .width(150.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(.8f),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_user_header),
-                    contentDescription = "Icone de Perfil do Header",
-                    tint = Color.White
-                )
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_user_header),
+                        contentDescription = "Icone de Perfil do Header",
+                        tint = Color.White
+                    )
 
-                Text(
-                    text = "Perfil",
-                    style = TextStyle(
-                        Color(255, 255, 255),
-                        fontSize = 20.sp
-                    ),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
+                    Text(
+                        text = "Perfil",
+                        style = TextStyle(
+                            Color(255, 255, 255),
+                            fontSize = 18.sp
+                        ),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(25.dp))
+                Spacer(modifier = Modifier.height(50.dp))
 
-            Row(
-                modifier = Modifier
-                    .width(150.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(.8f),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_logout_header),
-                    contentDescription = "Icone de Logout do Header",
-                    tint = Color.White,
-                    modifier = Modifier.padding(start = 2.dp)
-                )
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_logout_header),
+                        contentDescription = "Icone de Logout do Header",
+                        tint = Color.White,
+                        modifier = Modifier.padding(start = 2.dp)
+                    )
 
-                Text(
-                    text = "Logout",
-                    style = TextStyle(
-                        Color(255, 255, 255),
-                        fontSize = 20.sp
-                    ),
-                    modifier = Modifier.padding(start = 6.dp)
-                )
+                    Text(
+                        text = "Logout",
+                        style = TextStyle(
+                            Color(255, 255, 255),
+                            fontSize = 18.sp
+                        ),
+                        modifier = Modifier.padding(start = 6.dp)
+                    )
+                }
             }
         }
     }
