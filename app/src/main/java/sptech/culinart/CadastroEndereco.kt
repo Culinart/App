@@ -1,9 +1,11 @@
 package sptech.culinart
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,8 +22,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -35,6 +41,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,6 +56,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,27 +65,33 @@ import sptech.culinart.model.Endereco
 import sptech.culinart.ui.theme.CulinartTheme
 
 class CadastroEndereco : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val extras = intent.extras
         setContent {
             CulinartTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    TelaCadastro("Android")
+                    TelaCadastroEndereco(extras)
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
-fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
+fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
 
-    val feedback = remember { mutableStateOf("") }
+    val idUsuario = extras?.getInt("idUsuario") ?: -1
 
     val contexto = LocalContext.current
 
     val cep = remember {
+        mutableStateOf("")
+    }
+
+    val feedback = remember {
         mutableStateOf("")
     }
 
@@ -214,27 +228,6 @@ fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
                     }
                 }
 
-                /*TextField(
-                    value = estado.value,
-                    onValueChange = { estado.value = it },
-                    label = {
-                        Text("Estado")
-                    },
-                    placeholder = { Text("São Paulo") },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedLabelColor = Color(4, 93, 83),
-                        focusedLabelColor = Color(4, 93, 83),
-                        unfocusedContainerColor = Color(249, 251, 251),
-                        focusedContainerColor = Color(232, 240, 239),
-                        unfocusedTextColor = Color(107, 107, 107, 255),
-                        focusedTextColor = Color.Black
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text
-                    ),
-                    modifier = Modifier.weight(1f)
-                )*/
-
                 Spacer(modifier = Modifier.width(30.dp))
             }
 
@@ -369,33 +362,26 @@ fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.width(30.dp))
             }
 
-
-
             Spacer(modifier = Modifier.height(40.dp))
-
 
             Button(
                 onClick =
                 {
                     val api = RetrofitService.getApiEnderecoService()
-                    val endereco = Endereco("04619001", 253, "ap 330")
-                    //val call = api.createEndereco(1, endereco)
-                    val call = api.createEndereco(endereco)
-
+                    val endereco = Endereco("${cep.value}", numero.value.toInt(), "${complemento.value}")
+                    val call = api.createEnderecoUsuario(idUsuario, endereco)
                     call.enqueue(object : Callback<Endereco> {
                         override fun onResponse(call: Call<Endereco>, response: Response<Endereco>) {
                             if (response.isSuccessful) {
-                                feedback.value = "Usuário cadastrado com sucesso"
-
+                                feedback.value = "Endereço cadastrado com sucesso"
                                 val cadastroPlano = Intent(contexto, CadastroPlano::class.java)
                                 contexto.startActivity(cadastroPlano)
-
                             } else {
-                                feedback.value = "Erro ao cadastrar usuário"
+                                feedback.value = "Erro ao cadastrar endereço"
                             }
                         }
                         override fun onFailure(call: Call<Endereco>, t: Throwable) {
-                            feedback.value = "Erro: ${t.message}"
+                            feedback.value = "Falha na conexão: ${t.message}"
                         }
                     })
                 },
@@ -413,10 +399,11 @@ fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
 
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview(showBackground = true)
 @Composable
 fun TelaCadastroEnderecoPreview() {
     CulinartTheme {
-        TelaCadastroEndereco("Android")
+        TelaCadastroEndereco(null)
     }
 }

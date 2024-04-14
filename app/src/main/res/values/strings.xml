@@ -8,4 +8,6 @@
     <string name="title_activity_cadastro_plano">CadastroPlano</string>
     <string name="title_activity_cadastro_checkout">CadastroCheckout</string>
     <string name="title_activity_plano">Plano</string>
+    <string name="title_activity_teste">Teste</string>
+    <string name="title_activity_teste_endereco">TesteEndereco</string>
 </resources>

@@ -253,11 +253,12 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Button(onClick =
-                {val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
-                    contexto.startActivity(cadastroEndereco)
-                    /*val cadastro = Intent(contexto, Cadastro::class.java)
+                {
+                    val idUsuario = 1
 
-                    contexto.startActivity(cadastro)*/
+                    val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
+                    cadastroEndereco.putExtra("idUsuario", idUsuario)
+                    contexto.startActivity(cadastroEndereco)
                 },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent
