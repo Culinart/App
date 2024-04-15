@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -14,6 +14,36 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Culinart"
         tools:targetApi="31">
+        <activity
+            android:name=".Plano"
+            android:exported="false"
+            android:label="@string/title_activity_plano"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".CadastroCheckout"
+            android:exported="false"
+            android:label="@string/title_activity_cadastro_checkout"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".CadastroPlano"
+            android:exported="false"
+            android:label="@string/title_activity_cadastro_plano"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".MainActivity2"
+            android:exported="false"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".componentes.Input"
+            android:exported="false"
+            android:label="@string/title_activity_input"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".CadastroEndereco"
+            android:exported="false"
+            android:label="@string/title_activity_cadastro_endereco"
+            android:theme="@style/Theme.Culinart" />
         <activity
             android:name=".Cadastro"
             android:exported="false"

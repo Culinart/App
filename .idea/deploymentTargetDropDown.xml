@@ -2,10 +2,10 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="ComponenteHaderPreview">
+      <entry key="MainActivity2">
         <State />
       </entry>
-      <entry key="TelaCadastroPreview">
+      <entry key="TelaCadastroEnderecoPreview">
         <State />
       </entry>
       <entry key="app">
