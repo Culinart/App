@@ -105,9 +105,9 @@ fun TelaReceitas() {
         Column(
             Modifier.padding(horizontal = 40.dp)
         ) {
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Text(
                     text = "Preferências",
                     color = Color(0xFF3F4747),
@@ -144,8 +144,6 @@ fun Preferencia(cor: String, preferencia: String) {
         )
     }
 }
-
-
 
 
 @Composable
@@ -296,7 +294,7 @@ fun RecipeCard() {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun TelaReceitasPreview() {
     CulinartTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             TelaReceitas()
