@@ -124,7 +124,7 @@ fun TelaPerfilPagamento(name: String, modifier: Modifier = Modifier) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(75.dp))
+            Spacer(modifier = Modifier.height(70.dp))
 
             Text(
                 text = "Cancelar Assinatura",
@@ -168,7 +168,7 @@ fun TelaPerfilPagamento(name: String, modifier: Modifier = Modifier) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(130.dp))
+            Spacer(modifier = Modifier.height(70.dp))
         }
     }
 }

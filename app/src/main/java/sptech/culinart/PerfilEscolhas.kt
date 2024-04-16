@@ -176,7 +176,7 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(130.dp))
+            Spacer(modifier = Modifier.height(150.dp))
         }
     }
 }
