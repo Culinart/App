@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,9 +31,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import org.w3c.dom.Text
 import sptech.culinart.ui.theme.CulinartTheme
 
-class PerfilEscolhas : ComponentActivity() {
+class PerfilPagamento : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -41,7 +43,7 @@ class PerfilEscolhas : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TelaPerfilEscolhas("Android")
+                    TelaPerfilPagamento("Android")
                 }
             }
         }
@@ -49,7 +51,7 @@ class PerfilEscolhas : ComponentActivity() {
 }
 
 @Composable
-fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
+fun TelaPerfilPagamento(name: String, modifier: Modifier = Modifier) {
     ComponenteHader(name = "Android", modifier = Modifier.zIndex(99f))
     Box(
         modifier = Modifier
@@ -57,29 +59,29 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
             .padding(top = 70.dp)
             .zIndex(1f),
         contentAlignment = Alignment.Center
-    ) {
+    ){
         Column(
             modifier = Modifier
                 .fillMaxWidth(.8f),
             horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        ){
             Text(
                 text = "Perfil",
                 style = TextStyle(
                     Color(4, 93, 83),
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 32.sp
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.SemiBold
                 )
             )
 
             Spacer(modifier = Modifier.height(30.dp))
 
             Text(
-                text = "Nome do Usuário",
+                text = "Pagamento",
                 style = TextStyle(
-                    Color(4, 93, 83),
-                    fontWeight = FontWeight.Light,
-                    fontSize = 24.sp
+                    Color(220, 119, 38),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Medium
                 )
             )
 
@@ -94,18 +96,27 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(55.dp))
 
+            Text(
+                text = "Veja a sua última cobrança através do link de pagamento.",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             Button(
                 onClick = { /*TODO*/ },
                 modifier = Modifier
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(46, 196, 182),
+                    containerColor = Color(255, 159, 28),
                     contentColor = Color.White
                 )
             ) {
                 Text(
-                    text = "Informações Pessoais",
+                    text = "Link de Pagamento",
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
@@ -113,7 +124,30 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(45.dp))
+            Spacer(modifier = Modifier.height(75.dp))
+
+            Text(
+                text = "Cancelar Assinatura",
+                style = TextStyle(
+                    Color(4, 93, 83),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.W900
+                ),
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = "Ao cancelar a sua assinatura, você indica que deseja descontinuar o " +
+                        "serviço recebido pela Culinart. Você sempre será bem-vindo novamente " +
+                        "e pode renovar a assinatura se desejar.",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                )
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             Button(
                 onClick = { /*TODO*/ },
@@ -121,54 +155,12 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(46, 196, 182),
+                    containerColor = Color(197, 197, 197),
                     contentColor = Color.White
                 )
             ) {
                 Text(
-                    text = "Senha e Autenticação",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                )
-            }
-
-            Spacer(modifier = Modifier.height(45.dp))
-
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(46, 196, 182),
-                    contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = "Meus Endereços",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                )
-            }
-
-            Spacer(modifier = Modifier.height(45.dp))
-
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(46, 196, 182),
-                    contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = "Pagamento",
+                    text = "Apagar Conta",
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
@@ -183,8 +175,8 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun TelaPerfilEscolhasPreview() {
+fun TelaPerfilPagamentoPreview() {
     CulinartTheme {
-        TelaPerfilEscolhas("Android")
+        TelaPerfilPagamento("Android")
     }
 }
