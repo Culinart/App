@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -60,7 +63,7 @@ class ComponenteReceita : ComponentActivity() {
 
 @Composable
 fun ComponenteReceita(name: String, modifier: Modifier = Modifier) {
-    var showIngredients = remember { mutableStateOf(true) }
+    var selectedTabIndex = remember { mutableStateOf(0) }
 
     ComponenteHader("Android", modifier = Modifier.zIndex(99f))
     Column(
@@ -222,19 +225,29 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier) {
                 .shadow(elevation = 3.dp, shape = RoundedCornerShape(4.dp))
                 .padding(8.dp)
                 .size(width = 320.dp, height = 355.dp)
+                .pointerInput(Unit) {
+                    detectHorizontalDragGestures { change, dragAmount ->
+                        if (dragAmount > 0) {
+                            selectedTabIndex.value = 0
+                        } else if (dragAmount < 0) {
+                            selectedTabIndex.value = 1
+                        }
+                    }
+                }
         ) {
-            if (showIngredients.value) {
-                CardIngredientes(onSwipe = { showIngredients.value = false })
+            if (selectedTabIndex.value == 0) {
+                CardIngredientes()
             } else {
-                CardModoDePreparo(onSwipe = { showIngredients.value = true })
+                CardModoDePreparo()
             }
         }
+
     }
-}
+    }
 
 
 @Composable
-fun CardIngredientes(onSwipe: () -> Unit) {
+fun CardIngredientes() {
     val ingredientes = listOf(
         "300 gramas de alcatra",
         "½ cebola pequena",
@@ -273,7 +286,7 @@ fun CardIngredientes(onSwipe: () -> Unit) {
                     style = TextStyle(
                         fontSize = 16.sp,
                     ),
-                    modifier = Modifier.padding(start = 2.dp, top = 1.2.dp)
+                    modifier = Modifier.padding(start = 2.dp, top = 1.6.dp)
                 )
             }
         }
@@ -315,7 +328,7 @@ fun CardIngredientes(onSwipe: () -> Unit) {
 }
 
 @Composable
-fun CardModoDePreparo(onSwipe: () -> Unit) {
+fun CardModoDePreparo() {
     val passos = listOf(
         "Em uma tigela grande, misture todos os ingredientes da marinada.",
         "Adicione a carne e misture bem para que todos os pedaços estejam cobertos pela marinada.",
@@ -334,7 +347,7 @@ fun CardModoDePreparo(onSwipe: () -> Unit) {
         Text(
             text = "Modo de preparo",
             style = TextStyle(
-                fontSize = 10.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(android.graphics.Color.parseColor("#DC7726"))
             )
@@ -342,14 +355,15 @@ fun CardModoDePreparo(onSwipe: () -> Unit) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(250.dp)
                 .padding(top = 10.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            items(passos) { passo ->
+            itemsIndexed(passos) { index, passo ->
                 Text(
-                    text = "•  $passo",
+                    text = "${index + 1}. $passo",
                     style = TextStyle(
-                        fontSize = 7.sp,
+                        fontSize = 16.sp,
                     ),
                     modifier = Modifier.padding(start = 2.dp, top = 1.2.dp)
                 )
@@ -364,22 +378,21 @@ fun CardModoDePreparo(onSwipe: () -> Unit) {
             Row(
                 modifier = Modifier
                     .width(90.dp)
-                    .padding(top = 17.dp),
+                    .padding(top = 14.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Box(
                     modifier = Modifier
-                        .width(32.dp)
-                        .height(1.75.dp)
+                        .width(42.dp)
+                        .height(1.dp)
                         .background(Color(android.graphics.Color.parseColor("#E2E2E2")))
                 )
 
                 Box(
                     modifier = Modifier
-                        .width(32.dp)
-                        .height(1.75.dp)
+                        .width(42.dp)
+                        .height(1.dp)
                         .background(Color(android.graphics.Color.parseColor("#959595")))
-
                 )
             }
         }
