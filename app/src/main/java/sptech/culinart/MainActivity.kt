@@ -45,12 +45,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import sptech.culinart.api.RetrofitInstance
 import sptech.culinart.api.data.usuario.UsuarioLoginDTO
 import sptech.culinart.ui.theme.CulinartTheme
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import sptech.culinart.api.RetrofitInstace
 import sptech.culinart.api.data.usuario.UsuarioTokenDTO
 import sptech.culinart.api.endpoints.UsuarioApiService
 
@@ -195,7 +195,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
 
                 Button(
                     onClick = {
-                        val usuarioApiService = RetrofitInstance.getUsuarioApiService()
+                        val usuarioApiService = RetrofitInstace.getUsuarioApiService()
                         val get = usuarioApiService.getUsuarios()
 
                         // Aqui você pode fazer chamadas aos métodos do usuarioApiService
