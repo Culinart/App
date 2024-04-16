@@ -77,6 +77,9 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
     val senha = remember {
         mutableStateOf("")
     }
+    val cpf = remember {
+        mutableStateOf("")
+    }
 
     Box(
         modifier = modifier
@@ -182,6 +185,26 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                 ),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email
+                )
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            TextField(
+                value = cpf.value,
+                onValueChange = { cpf.value = it },
+                label = {
+                    Text("CPF")
+                },
+                placeholder = { Text("000.000.000-01") },
+                colors = TextFieldDefaults.colors(
+                    unfocusedLabelColor = Color(4, 93, 83),
+                    focusedLabelColor = Color(4, 93, 83),
+                    unfocusedContainerColor = Color(249, 251, 251),
+                    focusedContainerColor = Color(232, 240, 239),
+                    unfocusedTextColor = Color(107, 107, 107, 255),
+                    focusedTextColor = Color.Black
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text
                 )
             )
             Spacer(modifier = Modifier.height(10.dp))
