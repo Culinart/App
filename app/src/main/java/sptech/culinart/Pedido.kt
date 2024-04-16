@@ -90,7 +90,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             )
         )
 
-        RecipeCardPedido()
+        //RecipeCardPedido()
 
         Spacer(modifier = Modifier.height(15.dp))
 
@@ -269,7 +269,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             )
         )
         Spacer(modifier = Modifier.height(15.dp))
-        //RecipeCardPedido()
+        RecipeCardPedido()
     }
 }
 
@@ -334,7 +334,7 @@ fun RecipeCardPedido() {
         }
         Spacer(modifier = Modifier.height(14.dp))
 
-        Box(
+        Column(
             modifier = Modifier
                 .border(
                     width = 1.dp, color = Color.Black, shape = RoundedCornerShape(8.dp)
@@ -347,9 +347,10 @@ fun RecipeCardPedido() {
                 modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
             )
         }
+        Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = "Avaliação da Receita",
-            fontSize = 14.sp,
+            fontSize = 16.sp,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Row(
@@ -360,8 +361,8 @@ fun RecipeCardPedido() {
                     painter = painterResource(id = R.drawable.icon_star_receita),
                     contentDescription = "Icone de estrela de avaliação",
                     modifier = Modifier
-                        .width(16.dp)
-                        .height(16.dp),
+                        .width(28.dp)
+                        .height(28.dp),
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.width(6.dp))
@@ -369,8 +370,8 @@ fun RecipeCardPedido() {
                     painter = painterResource(id = R.drawable.icon_star_receita),
                     contentDescription = "Icone de estrela de avaliação",
                     modifier = Modifier
-                        .width(16.dp)
-                        .height(16.dp),
+                        .width(28.dp)
+                        .height(28.dp),
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.width(6.dp))
@@ -378,8 +379,8 @@ fun RecipeCardPedido() {
                     painter = painterResource(id = R.drawable.icon_star_receita),
                     contentDescription = "Icone de estrela de avaliação",
                     modifier = Modifier
-                        .width(16.dp)
-                        .height(16.dp),
+                        .width(28.dp)
+                        .height(28.dp),
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.width(6.dp))
@@ -387,8 +388,8 @@ fun RecipeCardPedido() {
                     painter = painterResource(id = R.drawable.icon_star_receita),
                     contentDescription = "Icone de estrela de avaliação",
                     modifier = Modifier
-                        .width(16.dp)
-                        .height(16.dp),
+                        .width(28.dp)
+                        .height(28.dp),
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.width(6.dp))
@@ -396,14 +397,12 @@ fun RecipeCardPedido() {
                     painter = painterResource(id = R.drawable.icon_star_receita),
                     contentDescription = "Icone de estrela de avaliação",
                     modifier = Modifier
-                        .width(16.dp)
-                        .height(16.dp),
+                        .width(28.dp)
+                        .height(28.dp),
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-
             }
-            Spacer(modifier = Modifier.width(130.dp))
         }
     }
 }
