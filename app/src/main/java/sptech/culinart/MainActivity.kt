@@ -45,14 +45,16 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import sptech.culinart.api.data.usuario.UsuarioLoginDTO
 import sptech.culinart.ui.theme.CulinartTheme
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.PreferencesManager
+import sptech.culinart.api.data.usuario.UsuarioExibicaoDTO
+import sptech.culinart.api.data.usuario.UsuarioLoginDTO
 import sptech.culinart.api.data.usuario.UsuarioTokenDTO
-import sptech.culinart.api.endpoints.UsuarioApiService
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -195,47 +197,40 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
 
                 Button(
                     onClick = {
-                        val usuarioApiService = RetrofitInstace.getUsuarioApiService()
-                        val get = usuarioApiService.getUsuarios()
 
-                        // Aqui você pode fazer chamadas aos métodos do usuarioApiService
-                        // Por exemplo, para chamar o método de login, você pode fazer algo assim:
-//                        val credenciais = UsuarioLoginDTO(email = email.value, senha = senha.value)
-//                        usuarioApiService.login(credenciais).enqueue(object : Callback<UsuarioTokenDTO> {
-//                            override fun onResponse(call: Call<UsuarioTokenDTO>, response: Response<UsuarioTokenDTO>) {
-//                                if (response.isSuccessful) {
-//                                    val usuarioTokenDTO = response.body()
-//                                    println(response.body())
-//                                    // Faça algo com o token de usuário retornado
-//                                } else {
-//                                    // Trate os erros de login aqui
-//                                    println("Deu ruim")
-//                                }
-//                            }
-//
-//                            override fun onFailure(call: Call<UsuarioTokenDTO>, t: Throwable) {
-//                                // Trate os erros de rede aqui
-//                                println(t)
-//                            }
-//                        })
-                        get.enqueue(object : Callback<List<UsuarioApiService>> {
-                            override fun onResponse(call: Call<List<UsuarioApiService>>, response: Response<List<UsuarioApiService>>) {
+                        // Faça a chamada ao serviço da API
+                        val usuarioApiService = RetrofitInstace.getUsuarioApiService()
+
+                        val credenciais = UsuarioLoginDTO(email = email.value, senha = senha.value)
+                        usuarioApiService.login(credenciais).enqueue(object : Callback<UsuarioTokenDTO> {
+                            override fun onResponse(call: Call<UsuarioTokenDTO>, response: Response<UsuarioTokenDTO>) {
                                 if (response.isSuccessful) {
-                                    if (response.body()!!.isNotEmpty()) {
-                                        println(response.body())
+                                    val usuarioTokenDTO = response.body()
+                                    println(response.body())
+                                    val prefsManager = PreferencesManager.getInstance(contexto)
+                                    if (usuarioTokenDTO != null) {
+                                        usuarioTokenDTO.token.let { prefsManager.saveToken(it) }
+                                        usuarioTokenDTO.nome.let { prefsManager.saveName(it) }
+                                        usuarioTokenDTO.permissao.let { prefsManager.savePermission(it) }
+                                        usuarioTokenDTO.userID.let { prefsManager.saveUserId(it) }
+                                        usuarioTokenDTO.email.let { prefsManager.saveEmail(it) }
+                                        usuarioTokenDTO.isAtivo.let { prefsManager.saveIsAtivo(it) }
                                     }
-                                    println("vazio")
+                                    println("Token salvo: ${prefsManager.getToken()}")
+                                    println("Nome salvo: ${prefsManager.getName()}")
+
                                 } else {
-                                    println("erro")
+                                    // Trate os erros de login aqui
+                                    println("Deu ruim")
                                 }
                             }
 
-                            override fun onFailure(call: Call<List<UsuarioApiService>>, t: Throwable) {
-                                Log.e("api", "Erro na chamada da API nessa porra: ${t.message}")
-
+                            override fun onFailure(call: Call<UsuarioTokenDTO>, t: Throwable) {
+                                // Trate os erros de rede aqui
+                                println(t)
                             }
-
                         })
+
                     },
                     modifier = Modifier.width(250.dp),
                     shape = RoundedCornerShape(10.dp),
