@@ -263,7 +263,7 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                                 val resposta = response.body()
                                 println(resposta)
                             } else {
-                                println("Deu erro, na resposta")
+                                println("Deu erro, na resposta do post")
                             }
                         }
 
