@@ -221,7 +221,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
 
                                 } else {
                                     // Trate os erros de login aqui
-                                    println("Deu ruim")
+                                    println("Deu Erro")
                                 }
                             }
 

@@ -44,6 +44,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.usuario.UsuarioCriacaoDTO
+import sptech.culinart.api.data.usuario.UsuarioExibicaoDTO
 import sptech.culinart.ui.theme.CulinartTheme
 
 class Cadastro : ComponentActivity() {
@@ -247,7 +253,29 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(30.dp))
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    val usuarioApiService = RetrofitInstace.getUsuarioApiService()
+                    val usuarioCriacaoDTO = UsuarioCriacaoDTO(nome.value, email.value, cpf.value, telefone.value, senha.value)
+
+                    usuarioApiService.cadastro(usuarioCriacaoDTO).enqueue(object : Callback<UsuarioExibicaoDTO> {
+                        override fun onResponse(call: Call<UsuarioExibicaoDTO>, response: Response<UsuarioExibicaoDTO>) {
+                            if (response.isSuccessful) {
+                                val resposta = response.body()
+                                println(resposta)
+                            } else {
+                                println("Deu erro, na resposta")
+                            }
+                        }
+
+                        override fun onFailure(call: Call<UsuarioExibicaoDTO>, t: Throwable) {
+                            println("Deu erro $t")
+                        }
+                    })
+
+
+
+
+                           },
                 modifier = Modifier.width(250.dp),
                 shape = RoundedCornerShape(10.dp),
                 elevation = ButtonDefaults.buttonElevation(
