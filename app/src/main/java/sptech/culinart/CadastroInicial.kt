@@ -44,6 +44,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -271,11 +272,7 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                             println("Deu erro $t")
                         }
                     })
-
-
-
-
-                           },
+                          },
                 modifier = Modifier.width(250.dp),
                 shape = RoundedCornerShape(10.dp),
                 elevation = ButtonDefaults.buttonElevation(

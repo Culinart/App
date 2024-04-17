@@ -1,6 +1,5 @@
 package sptech.culinart
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -48,25 +47,91 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.PreferencesManager
+import sptech.culinart.api.data.pedido.DataEntregaDto
+import sptech.culinart.api.data.pedido.DatasPedidosDto
+import sptech.culinart.api.data.pedido.PedidoByDataDto
 import sptech.culinart.ui.theme.CulinartTheme
 
 class Pedido : ComponentActivity() {
+    private var screenDataDto: PedidoByDataDto? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        getDatasPedidos()
         super.onCreate(savedInstanceState)
         setContent {
             CulinartTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    Greeting("Android", screenDataDto)
                 }
             }
+
         }
+    }
+
+    private fun getDatasPedidos() {
+        val prefsManager = PreferencesManager.getInstance(this)
+        val userId = prefsManager.getUserId()
+        val pedidosApiService = RetrofitInstace.getPedidosApiService()
+
+        pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {
+            override fun onResponse(call: Call<List<DatasPedidosDto>>, response: Response<List<DatasPedidosDto>>) {
+                if (response.isSuccessful) {
+                    val resposta = response.body()
+                    if (resposta != null && resposta.isNotEmpty()) {
+                        getProximoPedido(userId, resposta.last())
+                    } else {
+                        println("Lista de datas de pedidos vazia ou nula")
+                    }
+                } else {
+                    println("Erro na resposta do getDatasPedidos: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<DatasPedidosDto>>, t: Throwable) {
+                println("Erro ao obter datas de pedidos: $t")
+            }
+        })
+    }
+
+    private fun getProximoPedido(userId: Int, dataEntrega: DatasPedidosDto) {
+        val pedidosApiService = RetrofitInstace.getPedidosApiService()
+
+        pedidosApiService.getProximoPedido(userId, mapDatasPedidosToDataEntrega(dataEntrega)).enqueue(object : Callback<PedidoByDataDto> {
+            override fun onResponse(call: Call<PedidoByDataDto>, response: Response<PedidoByDataDto>) {
+                if (response.isSuccessful) {
+                    val resposta = response.body()
+                    if (resposta != null) {
+                        screenDataDto = resposta
+                        // Faça algo com os dados do pedido aqui
+                    } else {
+                        println("Resposta do getProximoPedido nula")
+                    }
+                } else {
+                    println("Erro na resposta do getProximoPedido: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<PedidoByDataDto>, t: Throwable) {
+                println("Erro ao obter próximo pedido: $t")
+            }
+        })
+    }
+
+    private fun mapDatasPedidosToDataEntrega(datasPedidosDto: DatasPedidosDto): DataEntregaDto {
+        return DataEntregaDto(datasPedidosDto.datasPedidos)
     }
 }
 
+
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
 
@@ -193,7 +258,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    "Entrega  -  Rua Haddock Lobo, 595", style = TextStyle(
+                    "Entrega  -  ${screenDataDto?.logradouro ?: "Rua Haddock Lobo, 595"}", style = TextStyle(
                         textAlign = TextAlign.Start,
                         fontWeight = FontWeight.Bold,
                     )
@@ -202,7 +267,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    "Carnes, Peixes, Rápido e Fácil\n" + "3 Receitas\n" + "15 Porções",
+                    "${screenDataDto.}\n" + "3 Receitas\n" + "15 Porções",
                     style = TextStyle(
                         textAlign = TextAlign.Start,
                     )
@@ -411,6 +476,6 @@ fun RecipeCardPedido() {
 @Composable
 fun TelaPedidoPreview() {
     CulinartTheme {
-        Greeting("Android")
+        Greeting("Android", null)
     }
 }

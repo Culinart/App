@@ -2,6 +2,7 @@ package sptech.culinart.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import sptech.culinart.api.endpoints.PedidoApiService
 import sptech.culinart.api.endpoints.UsuarioApiService
 
 object RetrofitInstace {
@@ -22,19 +23,8 @@ object RetrofitInstace {
         return retrofit.create(UsuarioApiService::class.java)
     }
 
-    fun getReceitaApiService(): UsuarioApiService {
-        return retrofit.create(UsuarioApiService::class.java)
+    fun getPedidosApiService(): PedidoApiService {
+        return retrofit.create(PedidoApiService::class.java)
     }
-
-//    fun getUsuarioApiService(): UsuarioApiService {
-//        val cliente =
-//            Retrofit.Builder()
-//                .baseUrl(BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build()
-//                .create(UsuarioApiService::class.java)
-//
-//        return cliente
-//    }
 
 }
