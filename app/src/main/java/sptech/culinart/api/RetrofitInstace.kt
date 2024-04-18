@@ -2,11 +2,12 @@ package sptech.culinart.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import sptech.culinart.api.endpoints.AssinaturaApiService
 import sptech.culinart.api.endpoints.UsuarioApiService
 
 object RetrofitInstace {
     //local
-    val BASE_URL = "http://192.168.15.42:8080/"
+    val BASE_URL = "http://192.168.15.153:8080/"
     //internet
     //private const val BASE_URL = "https://sua-api.com/"
 
@@ -24,6 +25,10 @@ object RetrofitInstace {
 
     fun getReceitaApiService(): UsuarioApiService {
         return retrofit.create(UsuarioApiService::class.java)
+    }
+
+    fun getAssinaturaApiService(): AssinaturaApiService {
+        return retrofit.create(AssinaturaApiService::class.java)
     }
 
 //    fun getUsuarioApiService(): UsuarioApiService {
