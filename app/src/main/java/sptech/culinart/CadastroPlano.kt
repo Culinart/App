@@ -37,6 +37,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,6 +52,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.categoria.Categoria
 import sptech.culinart.ui.theme.CulinartTheme
 
 class CadastroPlano : ComponentActivity() {
@@ -76,6 +83,8 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
 
+
+    val categorias = remember { mutableStateListOf<Categoria>() }
 
     val selectedDay = remember { mutableStateOf("") }
 
@@ -108,6 +117,27 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
     val valorPlano = remember { mutableStateOf(0.0) }
 
     val selectedMaiorPrecoCategoria = remember { mutableStateOf(0.0) }
+
+    val erroApi = remember { mutableStateOf("") }
+
+
+    LaunchedEffect(Unit) {
+        RetrofitInstace.getApiCategoriaService().getCategorias().enqueue(object :
+            Callback<List<Categoria>> {
+            override fun onResponse(call: Call<List<Categoria>>, response: Response<List<Categoria>>) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        categorias.clear()
+                        categorias.addAll(it)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<Categoria>>, t: Throwable) {
+                erroApi.value = t.message!!
+            }
+        })
+    }
 
 
 
@@ -759,7 +789,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                     selectedHorario.value.isNotBlank()
                     ) {
 
-                    valorPlano.value = (numeroPessoas.value * numeroRefeicoesDia.value * numeroDiasPorSemana.value).toDouble()
+                    selectedMaiorPrecoCategoria.value = categorias.maxOfOrNull { categoria -> categoria.preco } ?: 0.0
+
+                    valorPlano.value = (numeroPessoas.value * numeroRefeicoesDia.value * numeroDiasPorSemana.value * selectedMaiorPrecoCategoria.value).toDouble()
 
                     val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
 
