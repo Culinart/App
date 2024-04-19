@@ -794,10 +794,16 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                     valorPlano.value = (numeroPessoas.value * numeroRefeicoesDia.value * numeroDiasPorSemana.value * selectedMaiorPrecoCategoria.value).toDouble()
 
                     val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
+                    cadastroCheckout.putExtra("valorPlano", valorPlano.value)
 
                     contexto.startActivity(cadastroCheckout)
 
                 }
+                //else {
+                //    Text("Porfavor preencha e selecione todos os campos", style = TextStyle(
+                //        Color.Red
+                //   ))
+                //}
 
             },
             modifier = Modifier.width(250.dp),
