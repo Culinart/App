@@ -1,9 +1,11 @@
 package sptech.culinart
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -51,23 +53,26 @@ import androidx.compose.ui.unit.sp
 import sptech.culinart.ui.theme.CulinartTheme
 
 class CadastroPlano : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val extras = intent.extras
         setContent {
             CulinartTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TelaCadastroPlano("Android")
+                    TelaCadastroPlano(extras)
                 }
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
-fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
+fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
 
@@ -99,6 +104,11 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
     )
     val selectedHorario = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
+
+    val valorPlano = remember { mutableStateOf(0.0) }
+
+    val selectedMaiorPrecoCategoria = remember { mutableStateOf(0.0) }
+
 
 
     Column(
@@ -739,9 +749,24 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
 
         Button(
             onClick =
-            {val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
+            {
+                if(
+                    isCarnesClicked.value || isVegetarianoClicked.value ||
+                    isPescetarianoClicked.value || isVeganoClicked.value ||
+                    isRapidoFacilClicked.value || isFitSaudavelClicked.value &&
+                    selectedDay.value.isNotBlank() && numeroPessoas.value > 0 &&
+                    numeroRefeicoesDia.value > 0 && numeroDiasPorSemana.value > 0 &&
+                    selectedHorario.value.isNotBlank()
+                    ) {
 
-                contexto.startActivity(cadastroCheckout)
+                    valorPlano.value = (numeroPessoas.value * numeroRefeicoesDia.value * numeroDiasPorSemana.value).toDouble()
+
+                    val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
+
+                    contexto.startActivity(cadastroCheckout)
+
+                }
+
             },
             modifier = Modifier.width(250.dp),
             shape = RoundedCornerShape(10.dp),
@@ -758,10 +783,11 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview(showBackground = true)
 @Composable
 fun TelaCadastroPlanoPreview() {
     CulinartTheme {
-        TelaCadastroPlano("Android")
+        TelaCadastroPlano(null)
     }
 }

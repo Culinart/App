@@ -215,27 +215,6 @@ fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
                     }
                 }
 
-                /*TextField(
-                    value = estado.value,
-                    onValueChange = { estado.value = it },
-                    label = {
-                        Text("Estado")
-                    },
-                    placeholder = { Text("São Paulo") },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedLabelColor = Color(4, 93, 83),
-                        focusedLabelColor = Color(4, 93, 83),
-                        unfocusedContainerColor = Color(249, 251, 251),
-                        focusedContainerColor = Color(232, 240, 239),
-                        unfocusedTextColor = Color(107, 107, 107, 255),
-                        focusedTextColor = Color.Black
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text
-                    ),
-                    modifier = Modifier.weight(1f)
-                )*/
-
                 Spacer(modifier = Modifier.width(30.dp))
             }
 
