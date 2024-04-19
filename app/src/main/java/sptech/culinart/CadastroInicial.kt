@@ -61,7 +61,7 @@ class Cadastro : ComponentActivity() {
 }
 
 @Composable
-fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
+fun TelaCadastro(name: Bundle?, modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
 

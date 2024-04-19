@@ -1,14 +1,14 @@
 package sptech.culinart
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,18 +16,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -49,28 +45,40 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.model.Endereco
 import sptech.culinart.ui.theme.CulinartTheme
 
 class CadastroEndereco : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val extras = intent.extras
         setContent {
             CulinartTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    TelaCadastro("Android")
+                    TelaCadastro(extras)
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
-fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
+fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
+
+    val idUsuario = extras?.getInt("idUsuario") ?: -1
 
     val contexto = LocalContext.current
 
     val cep = remember {
+        mutableStateOf("")
+    }
+
+    val feedback = remember {
         mutableStateOf("")
     }
 
@@ -367,30 +375,46 @@ fun TelaCadastroEndereco(name: String, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(40.dp))
 
 
-            Button(
-                onClick =
-                {val cadastroPlano = Intent(contexto, CadastroPlano::class.java)
-
-                    contexto.startActivity(cadastroPlano)
-                },
-                modifier = Modifier.width(250.dp),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(255, 159, 28),
-                    contentColor = Color.White
-                )
-            ) {
-                Text("Confirmar")
-            }
+        Button(
+            onClick =
+            {
+                val api = RetrofitInstace.getApiEnderecoService()
+                val endereco = Endereco("${cep.value}", numero.value.toInt(), "${complemento.value}")
+                val call = api.createEnderecoUsuario(idUsuario, endereco)
+                call.enqueue(object : Callback<Endereco> {
+                    override fun onResponse(call: Call<Endereco>, response: Response<Endereco>) {
+                        if (response.isSuccessful) {
+                            feedback.value = "Endereço cadastrado com sucesso"
+                            val cadastroPlano = Intent(contexto, CadastroPlano::class.java)
+                            contexto.startActivity(cadastroPlano)
+                        } else {
+                            feedback.value = "Erro ao cadastrar endereço"
+                        }
+                    }
+                    override fun onFailure(call: Call<Endereco>, t: Throwable) {
+                        feedback.value = "Falha na conexão: ${t.message}"
+                    }
+                })
+            },
+            modifier = Modifier.width(250.dp),
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(255, 159, 28),
+                contentColor = Color.White
+            )
+        ) {
+            Text("Confirmar")
+        }
 
     }
 
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview(showBackground = true)
 @Composable
 fun TelaCadastroEnderecoPreview() {
     CulinartTheme {
-        TelaCadastroEndereco("Android")
+        TelaCadastroEndereco(null)
     }
 }
