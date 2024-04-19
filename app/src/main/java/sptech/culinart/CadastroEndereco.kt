@@ -163,7 +163,7 @@ fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
                         focusedTextColor = Color.Black
                     ),
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text
+                        keyboardType = KeyboardType.Number
                     ),
                     modifier = Modifier.weight(1f)
                 )
