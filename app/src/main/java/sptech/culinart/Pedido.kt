@@ -9,7 +9,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,7 +29,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,12 +53,15 @@ import sptech.culinart.api.data.PreferencesManager
 import sptech.culinart.api.data.pedido.DataEntregaDto
 import sptech.culinart.api.data.pedido.DatasPedidosDto
 import sptech.culinart.api.data.pedido.PedidoByDataDto
+import sptech.culinart.api.utils.converterDataParaFormatoDescritivo
 import sptech.culinart.ui.theme.CulinartTheme
+import java.time.LocalDate
 
 class Pedido : ComponentActivity() {
     private var screenDataDto: PedidoByDataDto? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         getDatasPedidos()
         super.onCreate(savedInstanceState)
         setContent {
@@ -78,32 +79,36 @@ class Pedido : ComponentActivity() {
     private fun getDatasPedidos() {
         val prefsManager = PreferencesManager.getInstance(this)
         val userId = prefsManager.getUserId()
-        val pedidosApiService = RetrofitInstace.getPedidosApiService()
+        val token = prefsManager.getToken()
+        val pedidosApiService = RetrofitInstace.getPedidosApiService(token)
 
-        pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {
-            override fun onResponse(call: Call<List<DatasPedidosDto>>, response: Response<List<DatasPedidosDto>>) {
-                if (response.isSuccessful) {
-                    val resposta = response.body()
-                    if (resposta != null && resposta.isNotEmpty()) {
-                        getProximoPedido(userId, resposta.last())
+        if (token != null) {
+            pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {
+                override fun onResponse(call: Call<List<DatasPedidosDto>>, response: Response<List<DatasPedidosDto>>) {
+                    if (response.isSuccessful) {
+                        val resposta = response.body()
+                        if (!resposta.isNullOrEmpty()) {
+                            println(resposta)
+                            getProximoPedido(token, userId, resposta.last())
+                        } else {
+                            println("Lista de datas de pedidos vazia ou nula")
+                        }
                     } else {
-                        println("Lista de datas de pedidos vazia ou nula")
+                        println("Erro na resposta do getDatasPedidos: ${response}")
                     }
-                } else {
-                    println("Erro na resposta do getDatasPedidos: ${response.message()}")
                 }
-            }
 
-            override fun onFailure(call: Call<List<DatasPedidosDto>>, t: Throwable) {
-                println("Erro ao obter datas de pedidos: $t")
-            }
-        })
+                override fun onFailure(call: Call<List<DatasPedidosDto>>, t: Throwable) {
+                    println("Erro ao obter datas de pedidos: $t")
+                }
+            })
+        }
     }
 
-    private fun getProximoPedido(userId: Int, dataEntrega: DatasPedidosDto) {
-        val pedidosApiService = RetrofitInstace.getPedidosApiService()
-
-        pedidosApiService.getProximoPedido(userId, mapDatasPedidosToDataEntrega(dataEntrega)).enqueue(object : Callback<PedidoByDataDto> {
+    private fun getProximoPedido(token: String, userId: Int, dataEntrega: DatasPedidosDto) {
+        val pedidosApiService = RetrofitInstace.getPedidosApiService(token)
+        val dataEntrega = mapDatasPedidosToDataEntrega(dataEntrega)
+        pedidosApiService.getProximoPedido(userId, dataEntrega).enqueue(object : Callback<PedidoByDataDto> {
             override fun onResponse(call: Call<PedidoByDataDto>, response: Response<PedidoByDataDto>) {
                 if (response.isSuccessful) {
                     val resposta = response.body()
@@ -114,7 +119,7 @@ class Pedido : ComponentActivity() {
                         println("Resposta do getProximoPedido nula")
                     }
                 } else {
-                    println("Erro na resposta do getProximoPedido: ${response.message()}")
+                    println("Erro na resposta do getProximoPedido: ${response}")
                 }
             }
 
@@ -125,7 +130,7 @@ class Pedido : ComponentActivity() {
     }
 
     private fun mapDatasPedidosToDataEntrega(datasPedidosDto: DatasPedidosDto): DataEntregaDto {
-        return DataEntregaDto(datasPedidosDto.datasPedidos)
+        return DataEntregaDto(LocalDate.parse(datasPedidosDto.datasPedidos))
     }
 }
 
@@ -134,7 +139,25 @@ class Pedido : ComponentActivity() {
 fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
+    val qtdPorcoes = null
+    val categorias: String
+    val categoriasUnicas = mutableSetOf<String>()
 
+
+    screenDataDto?.listaReceitas?.forEach{ it ->
+        qtdPorcoes?.plusAssign(it.qtd_porcoes)
+    }
+
+    // Itera sobre cada receita para extrair suas categorias
+    screenDataDto?.listaReceitas?.forEach { receita ->
+        receita.categorias.forEach { categoria ->
+            categoriasUnicas.add(categoria.nome)
+        }
+    }
+    // Cria uma string com todas as categorias únicas
+    categorias = categoriasUnicas.joinToString(", ")
+
+    val dataFormatada = screenDataDto?.let { converterDataParaFormatoDescritivo(it.dataEntrega) }
 
     Column(
         modifier = modifier
@@ -203,7 +226,7 @@ fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier =
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "Sex", modifier = Modifier.fillMaxWidth(), style = TextStyle(
+                        "${dataFormatada?.diaDaSemanaAbreviado ?: "Sex"}", modifier = Modifier.fillMaxWidth(), style = TextStyle(
                             Color(4, 93, 83),
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Center,
@@ -214,7 +237,7 @@ fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier =
                     Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
-                        "4", modifier = Modifier.fillMaxWidth(), style = TextStyle(
+                        "${dataFormatada?.numeroDoDia ?: "4"}", modifier = Modifier.fillMaxWidth(), style = TextStyle(
                             Color(4, 93, 83),
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Center,
@@ -225,7 +248,7 @@ fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier =
                     Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
-                        "AGO", modifier = Modifier.fillMaxWidth(), style = TextStyle(
+                        "${dataFormatada?.nomeDoMesAbreviado ?: "AGO"}", modifier = Modifier.fillMaxWidth(), style = TextStyle(
                             Color(4, 93, 83),
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Center,
@@ -266,12 +289,16 @@ fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier =
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                Text(
-                    "${screenDataDto.}\n" + "3 Receitas\n" + "15 Porções",
-                    style = TextStyle(
-                        textAlign = TextAlign.Start,
+
+                    Text(
+                        "${categorias} CATEGORIAS\n"
+                                + "${screenDataDto?.listaReceitas?.size} Receitas \n"
+                                + "${qtdPorcoes} Porções",
+                        style = TextStyle(
+                            textAlign = TextAlign.Start,
+                        )
                     )
-                )
+
 
             }
 

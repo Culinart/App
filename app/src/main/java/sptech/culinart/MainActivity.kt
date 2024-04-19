@@ -218,10 +218,12 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                                     }
                                     println("Token salvo: ${prefsManager.getToken()}")
                                     println("Nome salvo: ${prefsManager.getName()}")
+                                    val telaPedido = Intent(contexto, Pedido::class.java)
+                                    contexto.startActivity(telaPedido)
 
                                 } else {
                                     // Trate os erros de login aqui
-                                    println("Deu Erro")
+                                    println("Deu Erro $response")
                                 }
                             }
 
@@ -289,9 +291,9 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 Button(onClick =
                 {val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
                     contexto.startActivity(cadastroEndereco)
-                    /*val cadastro = Intent(contexto, Cadastro::class.java)
+                    val cadastro = Intent(contexto, Cadastro::class.java)
 
-                    contexto.startActivity(cadastro)*/
+                    contexto.startActivity(cadastro)
                 },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent

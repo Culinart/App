@@ -256,15 +256,18 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
             Button(
                 onClick = {
                     val usuarioApiService = RetrofitInstace.getUsuarioApiService()
-                    val usuarioCriacaoDTO = UsuarioCriacaoDTO(nome.value, email.value, cpf.value, telefone.value, senha.value)
+                    val usuarioCriacaoDTO = UsuarioCriacaoDTO(nome.value, email.value, senha.value, cpf.value, telefone.value, )
+
 
                     usuarioApiService.cadastro(usuarioCriacaoDTO).enqueue(object : Callback<UsuarioExibicaoDTO> {
                         override fun onResponse(call: Call<UsuarioExibicaoDTO>, response: Response<UsuarioExibicaoDTO>) {
                             if (response.isSuccessful) {
                                 val resposta = response.body()
                                 println(resposta)
+                                val telaLogin = Intent(contexto, MainActivity::class.java)
+                                contexto.startActivity(telaLogin)
                             } else {
-                                println("Deu erro, na resposta do post")
+                                println("Deu erro, na resposta do post ${response}")
                             }
                         }
 
