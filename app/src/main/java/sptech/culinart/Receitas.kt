@@ -33,6 +33,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.receita.ReceitasDTO
 import sptech.culinart.ui.theme.CulinartTheme
 
 class Receitas : ComponentActivity() {
@@ -135,7 +140,7 @@ fun Preferencia(cor: String, preferencia: String) {
     val corPreferencia = Color(android.graphics.Color.parseColor(cor))
     Box(
         modifier = Modifier
-            .background(color = corPreferencia, shape = RoundedCornerShape(8.dp))
+            .background(color = corPreferencia, shape = RoundedCornerShape(5.dp))
     ) {
         Text(
             text = "$preferencia",
@@ -148,6 +153,7 @@ fun Preferencia(cor: String, preferencia: String) {
 
 @Composable
 fun RecipeCard() {
+
     val recipeName = "Nome da Receita"
     val recipeTime = "30 min"
     val recipeCategory = "Categoria"
@@ -155,12 +161,32 @@ fun RecipeCard() {
     val corHexadecimal = Color(0xFFFFF)
     val corPref = Color(0xFFFFF)
 
+    val receitaApiService = RetrofitInstace.getReceitasApiService();
+
+    receitaApiService.getReceitas().enqueue(object : Callback<List<ReceitasDTO>> {
+        override fun onResponse(
+            call: Call<List<ReceitasDTO>>,
+            response: Response<List<ReceitasDTO>>
+        ) {
+            if (response.isSuccessful) {
+                val receitasDTO = response.body()
+                println(response.body())
+            }else{
+                println("Deu ruim aqui!")
+            }
+        }
+
+        override fun onFailure(call: Call<List<ReceitasDTO>>, t: Throwable) {
+            println("Deu ruim")
+        }
+    })
+
     Column(
         modifier = Modifier
             .padding(36.dp)
-            .shadow(elevation = 4.dp, shape = RoundedCornerShape(16.dp))
-            .background(corHexadecimal, RoundedCornerShape(8.dp))
-            .padding(16.dp)
+            .shadow(elevation = 4.dp, shape = RoundedCornerShape(6.dp))
+            .background(corHexadecimal, RoundedCornerShape(96.dp))
+            .padding(18.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.img),
@@ -168,6 +194,7 @@ fun RecipeCard() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(175.dp)
+                .padding(4.dp)
                 .clip(shape = RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop
         )
@@ -207,7 +234,7 @@ fun RecipeCard() {
                 fontWeight = FontWeight.Light
             )
         }
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         //Preferencia(cor = "fff", preferencia = "Neutro") /* quando essa linha entra da erro*/
 
@@ -223,7 +250,7 @@ fun RecipeCard() {
             Text(
                 text = "Preferência",
                 fontSize = 16.sp,
-                modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 16.dp)
             )
         }
 
@@ -236,8 +263,9 @@ fun RecipeCard() {
                     painter = painterResource(id = R.drawable.icon_star_receita),
                     contentDescription = "Icone de estrela de avaliação",
                     modifier = Modifier
-                        .width(16.dp)
-                        .height(16.dp),
+                        .width(30.dp)
+                        .padding(10.dp)
+                        .height(30.dp),
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.width(6.dp))
@@ -279,13 +307,13 @@ fun RecipeCard() {
                 Spacer(modifier = Modifier.width(8.dp))
 
             }
-            Spacer(modifier = Modifier.width(130.dp))
+            Spacer(modifier = Modifier.width(110.dp))
             Image(
                 painter = painterResource(id = R.drawable.icon_add_receita),
                 contentDescription = "Icone de adicionar receita",
                 modifier = Modifier
-                    .width(40.dp)
-                    .height(40.dp),
+                    .width(30.dp)
+                    .height(30.dp),
                 contentScale = ContentScale.Crop
             )
         }
