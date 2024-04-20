@@ -46,14 +46,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import sptech.culinart.ui.theme.CulinartTheme
 
-class Cadastro : ComponentActivity() {
+class CadastroInicial : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             CulinartTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    TelaCadastro("Android")
+                    TelaCadastro()
                 }
             }
         }
@@ -61,7 +61,7 @@ class Cadastro : ComponentActivity() {
 }
 
 @Composable
-fun TelaCadastro(name: Bundle?, modifier: Modifier = Modifier) {
+fun TelaCadastro(modifier: Bundle? = Modifier) {
 
     val contexto = LocalContext.current
 
@@ -334,6 +334,6 @@ fun TelaCadastro(name: Bundle?, modifier: Modifier = Modifier) {
 @Composable
 fun TelaCadastroPreview() {
     CulinartTheme {
-        TelaCadastro("Android")
+        TelaCadastro()
     }
 }
