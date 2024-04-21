@@ -161,13 +161,27 @@ fun TelaPerfilSenhaEAutenticacao(name: String, modifier: Modifier = Modifier) {
                             )
 
                         }
-
-                        Spacer(modifier = Modifier.height(30.dp))
-
-
                     }
-                    Button(onClick = { /*TODO*/ }) {
 
+                    Spacer(modifier = Modifier.height(50.dp))
+
+                    Button(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(255, 159, 28),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = "Editar",
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp
+                            )
+                        )
                     }
                 }
             }
