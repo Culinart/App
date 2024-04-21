@@ -308,8 +308,6 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
 
                 Button(onClick =
                 {
-                    val cadastroInicial = Intent(contexto, CadastroInicial::class.java)
-                    contexto.startActivity(cadastroInicial)
                 },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent

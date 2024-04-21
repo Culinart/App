@@ -49,17 +49,19 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.PreferencesManager
 import sptech.culinart.model.Endereco
 import sptech.culinart.ui.theme.CulinartTheme
 
 class CadastroEndereco : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val extras = intent.extras
         setContent {
             CulinartTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    TelaCadastro(extras)
+                    TelaCadastroEndereco(extras)
                 }
             }
         }
@@ -70,9 +72,12 @@ class CadastroEndereco : ComponentActivity() {
 @Composable
 fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
 
-    val idUsuario = extras?.getInt("idUsuario") ?: -1
-
     val contexto = LocalContext.current
+
+    val prefsManager = PreferencesManager.getInstance(contexto);
+    val userId = prefsManager.getUserId()
+
+
 
     val cep = remember {
         mutableStateOf("")
@@ -290,7 +295,7 @@ fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
                         focusedTextColor = Color.Black
                     ),
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
+                        keyboardType = KeyboardType.Text
                     ),
                     modifier = Modifier.weight(1f)
                 )
@@ -357,12 +362,13 @@ fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
         Button(
             onClick =
             {
+                println(userId)
                 val api = RetrofitInstace.getApiEnderecoService()
-                val endereco = Endereco("${cep.value}", numero.value.toInt(), "${complemento.value}")
-                val call = api.createEnderecoUsuario(idUsuario, endereco)
+                val call = api.createEnderecoUsuario(userId, cep.value, numero.value.toInt(), complemento.value)
                 call.enqueue(object : Callback<Endereco> {
                     override fun onResponse(call: Call<Endereco>, response: Response<Endereco>) {
                         if (response.isSuccessful) {
+                            println("Entrou no sucess")
                             feedback.value = "Endereço cadastrado com sucesso"
                             val cadastroPlano = Intent(contexto, CadastroPlano::class.java)
 
@@ -373,10 +379,12 @@ fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
                             contexto.startActivity(cadastroPlano)
 
                         } else {
+                            println("Entrou no else")
                             feedback.value = "Erro ao cadastrar endereço"
                         }
                     }
                     override fun onFailure(call: Call<Endereco>, t: Throwable) {
+                        println("Entrou no failure")
                         feedback.value = "Falha na conexão: ${t.message}"
                     }
                 })

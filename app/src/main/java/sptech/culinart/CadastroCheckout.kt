@@ -48,13 +48,17 @@ import sptech.culinart.ui.theme.CulinartTheme
 class CadastroCheckout : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val extras = intent.extras
+        val valorPlano = intent.getDoubleExtra("valorPlano", 0.0)
+        println("Valor do plano: "+valorPlano)
+
         setContent {
             CulinartTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TelaCadastroCheckout("Android")
+                    TelaCadastroCheckout(extras)
                 }
             }
         }
@@ -62,7 +66,7 @@ class CadastroCheckout : ComponentActivity() {
 }
 
 @Composable
-fun TelaCadastroCheckout(name: String, modifier: Modifier = Modifier) {
+fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
 
@@ -176,6 +180,6 @@ fun TelaCadastroCheckout(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun TelaCadastroCheckoutPreview() {
     CulinartTheme {
-        TelaCadastroCheckout("Android")
+        TelaCadastroCheckout(null)
     }
 }

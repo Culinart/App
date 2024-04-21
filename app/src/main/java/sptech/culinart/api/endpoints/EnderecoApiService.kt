@@ -10,10 +10,15 @@ import sptech.culinart.model.Endereco
 
 interface EnderecoApiService {
 
-    @POST("/enderecos/{idUsuario}")
-    fun createEnderecoUsuario(@Path("idUsuario") idUsuario: Int, @Body endereco: Endereco): Call<Endereco>
+    @POST("api/enderecos/{idUsuario}")
+    fun createEnderecoUsuario(
+        @Path("idUsuario") idUsuario: Int,
+        @Query("cep") cep: String,
+        @Query("numero") numero: Int,
+        @Query("complemento") complemento: String
+    ): Call<Endereco>
 
-    @GET("/enderecos/buscarCEP")
+    @GET("api/enderecos/buscarCEP")
     fun getCep(@Query("cep") cep: String): Call<List<Endereco>>
 
 }
