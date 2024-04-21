@@ -794,6 +794,10 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                     valorPlano.value = (numeroPessoas.value * numeroRefeicoesDia.value * numeroDiasPorSemana.value * selectedMaiorPrecoCategoria.value).toDouble()
 
                     val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
+
+                    extras?.let {
+                        cadastroCheckout.putExtras(it)
+                    }
                     cadastroCheckout.putExtra("valorPlano", valorPlano.value)
 
                     contexto.startActivity(cadastroCheckout)

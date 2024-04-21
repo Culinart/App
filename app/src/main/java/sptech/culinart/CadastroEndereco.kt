@@ -365,7 +365,13 @@ fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
                         if (response.isSuccessful) {
                             feedback.value = "Endereço cadastrado com sucesso"
                             val cadastroPlano = Intent(contexto, CadastroPlano::class.java)
+
+                            extras?.let {
+                                cadastroPlano.putExtras(it)
+                            }
+
                             contexto.startActivity(cadastroPlano)
+
                         } else {
                             feedback.value = "Erro ao cadastrar endereço"
                         }
