@@ -246,7 +246,7 @@ fun TelaPerfilEnderecos(name: String, modifier: Modifier = Modifier) {
                 }
                 Spacer(modifier = Modifier.height(5.dp))
             }
-            Spacer(modifier = Modifier.height(225.dp))
+            Spacer(modifier = Modifier.height(205.dp))
         }
     }
 }
