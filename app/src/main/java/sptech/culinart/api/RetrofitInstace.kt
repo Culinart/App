@@ -4,6 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import sptech.culinart.api.endpoints.CategoriaApiService
 import sptech.culinart.api.endpoints.EnderecoApiService
+import sptech.culinart.api.endpoints.PlanoApiService
 import sptech.culinart.api.endpoints.UsuarioApiService
 
 object RetrofitInstace {
@@ -34,6 +35,10 @@ object RetrofitInstace {
 
     fun getApiCategoriaService(): CategoriaApiService {
         return retrofit.create(CategoriaApiService::class.java)
+    }
+
+    fun getApiPlanoService(): PlanoApiService {
+        return retrofit.create(PlanoApiService::class.java)
     }
 
 //    fun getUsuarioApiService(): UsuarioApiService {

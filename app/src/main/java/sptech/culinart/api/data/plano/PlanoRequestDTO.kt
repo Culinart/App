@@ -1,7 +1,9 @@
 package sptech.culinart.api.data.plano
 
-data class Plano(
-     val id: Int,
+import sptech.culinart.api.data.categoria.Categoria
+
+data class PlanoRequestDTO(
+     val categoria: List<Categoria>,
      val qtdPessoas: Int,
      val qtdRefeicoesDia: Int,
      val qtdDiasSemana: Int,
