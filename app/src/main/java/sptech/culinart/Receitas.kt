@@ -59,6 +59,7 @@ import sptech.culinart.ui.theme.CulinartTheme
 import java.time.LocalDate
 
 class Receitas : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -74,7 +75,10 @@ class Receitas : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TelaReceitas() {
-    Column {
+    Column(
+        modifier = Modifier
+            .background(Color.White)
+    ) {
         Row(
             modifier = Modifier
                 .background(Color(0xFF00AE9E))
@@ -123,6 +127,10 @@ fun TelaReceitas() {
                     pesquisaText.value = it
                     if (it.isNotBlank()) {
                         ObterReceitasDaApiPorTermo(pesquisaText.value) { receitasDaApi ->
+                            receitas.value = receitasDaApi
+                        }
+                    }else{
+                        ObterReceitasDaApi { receitasDaApi ->
                             receitas.value = receitasDaApi
                         }
                     }
@@ -233,7 +241,7 @@ fun ObterReceitasDaApiPorTermo(termo: String, onReceitasCarregadas: (List<Receit
     })
 }
 
-@Composable
+
 fun ObterReceitasDaApi(onReceitasCarregadas: (List<ReceitaDTO>) -> Unit) {
     val receitaApiService = RetrofitInstace.getReceitasApiService()
 
@@ -302,7 +310,8 @@ fun RecipeCard(receitas: List<ReceitaDTO>) {
                     Text(
                         text = receita.nome,
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
