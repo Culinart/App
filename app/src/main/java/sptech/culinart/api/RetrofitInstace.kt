@@ -2,6 +2,7 @@ package sptech.culinart.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import sptech.culinart.api.endpoints.PedidoApiService
 import sptech.culinart.api.endpoints.ReceitaApiService
 import sptech.culinart.api.endpoints.UsuarioApiService
 
@@ -25,6 +26,10 @@ object RetrofitInstace {
 
     fun getReceitasApiService(): ReceitaApiService {
         return retrofit.create(ReceitaApiService::class.java)
+    }
+
+    fun getPedidoApiService(): PedidoApiService {
+        return retrofit.create(PedidoApiService::class.java)
     }
 
 //    fun getUsuarioApiService(): UsuarioApiService {

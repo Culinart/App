@@ -5,7 +5,7 @@ import sptech.culinart.api.data.ingrediente.IngredienteDTO
 import sptech.culinart.api.data.modoPreparo.ModoPreparoDTO
 import sptech.culinart.api.data.preferencia.ReceitaPreferenciaDTO
 
-data class ReceitasDTO(
+data class ReceitaDTO(
     val id: Int,
     val nome: String,
     val horas: Int,
