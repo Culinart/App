@@ -90,13 +90,15 @@ class Pedido : ComponentActivity() {
                         if (!resposta.isNullOrEmpty()) {
                             println(resposta)
                             val dataString = resposta.lastOrNull()?.datasPedidos
-                            val data = LocalDate.parse(dataString)
-                            getProximoPedido(userId, data)
+                            //val data = LocalDate.parse(dataString)
+                            if (dataString != null) {
+                                getProximoPedido(userId, dataString)
+                            }
                         } else {
                             println("Lista de datas de pedidos vazia ou nula")
                         }
                     } else {
-                        println("Erro na resposta do getDatasPedidos: ${response}")
+                        println("Erro na resposta do getDatasPedidos: $response")
                     }
                 }
 
@@ -107,7 +109,7 @@ class Pedido : ComponentActivity() {
 
     }
 
-    private fun getProximoPedido( userId: Int, dataEntrega: LocalDate) {
+    private fun getProximoPedido( userId: Int, dataEntrega: String) {
 //        val pedido = PedidoDto(null, null, dataEntrega);
         pedidosApiService.getProximoPedido(userId, dataEntrega).enqueue(object : Callback<PedidoByDataDto> {
             override fun onResponse(call: Call<PedidoByDataDto>, response: Response<PedidoByDataDto>) {
@@ -120,7 +122,7 @@ class Pedido : ComponentActivity() {
                         println("Resposta do getProximoPedido nula")
                     }
                 } else {
-                    println("Erro na resposta do getProximoPedido: ${response}")
+                    println("Erro na resposta do getProximoPedido: $response")
                 }
             }
 
@@ -158,7 +160,7 @@ fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier =
     // Cria uma string com todas as categorias únicas
     categorias = categoriasUnicas.joinToString(", ")
 
-    val dataFormatada = screenDataDto?.let { converterDataParaFormatoDescritivo(it.dataEntrega) }
+    val dataFormatada = screenDataDto?.let { converterDataParaFormatoDescritivo(LocalDate.parse(it.dataEntrega)) }
 
     Column(
         modifier = modifier
@@ -227,7 +229,7 @@ fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier =
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "${dataFormatada?.diaDaSemanaAbreviado ?: "Sex"}", modifier = Modifier.fillMaxWidth(), style = TextStyle(
+                        dataFormatada?.diaDaSemanaAbreviado ?: "Sex", modifier = Modifier.fillMaxWidth(), style = TextStyle(
                             Color(4, 93, 83),
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Center,
