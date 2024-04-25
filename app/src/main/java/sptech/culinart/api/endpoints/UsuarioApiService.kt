@@ -13,7 +13,7 @@ interface UsuarioApiService {
 
     // Define o método GET para buscar usuários
     @GET("api/usuarios")
-    fun getUsuarios(@Header("Authorization") token: String): Call<List<UsuarioExibicaoDTO>>
+    fun getUsuarios(): Call<List<UsuarioExibicaoDTO>>
 
     // Define o método POST para o login de usuário
     @POST("api/usuarios/login")

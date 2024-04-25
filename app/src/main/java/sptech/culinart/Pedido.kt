@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.i18n.DateTimeFormatter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -53,13 +54,14 @@ import sptech.culinart.api.data.PreferencesManager
 import sptech.culinart.api.data.pedido.DataEntregaDto
 import sptech.culinart.api.data.pedido.DatasPedidosDto
 import sptech.culinart.api.data.pedido.PedidoByDataDto
+import sptech.culinart.api.data.pedido.PedidoDto
 import sptech.culinart.api.utils.converterDataParaFormatoDescritivo
 import sptech.culinart.ui.theme.CulinartTheme
 import java.time.LocalDate
 
 class Pedido : ComponentActivity() {
     private var screenDataDto: PedidoByDataDto? = null
-
+    private val pedidosApiService = RetrofitInstace.getPedidosApiService()
     override fun onCreate(savedInstanceState: Bundle?) {
 
         getDatasPedidos()
@@ -80,16 +82,16 @@ class Pedido : ComponentActivity() {
         val prefsManager = PreferencesManager.getInstance(this)
         val userId = prefsManager.getUserId()
         val token = prefsManager.getToken()
-        val pedidosApiService = RetrofitInstace.getPedidosApiService(token)
 
-        if (token != null) {
             pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {
                 override fun onResponse(call: Call<List<DatasPedidosDto>>, response: Response<List<DatasPedidosDto>>) {
                     if (response.isSuccessful) {
                         val resposta = response.body()
                         if (!resposta.isNullOrEmpty()) {
                             println(resposta)
-                            getProximoPedido(token, userId, resposta.last())
+                            val dataString = resposta.lastOrNull()?.datasPedidos
+                            val data = LocalDate.parse(dataString)
+                            getProximoPedido(userId, data)
                         } else {
                             println("Lista de datas de pedidos vazia ou nula")
                         }
@@ -102,12 +104,11 @@ class Pedido : ComponentActivity() {
                     println("Erro ao obter datas de pedidos: $t")
                 }
             })
-        }
+
     }
 
-    private fun getProximoPedido(token: String, userId: Int, dataEntrega: DatasPedidosDto) {
-        val pedidosApiService = RetrofitInstace.getPedidosApiService(token)
-        val dataEntrega = mapDatasPedidosToDataEntrega(dataEntrega)
+    private fun getProximoPedido( userId: Int, dataEntrega: LocalDate) {
+//        val pedido = PedidoDto(null, null, dataEntrega);
         pedidosApiService.getProximoPedido(userId, dataEntrega).enqueue(object : Callback<PedidoByDataDto> {
             override fun onResponse(call: Call<PedidoByDataDto>, response: Response<PedidoByDataDto>) {
                 if (response.isSuccessful) {
@@ -129,9 +130,9 @@ class Pedido : ComponentActivity() {
         })
     }
 
-    private fun mapDatasPedidosToDataEntrega(datasPedidosDto: DatasPedidosDto): DataEntregaDto {
-        return DataEntregaDto(LocalDate.parse(datasPedidosDto.datasPedidos))
-    }
+//    private fun mapDatasPedidosToDataEntrega(datasPedidosDto: DatasPedidosDto): DataEntregaDto {
+//        return DataEntregaDto(LocalDate.parse(datasPedidosDto.datasPedidos))
+//    }
 }
 
 

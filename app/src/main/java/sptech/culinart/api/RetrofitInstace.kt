@@ -18,43 +18,43 @@ object RetrofitInstace {
     }
 
     // Configuração do cliente HTTP do Retrofit com o interceptor
-    private val httpClient = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .build()
+//    private val httpClient = OkHttpClient.Builder()
+//        .addInterceptor(loggingInterceptor)
+//        .build()
 
     // Cria uma instância Retrofit
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
-        .client(httpClient)
+//        .client(httpClient)
         .build()
 
     // Cria um cliente HTTP com o interceptor de token
-    private fun createHttpClient(token: String?): OkHttpClient {
-        return if (!token.isNullOrEmpty()) {
-            httpClient.newBuilder().addInterceptor { chain ->
-                val newRequest = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer $token")
-                    .build()
-                chain.proceed(newRequest)
-            }.build()
-        } else {
-            httpClient
-        }
-    }
+//    private fun createHttpClient(token: String?): OkHttpClient {
+//        return if (!token.isNullOrEmpty()) {
+//            httpClient.newBuilder().addInterceptor { chain ->
+//                val newRequest = chain.request().newBuilder()
+//                    .addHeader("Authorization", "Bearer $token")
+//                    .build()
+//                chain.proceed(newRequest)
+//            }.build()
+//        } else {
+//            httpClient
+//        }
+//    }
 
     // Cria uma instância do serviço Retrofit para end points de usuarios
-    fun getUsuarioApiService(token: String? = null): UsuarioApiService {
-        val client = createHttpClient(token)
-        val retrofitWithClient = retrofit.newBuilder().client(client).build()
-        return retrofitWithClient.create(UsuarioApiService::class.java)
+    fun getUsuarioApiService(/*token: String? = null*/): UsuarioApiService {
+//        val client = createHttpClient(token)
+//        val retrofitWithClient = retrofit.newBuilder().client(client).build()
+        return retrofit.create(UsuarioApiService::class.java)
     }
 
     // Cria uma instância do serviço Retrofit para end points de pedidos
-    fun getPedidosApiService(token: String? = null): PedidoApiService {
-        val client = createHttpClient(token)
-        val retrofitWithClient = retrofit.newBuilder().client(client).build()
-        return retrofitWithClient.create(PedidoApiService::class.java)
+    fun getPedidosApiService(/*token: String? = null*/): PedidoApiService {
+//        val client = createHttpClient(token)
+//        val retrofitWithClient = retrofit.newBuilder().client(client).build()
+        return retrofit.create(PedidoApiService::class.java)
     }
 
 }

@@ -9,12 +9,14 @@ import retrofit2.http.Path
 import sptech.culinart.api.data.pedido.DataEntregaDto
 import sptech.culinart.api.data.pedido.DatasPedidosDto
 import sptech.culinart.api.data.pedido.PedidoByDataDto
+import sptech.culinart.api.data.pedido.PedidoDto
+import java.time.LocalDate
 
 interface PedidoApiService {
 
     @GET("api/pedidos/datas/{idUser}")
     fun getDatasPedidos(/*@Header("Authorization") token: String,*/ @Path("idUser") idUser: Int): Call<List<DatasPedidosDto>>
 
-    @POST("api/pedidos/entrega/{idUser}")
-    fun getProximoPedido(/*@Header("Authorization") token: String,*/ @Path("idUser") idUser: Int, @Body dataEntrega: DataEntregaDto): Call<PedidoByDataDto>
+    @POST("/api/pedidos/entrega/{idUser}")
+    fun getProximoPedido(/*@Header("Authorization") token: String,*/ @Path("idUser") idUser: Int, @Body pedido: LocalDate): Call<PedidoByDataDto>
 }
