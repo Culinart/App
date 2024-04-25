@@ -874,9 +874,6 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                     categorias.forEach { categoria ->
                         println("Categoria: ${categoria.nome}, Preço: ${categoria.valor}")
                     }
-                    
-                    cadastroCheckout.putExtra("valorPlano", 100.0)
-                    cadastroCheckout.putExtra("valorRefeicao", 22.35)
 
                     println("numeroPessoas" + numeroPessoas.value)
                     println("numeroRefeicoesDia" + numeroRefeicoesDia.value)

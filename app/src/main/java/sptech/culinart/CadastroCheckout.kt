@@ -81,7 +81,7 @@ class CadastroCheckout : ComponentActivity() {
     }
 }
 
-@OptIn(DelicateCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
 
@@ -182,12 +182,14 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        var exibirModal = false
+        var exibirModal = remember {
+            mutableStateOf(false)
+        }
 
         Button(
             onClick = {
 
-                exibirModal = true
+                exibirModal.value = true
                 val assinaturaApiService = RetrofitInstace.getAssinaturaApiService()
                 val pagamentoApiService = RetrofitInstace.getPagamentoApiService()
 
@@ -270,6 +272,74 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
             )
         ) {
             Text("Finalizar Assinatura")
+        }
+        if (exibirModal.value) {
+            AlertDialog(
+                onDismissRequest = {
+                    exibirModal.value = false
+                },
+                title = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Processando pagamento...",
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        )
+                    }
+
+                },
+                text = {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(48.dp),
+                            strokeWidth = 2.dp
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Aguarde um momento por favor...",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                color = Color.Gray
+                            )
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            exibirModal.value = false
+                        },
+                        modifier = Modifier
+                            .padding(vertical = 8.dp, horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = "Fechar",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
+                },
+                shape = RoundedCornerShape(8.dp)
+            )
         }
 
         Spacer(modifier = Modifier.height(40.dp))

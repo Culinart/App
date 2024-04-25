@@ -11,7 +11,7 @@ import sptech.culinart.api.endpoints.UsuarioApiService
 
 object RetrofitInstace {
     //local
-    val BASE_URL = "http://192.168.15.19:8080/"
+    val BASE_URL = "http://192.168.21.231:8080/"
     //internet
     //private const val BASE_URL = "https://sua-api.com/"
 
