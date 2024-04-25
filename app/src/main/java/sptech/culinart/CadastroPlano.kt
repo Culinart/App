@@ -908,6 +908,8 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
                                     planoId.value= response.body()!!.id
 
+                                println("PLANO ID: " + planoId)
+
                                 categoriasSelecionadas.forEach { categoria ->
                                     categoriasSelecionadasIds.add(categoria.id)
                                 }
