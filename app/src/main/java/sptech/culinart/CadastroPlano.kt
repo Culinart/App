@@ -1,9 +1,11 @@
 package sptech.culinart
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -35,6 +37,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -48,29 +52,39 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.categoria.Categoria
 import sptech.culinart.ui.theme.CulinartTheme
 
 class CadastroPlano : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val extras = intent.extras
         setContent {
             CulinartTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TelaCadastroPlano("Android")
+                    TelaCadastroPlano(extras)
                 }
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
-fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
+fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
 
+
+    val categorias = remember { mutableStateListOf<Categoria>() }
 
     val selectedDay = remember { mutableStateOf("") }
 
@@ -99,6 +113,32 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
     )
     val selectedHorario = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
+
+    val valorPlano = remember { mutableStateOf(0.0) }
+
+    val selectedMaiorPrecoCategoria = remember { mutableStateOf(0.0) }
+
+    val erroApi = remember { mutableStateOf("") }
+
+
+    LaunchedEffect(Unit) {
+        RetrofitInstace.getApiCategoriaService().getCategorias().enqueue(object :
+            Callback<List<Categoria>> {
+            override fun onResponse(call: Call<List<Categoria>>, response: Response<List<Categoria>>) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        categorias.clear()
+                        categorias.addAll(it)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<Categoria>>, t: Throwable) {
+                erroApi.value = t.message!!
+            }
+        })
+    }
+
 
 
     Column(
@@ -739,9 +779,37 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
 
         Button(
             onClick =
-            {val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
+            {
+                if(
+                    isCarnesClicked.value || isVegetarianoClicked.value ||
+                    isPescetarianoClicked.value || isVeganoClicked.value ||
+                    isRapidoFacilClicked.value || isFitSaudavelClicked.value &&
+                    selectedDay.value.isNotBlank() && numeroPessoas.value > 0 &&
+                    numeroRefeicoesDia.value > 0 && numeroDiasPorSemana.value > 0 &&
+                    selectedHorario.value.isNotBlank()
+                    ) {
 
-                contexto.startActivity(cadastroCheckout)
+                    selectedMaiorPrecoCategoria.value = categorias.maxOfOrNull { categoria -> categoria.preco } ?: 0.0
+
+//                    valorPlano.value = (numeroPessoas.value * numeroRefeicoesDia.value * numeroDiasPorSemana.value * selectedMaiorPrecoCategoria.value).toDouble()
+
+                    val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
+
+                    extras?.let {
+                        cadastroCheckout.putExtras(it)
+                    }
+                    cadastroCheckout.putExtra("valorPlano", 100.0)
+                    cadastroCheckout.putExtra("valorRefeicao", 22.35)
+
+                    contexto.startActivity(cadastroCheckout)
+
+                }
+                //else {
+                //    Text("Porfavor preencha e selecione todos os campos", style = TextStyle(
+                //        Color.Red
+                //   ))
+                //}
+
             },
             modifier = Modifier.width(250.dp),
             shape = RoundedCornerShape(10.dp),
@@ -758,10 +826,11 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview(showBackground = true)
 @Composable
 fun TelaCadastroPlanoPreview() {
     CulinartTheme {
-        TelaCadastroPlano("Android")
+        TelaCadastroPlano(null)
     }
 }
