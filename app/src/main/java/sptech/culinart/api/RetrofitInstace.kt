@@ -6,11 +6,12 @@ import sptech.culinart.api.endpoints.AssinaturaApiService
 import sptech.culinart.api.endpoints.CategoriaApiService
 import sptech.culinart.api.endpoints.EnderecoApiService
 import sptech.culinart.api.endpoints.PagamentoApiService
+import sptech.culinart.api.endpoints.PlanoApiService
 import sptech.culinart.api.endpoints.UsuarioApiService
 
 object RetrofitInstace {
     //local
-    val BASE_URL = "http://192.168.15.153:8080/"
+    val BASE_URL = "http://192.168.15.19:8080/"
     //internet
     //private const val BASE_URL = "https://sua-api.com/"
 
@@ -45,6 +46,10 @@ object RetrofitInstace {
 
     fun getPagamentoApiService(): PagamentoApiService {
         return retrofit.create(PagamentoApiService::class.java)
+    }
+
+    fun getApiPlanoService(): PlanoApiService {
+        return retrofit.create(PlanoApiService::class.java)
     }
 
 //    fun getUsuarioApiService(): UsuarioApiService {

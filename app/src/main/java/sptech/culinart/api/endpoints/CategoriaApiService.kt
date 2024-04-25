@@ -6,7 +6,7 @@ import sptech.culinart.api.data.categoria.Categoria
 
 interface CategoriaApiService {
 
-    @GET("/categorias")
+    @GET("/api/categorias")
     fun getCategorias(): Call<List<Categoria>>
 
 }
