@@ -57,6 +57,7 @@ import sptech.culinart.api.data.PreferencesManager
 import sptech.culinart.api.data.categoria.Categoria
 import sptech.culinart.api.data.plano.PlanoRequestDTO
 import sptech.culinart.api.data.plano.PlanoResponseDTO
+import sptech.culinart.api.data.plano.planoCategoria.CategoriaId
 import sptech.culinart.api.data.plano.planoCategoria.PlanoCategoriaRequest
 import sptech.culinart.api.data.plano.planoCategoria.PlanoCategoriaResponse
 import sptech.culinart.ui.theme.CulinartTheme
@@ -88,12 +89,16 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
     val prefsManager = PreferencesManager.getInstance(contexto);
     val userId = prefsManager.getUserId()
 
+    val callPlanoCat = remember {
+        mutableStateOf(false)
+    }
+
 
     val categorias = remember { mutableStateListOf<Categoria>() }
 
     val categoriasSelecionadas = remember { mutableStateListOf<Categoria>() }
 
-    val categoriasSelecionadasIds = remember { mutableStateListOf<Int>() }
+    val categoriasSelecionadasIds = remember { mutableStateListOf<CategoriaId>() }
 
     val selectedDay = remember { mutableStateOf("") }
 
@@ -907,11 +912,12 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
                                     planoId.value= response.body()!!.id
 
-                                println("PLANO ID: " + planoId)
+                                println("PLANO ID: " + planoId.value)
 
                                 categoriasSelecionadas.forEach { categoria ->
-                                    categoriasSelecionadasIds.add(categoria.id)
+                                    categoriasSelecionadasIds.add(CategoriaId(categoria.id))
                                 }
+
 
                                 val planoCategoriaRequest = PlanoCategoriaRequest(
                                     planoId = planoId.value,
@@ -924,6 +930,8 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                                     override fun onResponse(call: Call<PlanoCategoriaResponse>, response: Response<PlanoCategoriaResponse>) {
                                         if (response.isSuccessful) {
                                             println("Entrou no sucess do cadastroPlanoCategoria")
+
+                                            println(response.body())
 
                                             val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
 
@@ -945,6 +953,8 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                                         erroApiCat.value = "Falha na conexão: ${t.message}"
                                     }
                                 })
+
+                                //callPlanoCat.value = true
 
 
                             } else {
@@ -978,6 +988,46 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
         }
 
         Spacer(modifier = Modifier.height(40.dp))
+
+        if (callPlanoCat.value) {
+
+            val apiPlano = RetrofitInstace.getApiPlanoService()
+
+            val planoCategoriaRequest = PlanoCategoriaRequest(
+                planoId = planoId.value,
+                categoriaId = categoriasSelecionadasIds,
+            )
+
+            val callPlanoCategoria = apiPlano.cadastrarPlanoCategoria(planoCategoriaRequest)
+
+            callPlanoCategoria.enqueue(object : Callback<PlanoCategoriaResponse> {
+                override fun onResponse(call: Call<PlanoCategoriaResponse>, response: Response<PlanoCategoriaResponse>) {
+                    if (response.isSuccessful) {
+                        println("Entrou no sucess do cadastroPlanoCategoria")
+
+                        println(response.body())
+
+                        val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
+
+                        extras?.let {
+                            cadastroCheckout.putExtras(it)
+                        }
+                        cadastroCheckout.putExtra("valorPlano", valorPlano.value)
+
+                        contexto.startActivity(cadastroCheckout)
+
+
+                    } else {
+                        println("Erro ao cadastrar o planoCategoria")
+                        erroApi.value = "Erro ao cadastrar o planoCategoria"
+                    }
+                }
+                override fun onFailure(call: Call<PlanoCategoriaResponse>, t: Throwable) {
+                    println("Entrou no failure no cadastro do planoCategoria")
+                    erroApiCat.value = "Falha na conexão: ${t.message}"
+                }
+            })
+        }
 
     }
 }
