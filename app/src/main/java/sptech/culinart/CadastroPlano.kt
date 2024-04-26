@@ -926,8 +926,8 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
                                 val callPlanoCategoria = apiPlano.cadastrarPlanoCategoria(planoCategoriaRequest)
 
-                                callPlanoCategoria.enqueue(object : Callback<PlanoCategoriaResponse> {
-                                    override fun onResponse(call: Call<PlanoCategoriaResponse>, response: Response<PlanoCategoriaResponse>) {
+                                callPlanoCategoria.enqueue(object : Callback<List<PlanoCategoriaResponse>> {
+                                    override fun onResponse(call: Call<List<PlanoCategoriaResponse>>, response: Response<List<PlanoCategoriaResponse>>) {
                                         if (response.isSuccessful) {
                                             println("Entrou no sucess do cadastroPlanoCategoria")
 
@@ -948,7 +948,7 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                                             erroApi.value = "Erro ao cadastrar o planoCategoria"
                                         }
                                     }
-                                    override fun onFailure(call: Call<PlanoCategoriaResponse>, t: Throwable) {
+                                    override fun onFailure(call: Call<List<PlanoCategoriaResponse>>, t: Throwable) {
                                         println("Entrou no failure no cadastro do planoCategoria")
                                         erroApiCat.value = "Falha na conexão: ${t.message}"
                                     }
@@ -1000,12 +1000,10 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
             val callPlanoCategoria = apiPlano.cadastrarPlanoCategoria(planoCategoriaRequest)
 
-            callPlanoCategoria.enqueue(object : Callback<PlanoCategoriaResponse> {
-                override fun onResponse(call: Call<PlanoCategoriaResponse>, response: Response<PlanoCategoriaResponse>) {
+            callPlanoCategoria.enqueue(object : Callback<List<PlanoCategoriaResponse>> {
+                override fun onResponse(call: Call<List<PlanoCategoriaResponse>>, response: Response<List<PlanoCategoriaResponse>>) {
                     if (response.isSuccessful) {
                         println("Entrou no sucess do cadastroPlanoCategoria")
-
-                        println(response.body())
 
                         val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
 
@@ -1022,7 +1020,7 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                         erroApi.value = "Erro ao cadastrar o planoCategoria"
                     }
                 }
-                override fun onFailure(call: Call<PlanoCategoriaResponse>, t: Throwable) {
+                override fun onFailure(call: Call<List<PlanoCategoriaResponse>>, t: Throwable) {
                     println("Entrou no failure no cadastro do planoCategoria")
                     erroApiCat.value = "Falha na conexão: ${t.message}"
                 }

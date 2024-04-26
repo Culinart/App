@@ -20,6 +20,6 @@ interface PlanoApiService {
     @POST("api/planos/categorias")
     fun cadastrarPlanoCategoria(
         @Body planoCategoriaCadastro:PlanoCategoriaRequest
-    ): Call<PlanoCategoriaResponse>
+    ): Call<List<PlanoCategoriaResponse>>
 
 }
