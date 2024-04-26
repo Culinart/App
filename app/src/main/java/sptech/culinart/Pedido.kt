@@ -1,8 +1,10 @@
 package sptech.culinart
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -45,16 +47,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.i18n.DateTimeFormatter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import sptech.culinart.api.RetrofitInstace
 import sptech.culinart.api.data.PreferencesManager
-import sptech.culinart.api.data.pedido.DataEntregaDto
 import sptech.culinart.api.data.pedido.DatasPedidosDto
 import sptech.culinart.api.data.pedido.PedidoByDataDto
-import sptech.culinart.api.data.pedido.PedidoDto
 import sptech.culinart.api.utils.converterDataParaFormatoDescritivo
 import sptech.culinart.ui.theme.CulinartTheme
 import java.time.LocalDate
@@ -115,6 +114,7 @@ class Pedido : ComponentActivity() {
             override fun onResponse(call: Call<PedidoByDataDto>, response: Response<PedidoByDataDto>) {
                 if (response.isSuccessful) {
                     val resposta = response.body()
+                    println("FOI PORA"+resposta)
                     if (resposta != null) {
                         screenDataDto = resposta
                         // Faça algo com os dados do pedido aqui
@@ -138,6 +138,7 @@ class Pedido : ComponentActivity() {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier = Modifier) {
 
@@ -287,6 +288,7 @@ fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier =
                     "Entrega  -  ${screenDataDto?.logradouro ?: "Rua Haddock Lobo, 595"}", style = TextStyle(
                         textAlign = TextAlign.Start,
                         fontWeight = FontWeight.Bold,
+                        color = Color.Black
                     )
                 )
 
@@ -299,6 +301,7 @@ fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier =
                                 + "${qtdPorcoes} Porções",
                         style = TextStyle(
                             textAlign = TextAlign.Start,
+                            color = Color.Black
                         )
                     )
 
@@ -322,7 +325,8 @@ fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier =
             ) {
                 Text(
                     "Confirmar Entrega", style = TextStyle(
-                        fontWeight = FontWeight.Bold, fontSize = 16.sp
+                        fontWeight = FontWeight.Bold, fontSize = 16.sp,
+                        color = Color.Black
                     )
                 )
             }
@@ -502,6 +506,7 @@ fun RecipeCardPedido() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun TelaPedidoPreview() {

@@ -1,21 +1,19 @@
 package sptech.culinart.api
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.gson.GsonConverterFactory
 import sptech.culinart.api.endpoints.PedidoApiService
 import sptech.culinart.api.endpoints.UsuarioApiService
 
 object RetrofitInstace {
     // Base URL
-    private const val BASE_URL = "http://192.168.15.42:8080/"
+    private const val BASE_URL = "http://192.168.21.231:8080/"
 
     // Configuração do logging interceptor para logar os cabeçalhos das requisições
-    private val loggingInterceptor = HttpLoggingInterceptor { message ->
-        println(message) // Aqui você pode fazer o log dos cabeçalhos como desejar
-    }.apply {
-        level = HttpLoggingInterceptor.Level.HEADERS // Nível de log para incluir apenas os cabeçalhos
-    }
+//    private val loggingInterceptor = HttpLoggingInterceptor { message ->
+//        println(message) // Aqui você pode fazer o log dos cabeçalhos como desejar
+//    }.apply {
+//        level = HttpLoggingInterceptor.Level.HEADERS // Nível de log para incluir apenas os cabeçalhos
+//    }
 
     // Configuração do cliente HTTP do Retrofit com o interceptor
 //    private val httpClient = OkHttpClient.Builder()
