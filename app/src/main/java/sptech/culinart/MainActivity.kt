@@ -215,20 +215,38 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                                         usuarioTokenDTO.userID.let { prefsManager.saveUserId(it) }
                                         usuarioTokenDTO.email.let { prefsManager.saveEmail(it) }
                                         usuarioTokenDTO.isAtivo.let { prefsManager.saveIsAtivo(it) }
+
+                                        if (usuarioTokenDTO.permissao == "CLIENTE") {
+                                            val pedido = Intent(contexto, Pedido::class.java)
+                                            pedido.putExtra("token", usuarioTokenDTO.token)
+                                            pedido.putExtra("nome", usuarioTokenDTO.nome)
+                                            pedido.putExtra("permissao", usuarioTokenDTO.permissao)
+                                            pedido.putExtra("userID", usuarioTokenDTO.userID)
+                                            pedido.putExtra("email", usuarioTokenDTO.email)
+                                            pedido.putExtra("isAtivo", usuarioTokenDTO.isAtivo)
+                                            contexto.startActivity(pedido)
+                                        } else {
+                                            val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
+                                            cadastroEndereco.putExtra("token", usuarioTokenDTO.token)
+                                            cadastroEndereco.putExtra("nome", usuarioTokenDTO.nome)
+                                            cadastroEndereco.putExtra("permissao", usuarioTokenDTO.permissao)
+                                            cadastroEndereco.putExtra("userID", usuarioTokenDTO.userID)
+                                            cadastroEndereco.putExtra("email", usuarioTokenDTO.email)
+                                            cadastroEndereco.putExtra("isAtivo", usuarioTokenDTO.isAtivo)
+                                            contexto.startActivity(cadastroEndereco)
+                                        }
+
+
                                     }
                                     println("Token salvo: ${prefsManager.getToken()}")
                                     println("Nome salvo: ${prefsManager.getName()}")
-                                    val telaPedido = Intent(contexto, Pedido::class.java)
-                                    contexto.startActivity(telaPedido)
 
                                 } else {
-                                    // Trate os erros de login aqui
-                                    println("Deu Erro $response")
+                                    println("Deu ruim")
                                 }
                             }
 
                             override fun onFailure(call: Call<UsuarioTokenDTO>, t: Throwable) {
-                                // Trate os erros de rede aqui
                                 println(t)
                             }
                         })
@@ -289,11 +307,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Button(onClick =
-                {val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
-                    contexto.startActivity(cadastroEndereco)
-                    val cadastro = Intent(contexto, Cadastro::class.java)
-
-                    contexto.startActivity(cadastro)
+                {
                 },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent
