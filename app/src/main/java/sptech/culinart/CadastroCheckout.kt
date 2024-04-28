@@ -61,6 +61,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.PreferencesManager
 import sptech.culinart.api.data.assinatura.PagamentoDTO
 import sptech.culinart.ui.theme.CulinartTheme
 
@@ -68,7 +69,11 @@ class CadastroCheckout : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val extras = intent.extras
+        val valorPlano = extras?.getDouble("valorPlano", 0.0)
+        val qtdRefeicoesDia = extras?.getInt("qtdRefeicoesDia", 0)
+
         setContent {
             CulinartTheme {
                 Surface(
@@ -86,6 +91,11 @@ class CadastroCheckout : ComponentActivity() {
 fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
+
+    val prefsManager = PreferencesManager.getInstance(contexto);
+    val userId = prefsManager.getUserId()
+
+
     var quantidadeRefeicao = remember { mutableStateOf("+ X Refeições") }
     var precoRefeicao = remember { mutableStateOf("R$00,00") }
 
@@ -145,10 +155,18 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     val qtdRefeicoes = extras?.getInt("qtdRefeicoes") ?: 0
-                    val valorRefeicao = extras?.getDouble("valorRefeicao") ?: 0.0
+                    val valorPlano = extras?.getDouble("valorPlano") ?: 0.0
+                    Text(
+                        "$qtdRefeicoes - Refeições", style = TextStyle(
+                            color = Color.Black
+                        )
+                    )
 
-                    Text("$qtdRefeicoes - Refeições")
-                    Text("R$$valorRefeicao")
+                    Text(
+                        "R$$valorPlano", style = TextStyle(
+                            color = Color.Black
+                        )
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -170,9 +188,17 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     val valorPlano = extras?.getDouble("valorPlano") ?: 0.0
+                    Text(
+                        "Total", style = TextStyle(
+                            color = Color.Black
+                        )
+                    )
+                    Text(
 
-                    Text("Total")
-                    Text("R$valorPlano")
+                        "R$$valorPlano", style = TextStyle(
+                            color = Color.Black
+                        )
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(30.dp))
@@ -193,37 +219,39 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
                 val assinaturaApiService = RetrofitInstace.getAssinaturaApiService()
                 val pagamentoApiService = RetrofitInstace.getPagamentoApiService()
 
-                assinaturaApiService.criarAssinatura(3).enqueue(object : Callback<PagamentoDTO> {
-                    override fun onResponse(
-                        call: Call<PagamentoDTO>, response: Response<PagamentoDTO>
-                    ) {
-                        if (response.isSuccessful) {
-                            val pagamentoDTO = response.body()
-                            pagamentoDTO?.let { pagamento ->
-                                val linkCobranca = pagamento.linkCobranca
-                                if (!linkCobranca.isNullOrEmpty()) {
+                assinaturaApiService.criarAssinatura(userId)
+                    .enqueue(object : Callback<PagamentoDTO> {
+                        override fun onResponse(
+                            call: Call<PagamentoDTO>, response: Response<PagamentoDTO>
+                        ) {
+                            if (response.isSuccessful) {
+                                val pagamentoDTO = response.body()
+                                pagamentoDTO?.let { pagamento ->
+                                    val linkCobranca = pagamento.linkCobranca
+                                    if (!linkCobranca.isNullOrEmpty()) {
 
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkCobranca))
-                                    contexto.startActivity(intent)
-                                } else {
-                                    println("Link de cobrança vazio!")
+                                        val intent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(linkCobranca))
+                                        contexto.startActivity(intent)
+                                    } else {
+                                        println("Link de cobrança vazio!")
+                                    }
                                 }
+                            } else {
+                                println("Deu ruim!")
                             }
-                        } else {
-                            println("Deu ruim!")
                         }
-                    }
 
-                    override fun onFailure(call: Call<PagamentoDTO>, t: Throwable) {
-                        // Trate os erros de rede aqui
-                        println(t)
-                    }
-                })
+                        override fun onFailure(call: Call<PagamentoDTO>, t: Throwable) {
+                            // Trate os erros de rede aqui
+                            println(t)
+                        }
+                    })
 
                 var isPago = false
 
                 fun verificarStatusPagamento() =
-                    pagamentoApiService.atualizarStatusPagamento(3)
+                    pagamentoApiService.atualizarStatusPagamento(userId)
                         .enqueue(object : Callback<List<PagamentoDTO>> {
                             override fun onResponse(
                                 call: Call<List<PagamentoDTO>>,

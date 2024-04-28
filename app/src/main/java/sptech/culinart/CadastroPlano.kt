@@ -940,6 +940,8 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                                                 cadastroCheckout.putExtras(it)
                                             }
                                             cadastroCheckout.putExtra("valorPlano", valorPlano.value)
+                                            cadastroCheckout.putExtra("qtdRefeicoes", numeroRefeicoesDia.value)
+                                            cadastroCheckout.putExtra("valorQtdRefeicoes", selectedMaiorPrecoCategoria.value)
 
                                             contexto.startActivity(cadastroCheckout)
 
