@@ -3,6 +3,11 @@ package sptech.culinart.api
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import sptech.culinart.api.endpoints.PedidoApiService
+import sptech.culinart.api.endpoints.AssinaturaApiService
+import sptech.culinart.api.endpoints.CategoriaApiService
+import sptech.culinart.api.endpoints.EnderecoApiService
+import sptech.culinart.api.endpoints.PagamentoApiService
+import sptech.culinart.api.endpoints.PlanoApiService
 import sptech.culinart.api.endpoints.UsuarioApiService
 
 object RetrofitInstace {
@@ -27,11 +32,33 @@ object RetrofitInstace {
         return retrofit.create(UsuarioApiService::class.java)
     }
 
+
     // Cria uma instância do serviço Retrofit para end points de pedidos
     fun getPedidosApiService(/*token: String? = null*/): PedidoApiService {
 //        val client = createHttpClient(token)
 //        val retrofitWithClient = retrofit.newBuilder().client(client).build()
         return retrofit.create(PedidoApiService::class.java)
+    }
+
+    fun getAssinaturaApiService(): AssinaturaApiService {
+        return retrofit.create(AssinaturaApiService::class.java)
+    }
+
+    fun getApiEnderecoService(): EnderecoApiService {
+        return retrofit.create(EnderecoApiService::class.java)
+    }
+
+    fun getApiCategoriaService(): CategoriaApiService {
+        return retrofit.create(CategoriaApiService::class.java)
+
+    }
+
+    fun getPagamentoApiService(): PagamentoApiService {
+        return retrofit.create(PagamentoApiService::class.java)
+    }
+
+    fun getApiPlanoService(): PlanoApiService {
+        return retrofit.create(PlanoApiService::class.java)
     }
 
 }
