@@ -1,12 +1,13 @@
 package sptech.culinart
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -35,6 +35,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -48,33 +49,62 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.PreferencesManager
+import sptech.culinart.api.data.categoria.Categoria
+import sptech.culinart.api.data.plano.PlanoRequestDTO
+import sptech.culinart.api.data.plano.PlanoResponseDTO
+import sptech.culinart.api.data.plano.planoCategoria.CategoriaId
+import sptech.culinart.api.data.plano.planoCategoria.PlanoCategoriaRequest
+import sptech.culinart.api.data.plano.planoCategoria.PlanoCategoriaResponse
 import sptech.culinart.ui.theme.CulinartTheme
 
 class CadastroPlano : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val extras = intent.extras
         setContent {
             CulinartTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TelaCadastroPlano("Android")
+                    TelaCadastroPlano(extras)
                 }
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
-fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
+fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
 
+    val prefsManager = PreferencesManager.getInstance(contexto);
+    val userId = prefsManager.getUserId()
+
+    val callPlanoCat = remember {
+        mutableStateOf(false)
+    }
+
+
+    val categorias = remember { mutableStateListOf<Categoria>() }
+
+    val categoriasSelecionadas = remember { mutableStateListOf<Categoria>() }
+
+    val categoriasSelecionadasIds = remember { mutableStateListOf<CategoriaId>() }
 
     val selectedDay = remember { mutableStateOf("") }
 
     val numeroPessoas = remember { mutableStateOf(0) }
+
+    val planoId = remember { mutableStateOf(0) }
 
     val numeroRefeicoesDia = remember { mutableStateOf(0) }
 
@@ -99,6 +129,42 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
     )
     val selectedHorario = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
+
+    val valorPlano = remember { mutableStateOf(0.0) }
+
+    val selectedMaiorPrecoCategoria = remember { mutableStateOf(0.0) }
+
+    val erroApi = remember { mutableStateOf("") }
+
+
+    val apiCategoria = RetrofitInstace.getApiCategoriaService()
+    val call = apiCategoria.getCategorias()
+    val erroApiCat = remember { mutableStateOf("") }
+    call.enqueue(object : Callback<List<Categoria>> {
+        override fun onResponse(call: Call<List<Categoria>>, response: Response<List<Categoria>>) {
+            if (response.isSuccessful) {
+                println("Entrou no sucess")
+
+                response.body()?.let {
+                    categorias.clear()
+                    categorias.addAll(it)
+                }
+
+                println("CATEGORIAS: ")
+                categorias.forEach { categoria ->
+                    println("Cateogira ID: ${categoria.id}, Categoria: ${categoria.nome}, Preço: ${categoria.valor}")
+                }
+
+            } else {
+                println("Erro ao trazer as categorias")
+                erroApiCat.value = "Erro ao trazer as categorias"
+            }
+        }
+        override fun onFailure(call: Call<List<Categoria>>, t: Throwable) {
+            println("Entrou no failure")
+            erroApiCat.value = "Falha na conexão: ${t.message}"
+        }
+    })
 
 
     Column(
@@ -161,6 +227,15 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
             ){
                 TextButton(onClick = {
                     isCarnesClicked.value = !isCarnesClicked.value
+                    if (isCarnesClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Carnes", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Carnes", ignoreCase = true) }
+                    }
                 }) {
                     Column( modifier = modifier
                         .fillMaxHeight()
@@ -180,6 +255,7 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
                         )
                     }
                 }
+
             }
 
             Spacer(modifier = Modifier.weight(0.4f))
@@ -195,8 +271,17 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
                     defaultElevation = 4.dp
                 )
             ){
-                TextButton(onClick = { 
+                TextButton(onClick = {
                     isVegetarianoClicked.value = !isVegetarianoClicked.value
+                    if (isVegetarianoClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Vegetariano", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Vegetariano", ignoreCase = true) }
+                    }
                 }) {
                     Column( modifier = modifier
                         .fillMaxHeight()
@@ -242,11 +327,20 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
             ){
                 TextButton(onClick = {
                     isPescetarianoClicked.value = !isPescetarianoClicked.value
+                    if (isPescetarianoClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Pescetariano", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Pescetariano", ignoreCase = true) }
+                    }
                 }) {
                     Column( modifier = modifier
                         .fillMaxHeight()
                         .wrapContentHeight(align = Alignment.CenterVertically),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(painter = painterResource(id = R.mipmap.iconepescetariano), contentDescription = "Ícone pescetariano")
                         Text(
@@ -278,11 +372,20 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
             ){
                 TextButton(onClick = {
                     isVeganoClicked.value = !isVeganoClicked.value
+                    if (isVeganoClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Vegano", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Vegano", ignoreCase = true) }
+                    }
                 }) {
                     Column( modifier = modifier
                         .fillMaxHeight()
                         .wrapContentHeight(align = Alignment.CenterVertically),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(painter = painterResource(id = R.mipmap.iconevegano), contentDescription = "Ícone vegano")
                         Text(
@@ -325,12 +428,21 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
             ) {
                 TextButton(onClick = {
                     isRapidoFacilClicked.value = !isRapidoFacilClicked.value
+                    if (isRapidoFacilClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Rápido e Fácil", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Rápido e Fácil", ignoreCase = true) }
+                    }
                 }) {
                     Column(
                         modifier = Modifier
                             .fillMaxHeight()
                             .wrapContentHeight(align = Alignment.CenterVertically),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
                             painter = painterResource(id = R.mipmap.iconerapidoefacil),
@@ -366,12 +478,21 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
             ){
                 TextButton(onClick = {
                     isFitSaudavelClicked.value = !isFitSaudavelClicked.value
+                    if (isFitSaudavelClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Fit e Saudável", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Fit e Saudável", ignoreCase = true) }
+                    }
                 }) {
                     Column(
                         modifier = Modifier
                             .fillMaxHeight()
                             .wrapContentHeight(align = Alignment.CenterVertically),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(painter = painterResource(id = R.mipmap.iconefitesaudavel), contentDescription = "Ícone fit e saudável")
                         Text(
@@ -445,7 +566,7 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .weight(1f)
                         .height(60.dp),
-                        colors =  CardDefaults.cardColors(
+                    colors =  CardDefaults.cardColors(
                         containerColor = if (numeroPessoas.value == number) Color(255, 241, 221) else Color.White
                     ),
                     shape = RoundedCornerShape(topStart = if (number == 1) 8.dp else 0.dp,
@@ -739,9 +860,126 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
 
         Button(
             onClick =
-            {val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
+            {
+                if(
+                    isCarnesClicked.value || isVegetarianoClicked.value ||
+                    isPescetarianoClicked.value || isVeganoClicked.value ||
+                    isRapidoFacilClicked.value || isFitSaudavelClicked.value &&
+                    selectedDay.value.isNotBlank() && numeroPessoas.value > 0 &&
+                    numeroRefeicoesDia.value > 0 && numeroDiasPorSemana.value > 0 &&
+                    selectedHorario.value.isNotBlank()
+                ) {
 
-                contexto.startActivity(cadastroCheckout)
+
+
+                    selectedMaiorPrecoCategoria.value = categoriasSelecionadas.maxOfOrNull { categoria -> categoria.valor } ?: 1.0
+
+                    println("===============================================================")
+                    println("CATEGORIAS: ")
+                    categorias.forEach { categoria ->
+                        println("Categoria: ${categoria.nome}, Preço: ${categoria.valor}")
+                    }
+
+                    println("numeroPessoas" + numeroPessoas.value)
+                    println("numeroRefeicoesDia" + numeroRefeicoesDia.value)
+                    println("numeroDiasPorSemana" + numeroDiasPorSemana.value)
+                    println("MAIOR PRECO CATEGORIA" + selectedMaiorPrecoCategoria.value)
+                    println("===============================================================")
+
+                    valorPlano.value = (numeroPessoas.value * numeroRefeicoesDia.value * numeroDiasPorSemana.value * selectedMaiorPrecoCategoria.value).toDouble()
+
+
+
+
+                    val apiPlano = RetrofitInstace.getApiPlanoService()
+                    val planoRequestDTO = PlanoRequestDTO(
+                        categoria = categoriasSelecionadas,
+                        qtdPessoas = numeroPessoas.value,
+                        qtdRefeicoesDia = numeroRefeicoesDia.value,
+                        qtdDiasSemana = numeroDiasPorSemana.value,
+                        valorPlano = valorPlano.value,
+                        valorAjuste = 0.0,
+                        horaEntrega = selectedHorario.value,
+                        diaSemana = selectedDay.value,
+                        isAtivo = "ATIVO"
+                    )
+
+                    val callPlano = apiPlano.cadastrarPlano(userId, planoRequestDTO)
+
+                    callPlano.enqueue(object : Callback<PlanoResponseDTO> {
+                        override fun onResponse(call: Call<PlanoResponseDTO>, response: Response<PlanoResponseDTO>) {
+                            if (response.isSuccessful) {
+                                println("Entrou no sucess do cadastroPlano")
+
+                                    planoId.value= response.body()!!.id
+
+                                println("PLANO ID: " + planoId.value)
+
+                                categoriasSelecionadas.forEach { categoria ->
+                                    categoriasSelecionadasIds.add(CategoriaId(categoria.id))
+                                }
+
+
+                                val planoCategoriaRequest = PlanoCategoriaRequest(
+                                    planoId = planoId.value,
+                                    categoriaId = categoriasSelecionadasIds,
+                                )
+
+                                val callPlanoCategoria = apiPlano.cadastrarPlanoCategoria(planoCategoriaRequest)
+
+                                callPlanoCategoria.enqueue(object : Callback<List<PlanoCategoriaResponse>> {
+                                    override fun onResponse(call: Call<List<PlanoCategoriaResponse>>, response: Response<List<PlanoCategoriaResponse>>) {
+                                        if (response.isSuccessful) {
+                                            println("Entrou no sucess do cadastroPlanoCategoria")
+
+                                            println(response.body())
+
+                                            val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
+
+                                            extras?.let {
+                                                cadastroCheckout.putExtras(it)
+                                            }
+                                            cadastroCheckout.putExtra("valorPlano", valorPlano.value)
+                                            cadastroCheckout.putExtra("qtdRefeicoes", numeroRefeicoesDia.value)
+                                            cadastroCheckout.putExtra("valorQtdRefeicoes", selectedMaiorPrecoCategoria.value)
+
+                                            contexto.startActivity(cadastroCheckout)
+
+
+                                        } else {
+                                            println("Erro ao cadastrar o planoCategoria")
+                                            erroApi.value = "Erro ao cadastrar o planoCategoria"
+                                        }
+                                    }
+                                    override fun onFailure(call: Call<List<PlanoCategoriaResponse>>, t: Throwable) {
+                                        println("Entrou no failure no cadastro do planoCategoria")
+                                        erroApiCat.value = "Falha na conexão: ${t.message}"
+                                    }
+                                })
+
+                                //callPlanoCat.value = true
+
+
+                            } else {
+                                println("Erro ao cadastrar o plano")
+                                erroApi.value = "Erro ao cadastrar o plano"
+                            }
+                        }
+                        override fun onFailure(call: Call<PlanoResponseDTO>, t: Throwable) {
+                            println("Entrou no failure no cadastro do Plano")
+                            erroApiCat.value = "Falha na conexão: ${t.message}"
+                        }
+                    })
+
+
+
+                }
+                //else {
+                //    Text("Porfavor preencha e selecione todos os campos", style = TextStyle(
+                //        Color.Red
+                //   ))
+                //}
+
             },
             modifier = Modifier.width(250.dp),
             shape = RoundedCornerShape(10.dp),
@@ -755,13 +993,52 @@ fun TelaCadastroPlano(name: String, modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(40.dp))
 
+        if (callPlanoCat.value) {
+
+            val apiPlano = RetrofitInstace.getApiPlanoService()
+
+            val planoCategoriaRequest = PlanoCategoriaRequest(
+                planoId = planoId.value,
+                categoriaId = categoriasSelecionadasIds,
+            )
+
+            val callPlanoCategoria = apiPlano.cadastrarPlanoCategoria(planoCategoriaRequest)
+
+            callPlanoCategoria.enqueue(object : Callback<List<PlanoCategoriaResponse>> {
+                override fun onResponse(call: Call<List<PlanoCategoriaResponse>>, response: Response<List<PlanoCategoriaResponse>>) {
+                    if (response.isSuccessful) {
+                        println("Entrou no sucess do cadastroPlanoCategoria")
+
+                        val cadastroCheckout = Intent(contexto, CadastroCheckout::class.java)
+
+                        extras?.let {
+                            cadastroCheckout.putExtras(it)
+                        }
+                        cadastroCheckout.putExtra("valorPlano", valorPlano.value)
+
+                        contexto.startActivity(cadastroCheckout)
+
+
+                    } else {
+                        println("Erro ao cadastrar o planoCategoria")
+                        erroApi.value = "Erro ao cadastrar o planoCategoria"
+                    }
+                }
+                override fun onFailure(call: Call<List<PlanoCategoriaResponse>>, t: Throwable) {
+                    println("Entrou no failure no cadastro do planoCategoria")
+                    erroApiCat.value = "Falha na conexão: ${t.message}"
+                }
+            })
+        }
+
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview(showBackground = true)
 @Composable
 fun TelaCadastroPlanoPreview() {
     CulinartTheme {
-        TelaCadastroPlano("Android")
+        TelaCadastroPlano(null)
     }
 }
