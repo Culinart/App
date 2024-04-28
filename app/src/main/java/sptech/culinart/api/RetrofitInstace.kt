@@ -2,6 +2,7 @@ package sptech.culinart.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import sptech.culinart.api.endpoints.PedidoApiService
 import sptech.culinart.api.endpoints.AssinaturaApiService
 import sptech.culinart.api.endpoints.CategoriaApiService
 import sptech.culinart.api.endpoints.EnderecoApiService
@@ -17,7 +18,7 @@ object RetrofitInstace {
 
 
     // Cria uma instância Retrofit
-    private var retrofit = Retrofit.Builder()
+    private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
@@ -29,6 +30,14 @@ object RetrofitInstace {
 
     fun getReceitaApiService(): UsuarioApiService {
         return retrofit.create(UsuarioApiService::class.java)
+    }
+
+
+    // Cria uma instância do serviço Retrofit para end points de pedidos
+    fun getPedidosApiService(/*token: String? = null*/): PedidoApiService {
+//        val client = createHttpClient(token)
+//        val retrofitWithClient = retrofit.newBuilder().client(client).build()
+        return retrofit.create(PedidoApiService::class.java)
     }
 
     fun getAssinaturaApiService(): AssinaturaApiService {
@@ -51,16 +60,5 @@ object RetrofitInstace {
     fun getApiPlanoService(): PlanoApiService {
         return retrofit.create(PlanoApiService::class.java)
     }
-
-//    fun getUsuarioApiService(): UsuarioApiService {
-//        val cliente =
-//            Retrofit.Builder()
-//                .baseUrl(BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build()
-//                .create(UsuarioApiService::class.java)
-//
-//        return cliente
-//    }
 
 }
