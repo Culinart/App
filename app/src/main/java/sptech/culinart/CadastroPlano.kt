@@ -879,6 +879,7 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                     categorias.forEach { categoria ->
                         println("Categoria: ${categoria.nome}, Preço: ${categoria.valor}")
                     }
+
                     println("numeroPessoas" + numeroPessoas.value)
                     println("numeroRefeicoesDia" + numeroRefeicoesDia.value)
                     println("numeroDiasPorSemana" + numeroDiasPorSemana.value)
@@ -939,6 +940,8 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                                                 cadastroCheckout.putExtras(it)
                                             }
                                             cadastroCheckout.putExtra("valorPlano", valorPlano.value)
+                                            cadastroCheckout.putExtra("qtdRefeicoes", numeroRefeicoesDia.value)
+                                            cadastroCheckout.putExtra("valorQtdRefeicoes", selectedMaiorPrecoCategoria.value)
 
                                             contexto.startActivity(cadastroCheckout)
 
@@ -967,6 +970,7 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                             erroApiCat.value = "Falha na conexão: ${t.message}"
                         }
                     })
+
 
 
                 }
