@@ -51,15 +51,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import sptech.culinart.api.RetrofitInstace
-import sptech.culinart.api.data.pedido.DatasPedidosDTO
-import sptech.culinart.api.data.pedido.PedidoByDataDTO
-import sptech.culinart.api.data.pedido.PedidoEntregaDTO
 import sptech.culinart.api.data.receita.ReceitaDTO
 import sptech.culinart.ui.theme.CulinartTheme
-import java.time.LocalDate
 
 class Receitas : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -72,7 +67,6 @@ class Receitas : ComponentActivity() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TelaReceitas() {
     Column(

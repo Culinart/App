@@ -243,7 +243,7 @@ fun ComponenteReceita(name: String, modifier: Modifier = Modifier) {
         }
 
     }
-    }
+}
 
 
 @Composable
