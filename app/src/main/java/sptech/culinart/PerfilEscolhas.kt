@@ -55,7 +55,8 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 70.dp)
-            .zIndex(1f),
+            .zIndex(1f)
+            .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
         Column(
