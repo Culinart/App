@@ -1,5 +1,7 @@
 package sptech.culinart.api.data.pedido
 
-data class DatasPedidosDto (
+import java.time.LocalDate
+
+data class DatasPedidosDTO(
     val datasPedidos: String
 )
