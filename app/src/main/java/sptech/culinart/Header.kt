@@ -1,5 +1,6 @@
 package sptech.culinart
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,12 +29,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.compose.rememberNavController
 import sptech.culinart.ui.theme.CulinartTheme
 
 class Header : ComponentActivity() {
@@ -56,6 +59,7 @@ class Header : ComponentActivity() {
 @Composable
 fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
     val isHeaderVisible = remember { mutableStateOf(false) }
+    val contexto = LocalContext.current
     if (!isHeaderVisible.value) {
         Row(
             modifier = Modifier
@@ -124,9 +128,13 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(.8f),
+                        .fillMaxWidth(.8f)
+                        .clickable {
+                            val telaPedidos = Intent(contexto, Pedido::class.java)
+                            contexto.startActivity(telaPedidos)
+                                   },
                     horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
 
                     Icon(
@@ -149,7 +157,11 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(.8f),
+                        .fillMaxWidth(.8f)
+                        .clickable {
+                            val telaReceitas = Intent(contexto, Receitas::class.java)
+                            contexto.startActivity(telaReceitas)
+                        },
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -174,7 +186,11 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(.8f),
+                        .fillMaxWidth(.8f)
+                        .clickable {
+                            val telaMeuPlano = Intent(contexto, Plano::class.java)
+                            contexto.startActivity(telaMeuPlano)
+                        },
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -227,7 +243,11 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(.8f),
+                        .fillMaxWidth(.8f)
+                        .clickable {
+                            val telaEscolhas = Intent(contexto, PerfilEscolhas::class.java)
+                            contexto.startActivity(telaEscolhas)
+                        },
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -277,7 +297,6 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
