@@ -90,8 +90,9 @@ class Pedido : ComponentActivity() {
                         if (!resposta.isNullOrEmpty()) {
                             println(resposta)
                             val dataString = resposta.lastOrNull()?.datasPedidos
-                            val data = LocalDate.parse(dataString)
-                            getProximoPedido(userId, data)
+                            if (dataString != null) {
+                                getProximoPedido(userId, dataString)
+                            }
                         } else {
                             println("Lista de datas de pedidos vazia ou nula")
                         }
@@ -107,7 +108,7 @@ class Pedido : ComponentActivity() {
 
     }
 
-    private fun getProximoPedido( userId: Int, dataEntrega: LocalDate) {
+    private fun getProximoPedido( userId: Int, dataEntrega: String) {
 //        val pedido = PedidoDto(null, null, dataEntrega);
         pedidosApiService.getProximoPedido(userId, dataEntrega).enqueue(object : Callback<PedidoByDataDto> {
             override fun onResponse(call: Call<PedidoByDataDto>, response: Response<PedidoByDataDto>) {
@@ -158,7 +159,7 @@ fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier =
     // Cria uma string com todas as categorias únicas
     categorias = categoriasUnicas.joinToString(", ")
 
-    val dataFormatada = screenDataDto?.let { converterDataParaFormatoDescritivo(it.dataEntrega) }
+    val dataFormatada = screenDataDto?.let { converterDataParaFormatoDescritivo(LocalDate.parse(it.dataEntrega)) }
 
     Column(
         modifier = modifier

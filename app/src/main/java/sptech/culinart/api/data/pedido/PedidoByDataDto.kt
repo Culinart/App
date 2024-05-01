@@ -7,7 +7,7 @@ data class PedidoByDataDto (
     val id: Int,
     val valor: Double,
     val status: String,
-    val dataEntrega: LocalDate,
+    val dataEntrega: String,
     val logradouro: String,
     val numero: Int,
     val listaReceitas: List<ReceitaExibicaoPedidoDto>

@@ -18,5 +18,5 @@ interface PedidoApiService {
     fun getDatasPedidos(/*@Header("Authorization") token: String,*/ @Path("idUser") idUser: Int): Call<List<DatasPedidosDto>>
 
     @POST("/api/pedidos/entrega/{idUser}")
-    fun getProximoPedido(/*@Header("Authorization") token: String,*/ @Path("idUser") idUser: Int, @Body pedido: LocalDate): Call<PedidoByDataDto>
+    fun getProximoPedido(/*@Header("Authorization") token: String,*/ @Path("idUser") idUser: Int, @Body pedido: String): Call<PedidoByDataDto>
 }
