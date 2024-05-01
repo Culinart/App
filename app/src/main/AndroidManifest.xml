@@ -21,6 +21,11 @@
             android:label="@string/title_activity_pedido"
             android:theme="@style/Theme.Culinart" />
         <activity
+            android:name=".Receitas"
+            android:exported="false"
+            android:label="Receitas"
+            android:theme="@style/Theme.Culinart" />
+        <activity
             android:name=".Plano"
             android:exported="false"
             android:label="@string/title_activity_plano"
@@ -53,7 +58,32 @@
         <activity
             android:name=".Cadastro"
             android:exported="false"
-            android:label="@string/title_activity_cadastro"
+            android:label="Cadastro"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".PerfilEscolhas"
+            android:exported="false"
+            android:label="PerfilEscolhas"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".PerfilEnderecos"
+            android:exported="false"
+            android:label="PerfilEnderecos"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".PerfilInformacoesPessoais"
+            android:exported="false"
+            android:label="PerfilInformacoesPessoais"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".PerfilPagamento"
+            android:exported="false"
+            android:label="PerfilPagamento"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".PerfilSenhaEAutenticacao"
+            android:exported="false"
+            android:label="PerfilSenhaEAutenticacao"
             android:theme="@style/Theme.Culinart" />
         <activity
             android:name=".MainActivity"
