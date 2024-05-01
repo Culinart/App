@@ -1,6 +1,7 @@
 package sptech.culinart
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,6 +39,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -55,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.i18n.DateTimeFormatter
 import androidx.lifecycle.MutableLiveData
 import coil.compose.AsyncImage
@@ -70,6 +73,7 @@ import sptech.culinart.api.data.pedido.DatasPedidosDto
 import sptech.culinart.api.data.pedido.PedidoByDataDto
 import sptech.culinart.api.data.pedido.PedidoDto
 import sptech.culinart.api.data.receita.ReceitaExibicaoPedidoDto
+import sptech.culinart.api.data.usuario.UsuarioTokenDTO
 import sptech.culinart.api.utils.converterDataParaFormatoDescritivo
 import sptech.culinart.ui.theme.CulinartTheme
 import java.time.LocalDate
@@ -90,7 +94,7 @@ class Pedido : ComponentActivity() {
                     runBlocking {
                         async { getDatasPedidos() }.await()
                     }
-                    Greeting(screenDataDto)
+                    Greeting(screenDataDto, { getDatasPedidos() })
                 }
             }
 
@@ -159,12 +163,13 @@ class Pedido : ComponentActivity() {
 @Composable
 fun Greeting(
     screenDataDtoRemember: MutableLiveData<PedidoByDataDto>,
+    getDatasPedidos: () -> Unit,
     modifier: Modifier = Modifier,
     dataObtida: Boolean = false
 ) {
-
+    val pedidosApiService = RetrofitInstace.getPedidosApiService()
     val contexto = LocalContext.current
-    val qtdPorcoes = null
+    var qtdPocoesTotal = 0
     val categorias: String
     val categoriasUnicas = mutableSetOf<String>()
     val dataObtidaApi = remember {
@@ -177,12 +182,14 @@ fun Greeting(
 
         println("ScreenDataDto: $screenDataDto")
 
-        screenDataDto?.listaReceitas?.forEach { it ->
-            qtdPorcoes?.plusAssign(it.qtd_porcoes)
-        }
+//        screenDataDto?.listaReceitas?.forEach { it ->
+//            qtdPorcoes.plusAssign(it.qtdPorcoes)
+//        }
 
         // Itera sobre cada receita para extrair suas categorias
         screenDataDto?.listaReceitas?.forEach { receita ->
+            qtdPocoesTotal = screenDataDto.listaReceitas.sumOf { it.qtdPorcoes ?: 0 }
+
             receita.categorias.forEach { categoria ->
                 categoriasUnicas.add(categoria.nome)
             }
@@ -333,9 +340,9 @@ fun Greeting(
 
 
                     Text(
-                        "${categorias} CATEGORIAS\n"
+                        "${categorias}\n"
                                 + "${screenDataDto?.listaReceitas?.size} Receitas \n"
-                                + "${qtdPorcoes} Porções",
+                                + "${qtdPocoesTotal} Porções",
                         style = TextStyle(
                             textAlign = TextAlign.Start,
                             color = Color.Black
@@ -349,6 +356,27 @@ fun Greeting(
 
                 Button(
                     onClick = {
+
+                        if (screenDataDto != null) {
+                            pedidosApiService.putPedidoConcluido(screenDataDto.id).enqueue(object : Callback<Void> {
+                                override fun onResponse(
+                                    call: Call<Void>,
+                                    response: Response<Void>
+                                ) {
+                                    if (response.isSuccessful) {
+                                        getDatasPedidos()
+
+                                    } else {
+                                        println("Deu ruim")
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<Void>, t: Throwable) {
+                                    println(t)
+                                }
+                            })
+                        }
+
 
                     },
                     modifier = Modifier.width(300.dp),
@@ -372,6 +400,26 @@ fun Greeting(
 
                 Button(
                     onClick = {
+
+                        if (screenDataDto != null) {
+                            pedidosApiService.putPedidoCancelado(screenDataDto.id).enqueue(object : Callback<Void> {
+                                override fun onResponse(
+                                    call: Call<Void>,
+                                    response: Response<Void>
+                                ) {
+                                    if (response.isSuccessful) {
+                                        getDatasPedidos()
+
+                                    } else {
+                                        println("Deu ruim")
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<Void>, t: Throwable) {
+                                    println(t)
+                                }
+                            })
+                        }
 
                     },
                     modifier = Modifier.width(300.dp),
@@ -576,6 +624,6 @@ fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>) {
 @Composable
 fun TelaPedidoPreview() {
     CulinartTheme {
-        Greeting(screenDataDtoRemember = MutableLiveData<PedidoByDataDto>())
+        Greeting(screenDataDtoRemember = MutableLiveData<PedidoByDataDto>(), { Unit })
     }
 }
