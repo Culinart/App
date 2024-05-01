@@ -168,7 +168,7 @@ fun TelaPerfilPagamento(name: String, modifier: Modifier = Modifier) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(70.dp))
+            Spacer(modifier = Modifier.height(50.dp))
         }
     }
 }

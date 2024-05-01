@@ -1,8 +1,10 @@
 package sptech.culinart
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -97,7 +99,7 @@ class Pedido : ComponentActivity() {
                             println("Lista de datas de pedidos vazia ou nula")
                         }
                     } else {
-                        println("Erro na resposta do getDatasPedidos: ${response}")
+                        println("Erro na resposta do getDatasPedidos: $response")
                     }
                 }
 
@@ -121,7 +123,7 @@ class Pedido : ComponentActivity() {
                         println("Resposta do getProximoPedido nula")
                     }
                 } else {
-                    println("Erro na resposta do getProximoPedido: ${response}")
+                    println("Erro na resposta do getProximoPedido: $response")
                 }
             }
 
@@ -137,6 +139,7 @@ class Pedido : ComponentActivity() {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier = Modifier) {
 
@@ -228,7 +231,7 @@ fun Greeting(name: String, screenDataDto: PedidoByDataDto?, modifier: Modifier =
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "${dataFormatada?.diaDaSemanaAbreviado ?: "Sex"}", modifier = Modifier.fillMaxWidth(), style = TextStyle(
+                        dataFormatada?.diaDaSemanaAbreviado ?: "Sex", modifier = Modifier.fillMaxWidth(), style = TextStyle(
                             Color(4, 93, 83),
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Center,
@@ -501,6 +504,7 @@ fun RecipeCardPedido() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun TelaPedidoPreview() {
