@@ -9,6 +9,7 @@ data class ReceitaExibicaoPedidoDto (
     val horas: Int,
     val minutos: Int,
     val qtd_porcoes: Int,
+    val imagem: String,
     val preferencias: List<PreferenciaCardDto>,
     val categorias: List<CategoriaCardDto>
 )
