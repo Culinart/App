@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.MaterialTheme
@@ -122,8 +123,8 @@ fun TelaReceitas() {
                         .clip(shape = RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
                 )
-                Preferencia(cor = "#FF0000", preferencia = "Neutro")
-                Preferencia(cor = "#FF0010", preferencia = "Preferencia")
+                Preferencia(cor = "#FF0000", corTexto = "#FFFFFF", preferencia = "Neutro")
+                Preferencia(cor = "#FF0010", corTexto = "#FFFFFF", preferencia = "Preferencia")
             }
         }
         RecipeCard()
@@ -131,16 +132,21 @@ fun TelaReceitas() {
 }
 
 @Composable
-fun Preferencia(cor: String, preferencia: String) {
+fun Preferencia(cor: String, corTexto: String, preferencia: String) {
     val corPreferencia = Color(android.graphics.Color.parseColor(cor))
+    val corTexto = Color(android.graphics.Color.parseColor(corTexto))
+
     Box(
         modifier = Modifier
-            .background(color = corPreferencia, shape = RoundedCornerShape(8.dp))
+            .background(color = corPreferencia, shape = RoundedCornerShape(10.dp))
     ) {
         Text(
             text = "$preferencia",
             fontSize = 16.sp,
-            modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+            color = corTexto, // Definindo a cor do texto
+            modifier = Modifier
+                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .widthIn(min = 50.dp)
         )
     }
 }
