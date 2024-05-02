@@ -2,12 +2,12 @@ package sptech.culinart
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,14 +15,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -35,14 +33,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -52,6 +46,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import sptech.culinart.ui.theme.CulinartTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.PreferencesManager
+import sptech.culinart.api.data.usuario.UsuarioExibicaoDTO
+import sptech.culinart.api.data.usuario.UsuarioLoginDTO
+import sptech.culinart.api.data.usuario.UsuarioTokenDTO
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -193,10 +196,62 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Button(
-                    onClick =
-                    {
-                        val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
-                        contexto.startActivity(cadastroEndereco)
+                    onClick = {
+
+                        // Faça a chamada ao serviço da API
+                        val usuarioApiService = RetrofitInstace.getUsuarioApiService()
+
+//                        val credenciais = UsuarioLoginDTO(email = email.value, senha = senha.value)
+                        val credenciais = UsuarioLoginDTO(email = "lucasakiama@gmail.com", senha = "senhaQualquer123")
+                        usuarioApiService.login(credenciais).enqueue(object : Callback<UsuarioTokenDTO> {
+                            override fun onResponse(call: Call<UsuarioTokenDTO>, response: Response<UsuarioTokenDTO>) {
+                                if (response.isSuccessful) {
+                                    val usuarioTokenDTO = response.body()
+                                    println(response.body())
+                                    val prefsManager = PreferencesManager.getInstance(contexto)
+                                    if (usuarioTokenDTO != null) {
+                                        usuarioTokenDTO.token.let { prefsManager.saveToken(it) }
+                                        usuarioTokenDTO.nome.let { prefsManager.saveName(it) }
+                                        usuarioTokenDTO.permissao.let { prefsManager.savePermission(it) }
+                                        usuarioTokenDTO.userID.let { prefsManager.saveUserId(it) }
+                                        usuarioTokenDTO.email.let { prefsManager.saveEmail(it) }
+                                        usuarioTokenDTO.isAtivo.let { prefsManager.saveIsAtivo(it) }
+
+                                        if (usuarioTokenDTO.permissao == "CLIENTE") {
+                                            val pedido = Intent(contexto, Pedido::class.java)
+                                            pedido.putExtra("token", usuarioTokenDTO.token)
+                                            pedido.putExtra("nome", usuarioTokenDTO.nome)
+                                            pedido.putExtra("permissao", usuarioTokenDTO.permissao)
+                                            pedido.putExtra("userID", usuarioTokenDTO.userID)
+                                            pedido.putExtra("email", usuarioTokenDTO.email)
+                                            pedido.putExtra("isAtivo", usuarioTokenDTO.isAtivo)
+                                            contexto.startActivity(pedido)
+                                        } else {
+                                            val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
+                                            cadastroEndereco.putExtra("token", usuarioTokenDTO.token)
+                                            cadastroEndereco.putExtra("nome", usuarioTokenDTO.nome)
+                                            cadastroEndereco.putExtra("permissao", usuarioTokenDTO.permissao)
+                                            cadastroEndereco.putExtra("userID", usuarioTokenDTO.userID)
+                                            cadastroEndereco.putExtra("email", usuarioTokenDTO.email)
+                                            cadastroEndereco.putExtra("isAtivo", usuarioTokenDTO.isAtivo)
+                                            contexto.startActivity(cadastroEndereco)
+                                        }
+
+
+                                    }
+                                    println("Token salvo: ${prefsManager.getToken()}")
+                                    println("Nome salvo: ${prefsManager.getName()}")
+
+                                } else {
+                                    println("Deu ruim")
+                                }
+                            }
+
+                            override fun onFailure(call: Call<UsuarioTokenDTO>, t: Throwable) {
+                                println(t)
+                            }
+                        })
+
                     },
                     modifier = Modifier.width(250.dp),
                     shape = RoundedCornerShape(10.dp),
@@ -253,11 +308,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Button(onClick =
-                {val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
-                    contexto.startActivity(cadastroEndereco)
-                    /*val cadastro = Intent(contexto, Cadastro::class.java)
-
-                    contexto.startActivity(cadastro)*/
+                {
                 },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent
