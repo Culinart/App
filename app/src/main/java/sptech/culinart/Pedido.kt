@@ -69,7 +69,8 @@ import retrofit2.Response
 import sptech.culinart.api.RetrofitInstace
 import sptech.culinart.api.data.PreferencesManager
 import sptech.culinart.api.data.pedido.DataEntregaDto
-import sptech.culinart.api.data.pedido.DatasPedidosDto
+import sptech.culinart.api.data.pedido.DatasPedidosDTO
+
 import sptech.culinart.api.data.pedido.PedidoByDataDto
 import sptech.culinart.api.data.pedido.PedidoDto
 import sptech.culinart.api.data.receita.ReceitaExibicaoPedidoDto
@@ -107,8 +108,8 @@ class Pedido : ComponentActivity() {
         val userId = prefsManager.getUserId()
         val token = prefsManager.getToken()
 
-            pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {
-                override fun onResponse(call: Call<List<DatasPedidosDto>>, response: Response<List<DatasPedidosDto>>) {
+            pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDTO>> {
+                override fun onResponse(call: Call<List<DatasPedidosDTO>>, response: Response<List<DatasPedidosDTO>>) {
                     if (response.isSuccessful) {
                         val resposta = response.body()
                         if (!resposta.isNullOrEmpty()) {
@@ -125,7 +126,7 @@ class Pedido : ComponentActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<List<DatasPedidosDto>>, t: Throwable) {
+                override fun onFailure(call: Call<List<DatasPedidosDTO>>, t: Throwable) {
                     println("Erro ao obter datas de pedidos: $t")
                 }
             })

@@ -232,75 +232,87 @@ fun TelaPreferenciasPreview() {
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import sptech.culinart.api.MockPreferencia
-import sptech.culinart.classes.Preferencia
-import javax.security.auth.callback.Callback
+import androidx.lifecycle.MutableLiveData
+import retrofit2.Call
+import retrofit2.Response
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.preferencia.PreferenciasDTO
 
 class Preferencias : ComponentActivity() {
+    private val preferenciaApiService = RetrofitInstace.getPreferenciaApiService()
+    private var screenDataDto = MutableLiveData<List<PreferenciasDTO>>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            TelaPreferencias()
+            //getPreferencias()
+            TelaPreferencias(screenDataDto)
+
         }
+    }
+
+    fun getPreferencias(){
+        preferenciaApiService.getAllPreferencias().enqueue(object :
+            retrofit2.Callback<List<PreferenciasDTO>> {
+            override fun onResponse(call: Call<List<PreferenciasDTO>>, response: Response<List<PreferenciasDTO>>) {
+                if (response.isSuccessful) {
+                    val resposta = response.body()
+                    if (!resposta.isNullOrEmpty()) {
+                        println("Resposta: "+resposta)
+
+                    } else {
+                        println("Lista de datas de pedidos vazia ou nula")
+                    }
+                } else {
+                    println("Erro na resposta do getDatasPedidos: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<List<PreferenciasDTO>>, t: Throwable) {
+                println("Erro ao obter datas de pedidos: $t")
+            }
+        })
     }
 }
 
+
+
 @Composable
-fun TelaPreferencias() {
-    var preferencias by remember { mutableStateOf<List<Preferencia>>(emptyList()) }
+fun TelaPreferencias(screenDataDtoRemember: MutableLiveData<List<PreferenciasDTO>>) {
+    //if (screenDataDtoRemember.observeAsState().value != null) {
 
-    // Chamada assíncrona para buscar as preferências da API
-    LaunchedEffect(key1 = true) {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://653dc13df52310ee6a9a4ab7.mockapi.io/preferencias/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(MockPreferencia::class.java)
-        val response = service.get()
-
-        if (response.code() == 200) { // Verifica se o código de status é 200 (OK)
-            preferencias = response.body() ?: emptyList()
-        }
-    }
-
-    MaterialTheme {
-        Column {
-            preferencias.forEach { preferencia ->
-                Preferencia(preferencia)
+        val screenDataDto = screenDataDtoRemember.observeAsState().value
+        val preferencia1 = PreferenciasDTO(1, "Mexicana", "NACIONALIDADE", "006341", "FFFFFF")
+        val preferencia2 = PreferenciasDTO(2, "Americana", "NACIONALIDADE", "0A3161", "FFFFFF")
+        val mock = listOf(preferencia1, preferencia2)
+        MaterialTheme {
+            Column {
+                if (screenDataDto != null) {
+                    mock.forEach { preferencia ->
+                        Preferencia(preferencia)
+                    }
+                }
             }
         }
     }
-}
-
+//}
 @Composable
-fun Preferencia(preferencia: Preferencia) {
+fun Preferencia(preferencia: PreferenciasDTO) {
     Box(
         modifier = Modifier
             .padding(8.dp)
@@ -341,5 +353,5 @@ fun Preferencia(preferencia: Preferencia) {
 @Preview(showBackground = true)
 @Composable
 fun TelaPreferenciasPreview() {
-    TelaPreferencias()
+    TelaPreferencias(screenDataDtoRemember = MutableLiveData<List<PreferenciasDTO>>())
 }
