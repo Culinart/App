@@ -1,5 +1,5 @@
 package sptech.culinart.api.data.pedido
 
-data class DatasPedidosDTO(
+data class DatasPedidosDto(
     val datasPedidos: String
 )
