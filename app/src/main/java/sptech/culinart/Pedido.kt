@@ -9,6 +9,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -72,6 +74,7 @@ class Pedido : ComponentActivity() {
     private val pedidosApiService = RetrofitInstace.getPedidosApiService()
 //    private var screenDataDto: PedidoByDataDto? = null
     private var screenDataDto = MutableLiveData<PedidoByDataDto>()
+    private var listaDatasPedidos = mutableListOf<DatasPedidosDto>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +86,7 @@ class Pedido : ComponentActivity() {
                     runBlocking {
                         async { getDatasPedidos() }.await()
                     }
-                    Greeting(screenDataDto, { getDatasPedidos() })
+                    Greeting(screenDataDto, listaDatasPedidos, { getDatasPedidos() }, { userId, dataString -> getProximoPedido(userId, dataString) })
                 }
             }
 
@@ -101,9 +104,10 @@ class Pedido : ComponentActivity() {
                     if (response.isSuccessful) {
                         val resposta = response.body()
                         if (!resposta.isNullOrEmpty()) {
-                            println("Resposta: "+resposta)
+                            println("Resposta: $resposta")
                             val dataString = resposta.lastOrNull()?.datasPedidos
                             if (dataString != null) {
+                                listaDatasPedidos.addAll(resposta)
                                 getProximoPedido(userId, dataString)
                             }
                         } else {
@@ -152,9 +156,11 @@ class Pedido : ComponentActivity() {
 @Composable
 fun Greeting(
     screenDataDtoRemember: MutableLiveData<PedidoByDataDto>,
+    listadeDatasPedidos: List<DatasPedidosDto>,
     getDatasPedidos: () -> Unit,
+    getProximoPedido: (Int, String) -> Unit,
     modifier: Modifier = Modifier,
-    dataObtida: Boolean = false
+    dataObtida: Boolean = false,
 ) {
     val pedidosApiService = RetrofitInstace.getPedidosApiService()
     val contexto = LocalContext.current
@@ -165,6 +171,26 @@ fun Greeting(
         mutableStateOf(dataObtida)
     }
 
+    val prefsManager = PreferencesManager.getInstance(contexto)
+    val userId = prefsManager.getUserId()
+    val dataEntrega = screenDataDtoRemember.observeAsState().value?.dataEntrega
+    val position = listadeDatasPedidos.indexOfFirst { it.datasPedidos == dataEntrega }
+    var indexData = position
+    val onSetaEsquerdaClick: () -> Unit = {
+        if (indexData > 0) {
+            val dataEntrega = listadeDatasPedidos[indexData - 1].datasPedidos
+            indexData -= 1
+            getProximoPedido(userId, dataEntrega)
+        }
+    }
+
+    val onSetaDireitaClick: () -> Unit = {
+        if (indexData > 0) {
+            val dataEntrega = listadeDatasPedidos[indexData + 1].datasPedidos
+            indexData += 1
+            getProximoPedido(userId, dataEntrega)
+        }
+    }
     if(screenDataDtoRemember.observeAsState().value != null) {
 
         val screenDataDto = screenDataDtoRemember.observeAsState().value
@@ -229,11 +255,21 @@ fun Greeting(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                if(position != 0){
+                    ImagemClicavel(
+                        painterResource(id = R.mipmap.setaesquerda),
+                        "Seta Esquerda",
+                        onClick = onSetaEsquerdaClick
 
-                Image(
-                    painter = painterResource(id = R.mipmap.setaesquerda),
-                    contentDescription = "Seta Esquerda"
-                )
+                    )
+                }else{
+                    ImagemClicavel(
+                        painterResource(id = R.mipmap.setaesquerda),
+                        "Seta Esquerda",
+                        onClick = {}
+                    )
+                }
+
 
 
                 Card(
@@ -294,11 +330,22 @@ fun Greeting(
                     }
 
                 }
+                if(position != listadeDatasPedidos.size -1){
+                    ImagemClicavel(
+                        painterResource(id = R.mipmap.setadireita),
+                        "Seta Direita",
+                        onClick = onSetaDireitaClick
 
-                Image(
-                    painter = painterResource(id = R.mipmap.setadireita),
-                    contentDescription = "Seta Direita"
-                )
+                    )
+                }else{
+                    ImagemClicavel(
+                        painterResource(id = R.mipmap.setadireita),
+                        "Seta Direita",
+                        onClick = {}
+
+                    )
+                }
+
 
             }
 
@@ -343,92 +390,89 @@ fun Greeting(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                Button(
-                    onClick = {
+                if(position == listadeDatasPedidos.size -1){
+                    Button(
+                        onClick = {
 
-                        if (screenDataDto != null) {
-                            pedidosApiService.putPedidoConcluido(screenDataDto.id).enqueue(object : Callback<Void> {
-                                override fun onResponse(
-                                    call: Call<Void>,
-                                    response: Response<Void>
-                                ) {
-                                    if (response.isSuccessful) {
-                                        getDatasPedidos()
-
-                                    } else {
-                                        println("Deu ruim")
+                            if (screenDataDto != null) {
+                                pedidosApiService.putPedidoConcluido(screenDataDto.id).enqueue(object : Callback<Void> {
+                                    override fun onResponse(
+                                        call: Call<Void>,
+                                        response: Response<Void>
+                                    ) {
+                                        if (response.isSuccessful) {
+                                            getDatasPedidos()
+                                        } else {
+                                            println("Deu ruim")
+                                        }
                                     }
-                                }
-
-                                override fun onFailure(call: Call<Void>, t: Throwable) {
-                                    println(t)
-                                }
-                            })
-                        }
+                                    override fun onFailure(call: Call<Void>, t: Throwable) {
+                                        println(t)
+                                    }
+                                })
+                            }
 
 
-                    },
-                    modifier = Modifier.width(300.dp),
-                    shape = RoundedCornerShape(10.dp),
-                    elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 8.dp, pressedElevation = 4.dp
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(243, 140, 0), contentColor = Color.White
-                    )
-                ) {
-                    Text(
-                        "Confirmar Entrega", style = TextStyle(
-                            fontWeight = FontWeight.Bold, fontSize = 16.sp,
-                            color = Color.Black
+                        },
+                        modifier = Modifier.width(300.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 8.dp, pressedElevation = 4.dp
+                        ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(243, 140, 0), contentColor = Color.White
                         )
-                    )
+                    ) {
+                        Text(
+                            "Confirmar Entrega", style = TextStyle(
+                                fontWeight = FontWeight.Bold, fontSize = 16.sp,
+                                color = Color.Black
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                if(position == listadeDatasPedidos.size -1){
+                    Button(
+                        onClick = {
+                            if (screenDataDto != null) {
+                                pedidosApiService.putPedidoCancelado(screenDataDto.id).enqueue(object : Callback<Void> {
+                                    override fun onResponse(
+                                        call: Call<Void>,
+                                        response: Response<Void>
+                                    ) {
+                                        if (response.isSuccessful) {
+                                            getDatasPedidos()
 
-                Button(
-                    onClick = {
-
-                        if (screenDataDto != null) {
-                            pedidosApiService.putPedidoCancelado(screenDataDto.id).enqueue(object : Callback<Void> {
-                                override fun onResponse(
-                                    call: Call<Void>,
-                                    response: Response<Void>
-                                ) {
-                                    if (response.isSuccessful) {
-                                        getDatasPedidos()
-
-                                    } else {
-                                        println("Deu ruim")
+                                        } else {
+                                            println("Deu ruim")
+                                        }
                                     }
-                                }
-
-                                override fun onFailure(call: Call<Void>, t: Throwable) {
-                                    println(t)
-                                }
-                            })
-                        }
-
-                    },
-                    modifier = Modifier.width(300.dp),
-                    shape = RoundedCornerShape(10.dp),
-                    elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 8.dp, pressedElevation = 4.dp
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(105, 160, 155), contentColor = Color.White
-                    )
-                ) {
-                    Text(
-                        "Pular Entrega", style = TextStyle(
-                            fontWeight = FontWeight.Bold, fontSize = 16.sp
+                                    override fun onFailure(call: Call<Void>, t: Throwable) {
+                                        println(t)
+                                    }
+                                })
+                            }
+                        },
+                        modifier = Modifier.width(300.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 8.dp, pressedElevation = 4.dp
+                        ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(105, 160, 155), contentColor = Color.White
                         )
-                    )
+                    ) {
+                        Text(
+                            "Pular Entrega", style = TextStyle(
+                                fontWeight = FontWeight.Bold, fontSize = 16.sp
+                            )
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
             }
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -609,10 +653,23 @@ fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>) {
     }
 }
 
+@Composable
+fun ImagemClicavel(
+    painter: Painter,
+    contentDescription: String,
+    onClick: () -> Unit
+) {
+    Image(
+        painter = painter,
+        contentDescription = contentDescription,
+        modifier = Modifier.clickable(onClick = onClick)
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 fun TelaPedidoPreview() {
     CulinartTheme {
-        Greeting(screenDataDtoRemember = MutableLiveData<PedidoByDataDto>(), { Unit })
+        Greeting(screenDataDtoRemember = MutableLiveData<PedidoByDataDto>(), listadeDatasPedidos = emptyList(), getDatasPedidos = {}, getProximoPedido = { _, _ -> })
     }
 }

@@ -201,8 +201,8 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         // Faça a chamada ao serviço da API
                         val usuarioApiService = RetrofitInstace.getUsuarioApiService()
 
-//                        val credenciais = UsuarioLoginDTO(email = email.value, senha = senha.value)
-                        val credenciais = UsuarioLoginDTO(email = email.value, senha = senha.value)
+//                      val credenciais = UsuarioLoginDTO(email = email.value, senha = senha.value)
+                        val credenciais = UsuarioLoginDTO(email = "lucasakiama@gmail.com", senha = "senhaQualquer123")
                         usuarioApiService.login(credenciais).enqueue(object : Callback<UsuarioTokenDTO> {
                             override fun onResponse(call: Call<UsuarioTokenDTO>, response: Response<UsuarioTokenDTO>) {
                                 if (response.isSuccessful) {
