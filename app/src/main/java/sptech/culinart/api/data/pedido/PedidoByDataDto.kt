@@ -1,6 +1,5 @@
 package sptech.culinart.api.data.pedido
 
-import androidx.compose.runtime.MutableState
 import sptech.culinart.api.data.receita.ReceitaExibicaoPedidoDto
 
 data class PedidoByDataDto (

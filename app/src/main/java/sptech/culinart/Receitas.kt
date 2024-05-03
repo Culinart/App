@@ -47,19 +47,20 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
 import coil.compose.AsyncImage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import sptech.culinart.api.RetrofitInstace
 import sptech.culinart.api.data.PreferencesManager
-import sptech.culinart.api.data.pedido.DatasPedidosDto
+import sptech.culinart.api.data.pedido.DatasPedidosDTO
 import sptech.culinart.api.data.pedido.PedidoByDataDto
 import sptech.culinart.api.data.receita.ReceitaDTO
 import sptech.culinart.ui.theme.CulinartTheme
 
 class Receitas : ComponentActivity() {
-    private var screenDataDto: PedidoByDataDto? = null
+    private var screenDataDto = MutableLiveData<PedidoByDataDto>()
     private val pedidosApiService = RetrofitInstace.getPedidosApiService()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,10 +79,10 @@ class Receitas : ComponentActivity() {
         val userId =  1 //prefsManager.getUserId()
         val token = prefsManager.getToken()
 
-        pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {
+        pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDTO>> {
             override fun onResponse(
-                call: Call<List<DatasPedidosDto>>,
-                response: Response<List<DatasPedidosDto>>
+                call: Call<List<DatasPedidosDTO>>,
+                response: Response<List<DatasPedidosDTO>>
             ) {
                 if (response.isSuccessful) {
                     val resposta = response.body()
@@ -100,7 +101,7 @@ class Receitas : ComponentActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<List<DatasPedidosDto>>, t: Throwable) {
+            override fun onFailure(call: Call<List<DatasPedidosDTO>>, t: Throwable) {
                 println("Erro ao obter datas de pedidos: $t")
             }
         })
@@ -119,7 +120,7 @@ class Receitas : ComponentActivity() {
                         val resposta = response.body()
                         println("PEDIDOS: " + resposta)
                         if (resposta != null) {
-                            screenDataDto = resposta
+                            screenDataDto.postValue(resposta!!)
                             // Faça algo com os dados do pedido aqui
                         } else {
                             println("Resposta do getProximoPedido nula")
