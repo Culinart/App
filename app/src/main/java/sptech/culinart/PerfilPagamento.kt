@@ -52,123 +52,127 @@ class PerfilPagamento : ComponentActivity() {
 
 @Composable
 fun TelaPerfilPagamento(name: String, modifier: Modifier = Modifier) {
-    ComponenteHader(name = "Android", modifier = Modifier.zIndex(99f))
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 70.dp)
-            .zIndex(1f),
-        contentAlignment = Alignment.Center
-    ){
-        Column(
+    Column {
+        ComponenteHader(name = "Android", modifier = Modifier.zIndex(99f))
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Box(
             modifier = Modifier
-                .fillMaxWidth(.8f),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .zIndex(1f),
+            contentAlignment = Alignment.Center
         ){
-            Text(
-                text = "Perfil",
-                style = TextStyle(
-                    Color(4, 93, 83),
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-            )
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Text(
-                text = "Pagamento",
-                style = TextStyle(
-                    Color(220, 119, 38),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color(android.graphics.Color.parseColor("#C1CECD")))
-            )
-
-            Spacer(modifier = Modifier.height(55.dp))
-
-            Text(
-                text = "Veja a sua última cobrança através do link de pagamento.",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                )
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(255, 159, 28),
-                    contentColor = Color.White
-                )
-            ) {
+                    .fillMaxWidth(.8f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
                 Text(
-                    text = "Link de Pagamento",
+                    text = "Perfil",
                     style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        Color(4, 93, 83),
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
                 )
-            }
 
-            Spacer(modifier = Modifier.height(70.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
-            Text(
-                text = "Cancelar Assinatura",
-                style = TextStyle(
-                    Color(4, 93, 83),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.W900
-                ),
-                modifier = Modifier.align(Alignment.Start)
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(
-                text = "Ao cancelar a sua assinatura, você indica que deseja descontinuar o " +
-                        "serviço recebido pela Culinart. Você sempre será bem-vindo novamente " +
-                        "e pode renovar a assinatura se desejar.",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                )
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(197, 197, 197),
-                    contentColor = Color.White
-                )
-            ) {
                 Text(
-                    text = "Apagar Conta",
+                    text = "Pagamento",
                     style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        Color(220, 119, 38),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Medium
                     )
                 )
-            }
 
-            Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(15.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color(android.graphics.Color.parseColor("#C1CECD")))
+                )
+
+                Spacer(modifier = Modifier.height(55.dp))
+
+                Text(
+                    text = "Veja a sua última cobrança através do link de pagamento.",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(255, 159, 28),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Link de Pagamento",
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(70.dp))
+
+                Text(
+                    text = "Cancelar Assinatura",
+                    style = TextStyle(
+                        Color(4, 93, 83),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.W900
+                    ),
+                    modifier = Modifier.align(Alignment.Start)
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "Ao cancelar a sua assinatura, você indica que deseja descontinuar o " +
+                            "serviço recebido pela Culinart. Você sempre será bem-vindo novamente " +
+                            "e pode renovar a assinatura se desejar.",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(197, 197, 197),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Apagar Conta",
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(50.dp))
+            }
         }
     }
 }

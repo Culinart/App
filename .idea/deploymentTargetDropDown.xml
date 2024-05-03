@@ -2,6 +2,15 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="TelaPerfilEnderecosPreview">
+        <State />
+      </entry>
+      <entry key="TelaPerfilEscolhasPreview">
+        <State />
+      </entry>
+      <entry key="TelaPerfilSenhaEAutenticacaoPreview">
+        <State />
+      </entry>
     </value>
   </component>
 </project>

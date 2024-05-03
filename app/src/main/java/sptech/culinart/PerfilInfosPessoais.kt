@@ -59,263 +59,264 @@ class PerfilInformacoesPessoais : ComponentActivity() {
 
 @Composable
 fun TelaPerfilInformacoesPessoais(name: String, modifier: Modifier = Modifier) {
-
     val editarDadosPessoais = remember { mutableStateOf(false) }
     val novoNome = remember { mutableStateOf("") }
     val novoEmail = remember { mutableStateOf("") }
-    ComponenteHader(name = "Android", modifier = Modifier.zIndex(99f))
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 70.dp)
-            .zIndex(1f),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
+    Column {
+        ComponenteHader(name = "Android", modifier = Modifier.zIndex(99f))
+        Spacer(modifier = Modifier.height(30.dp))
+        Box(
             modifier = Modifier
-                .fillMaxWidth(.8f),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .zIndex(1f),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = "Perfil",
-                style = TextStyle(
-                    Color(4, 93, 83),
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-            )
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Text(
-                text = "Informações Pessoais",
-                style = TextStyle(
-                    Color(220, 119, 38),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color(android.graphics.Color.parseColor("#C1CECD")))
-            )
+                    .fillMaxWidth(.8f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Perfil",
+                    style = TextStyle(
+                        Color(4, 93, 83),
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
 
-            Spacer(modifier = Modifier.height(55.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
-            if (!editarDadosPessoais.value) {
-                Column(
+                Text(
+                    text = "Informações Pessoais",
+                    style = TextStyle(
+                        Color(220, 119, 38),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .shadow(elevation = 2.8.dp, shape = RoundedCornerShape(6.dp))
-                            .padding(20.dp)
-                            .size(width = 320.dp, height = 175.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 10.dp, start = 10.dp),
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            Text(
-                                text = "Nome",
-                                style = TextStyle(
-                                    Color(4, 93, 83),
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 20.sp
-                                )
-                            )
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color(android.graphics.Color.parseColor("#C1CECD")))
+                )
 
-                            Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(55.dp))
 
-                            Text(
-                                text = "Nome Completo",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Normal,
-                                    fontSize = 18.sp
-                                ),
-                                modifier = Modifier.padding(start = 15.dp)
-                            )
-
-                            Spacer(modifier = Modifier.height(25.dp))
-
-                            Text(
-                                text = "Email",
-                                style = TextStyle(
-                                    Color(4, 93, 83),
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 20.sp
-                                )
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            Text(
-                                text = "user@mail.com",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Normal,
-                                    fontSize = 18.sp
-                                ),
-                                modifier = Modifier.padding(start = 15.dp)
-                            )
-
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(50.dp))
-
-                    Button(
-                        onClick = { /*TODO*/
-                            editarDadosPessoais.value = true
-                        },
+                if (!editarDadosPessoais.value) {
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(255, 159, 28),
-                            contentColor = Color.White
-                        )
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "Editar",
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp
-                            )
-                        )
-                    }
-                }
-            } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 15.dp)
-                            .size(width = 320.dp, height = 175.dp)
-                    ) {
-                        Column(
+                        Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 10.dp, start = 10.dp),
-                            horizontalAlignment = Alignment.Start
+                                .shadow(elevation = 2.8.dp, shape = RoundedCornerShape(6.dp))
+                                .padding(20.dp)
+                                .size(width = 320.dp, height = 175.dp)
                         ) {
-                            TextField(
-                                value = novoNome.value,
-                                onValueChange = { novoNome.value = it },
-                                label = {
-                                    Text(
-                                        "Nome",
-                                        style = TextStyle(
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
-                                        ),
-                                        modifier = Modifier.padding(bottom = 15.dp)
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 10.dp, start = 10.dp),
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                Text(
+                                    text = "Nome",
+                                    style = TextStyle(
+                                        Color(4, 93, 83),
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 20.sp
                                     )
-                                },
-                                placeholder = { Text("Nome Completo") },
-                                colors = TextFieldDefaults.colors(
-                                    unfocusedLabelColor = Color(4, 93, 83),
-                                    focusedLabelColor = Color(4, 93, 83),
-                                    unfocusedContainerColor = Color(249, 251, 251),
-                                    focusedContainerColor = Color(232, 240, 239),
-                                    unfocusedTextColor = Color(107, 107, 107, 255),
-                                    focusedTextColor = Color.Black
-                                ),
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Text
                                 )
-                            )
 
-                            Spacer(modifier = Modifier.height(25.dp))
+                                Spacer(modifier = Modifier.height(10.dp))
 
-                            TextField(
-                                value = novoEmail.value,
-                                onValueChange = { novoEmail.value = it },
-                                label = {
-                                    Text(
-                                        "Email",
-                                        style = TextStyle(
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
-                                        ),
+                                Text(
+                                    text = "Nome Completo",
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Normal,
+                                        fontSize = 18.sp
+                                    ),
+                                    modifier = Modifier.padding(start = 15.dp)
+                                )
+
+                                Spacer(modifier = Modifier.height(25.dp))
+
+                                Text(
+                                    text = "Email",
+                                    style = TextStyle(
+                                        Color(4, 93, 83),
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 20.sp
                                     )
-                                },
-                                placeholder = { Text("user@email.com") },
-                                colors = TextFieldDefaults.colors(
-                                    unfocusedLabelColor = Color(4, 93, 83),
-                                    focusedLabelColor = Color(4, 93, 83),
-                                    unfocusedContainerColor = Color(249, 251, 251),
-                                    focusedContainerColor = Color(232, 240, 239),
-                                    unfocusedTextColor = Color(107, 107, 107, 255),
-                                    focusedTextColor = Color.Black
-                                ),
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Text
                                 )
-                            )
 
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                Text(
+                                    text = "user@mail.com",
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Normal,
+                                        fontSize = 18.sp
+                                    ),
+                                    modifier = Modifier.padding(start = 15.dp)
+                                )
+
+                            }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(70.dp))
+                        Spacer(modifier = Modifier.height(50.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
                         Button(
                             onClick = { /*TODO*/
-                                      editarDadosPessoais.value = false},
+                                editarDadosPessoais.value = true
+                            },
                             modifier = Modifier
-                                .width(125.dp),
+                                .fillMaxWidth(),
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(197, 197, 197),
+                                containerColor = Color(255, 159, 28),
                                 contentColor = Color.White
                             )
                         ) {
                             Text(
-                                text = "Cancelar",
+                                text = "Editar",
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp
-                                )
-                            )
-                        }
-
-                        Button(
-                            onClick = { /*TODO*/ },
-                            modifier = Modifier
-                                .width(125.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(197, 197, 197),
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text(
-                                text = "Confirmar",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp
+                                    fontSize = 20.sp
                                 )
                             )
                         }
                     }
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .padding(top = 15.dp)
+                                .size(width = 320.dp, height = 175.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 10.dp, start = 10.dp),
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                TextField(
+                                    value = novoNome.value,
+                                    onValueChange = { novoNome.value = it },
+                                    label = {
+                                        Text(
+                                            "Nome",
+                                            style = TextStyle(
+                                                fontSize = 20.sp,
+                                                fontWeight = FontWeight.Bold
+                                            ),
+                                            modifier = Modifier.padding(bottom = 15.dp)
+                                        )
+                                    },
+                                    placeholder = { Text("Nome Completo") },
+                                    colors = TextFieldDefaults.colors(
+                                        unfocusedLabelColor = Color(4, 93, 83),
+                                        focusedLabelColor = Color(4, 93, 83),
+                                        unfocusedContainerColor = Color(249, 251, 251),
+                                        focusedContainerColor = Color(232, 240, 239),
+                                        unfocusedTextColor = Color(107, 107, 107, 255),
+                                        focusedTextColor = Color.Black
+                                    ),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Text
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.height(25.dp))
+
+                                TextField(
+                                    value = novoEmail.value,
+                                    onValueChange = { novoEmail.value = it },
+                                    label = {
+                                        Text(
+                                            "Email",
+                                            style = TextStyle(
+                                                fontSize = 20.sp,
+                                                fontWeight = FontWeight.Bold
+                                            ),
+                                        )
+                                    },
+                                    placeholder = { Text("user@email.com") },
+                                    colors = TextFieldDefaults.colors(
+                                        unfocusedLabelColor = Color(4, 93, 83),
+                                        focusedLabelColor = Color(4, 93, 83),
+                                        unfocusedContainerColor = Color(249, 251, 251),
+                                        focusedContainerColor = Color(232, 240, 239),
+                                        unfocusedTextColor = Color(107, 107, 107, 255),
+                                        focusedTextColor = Color.Black
+                                    ),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Text
+                                    )
+                                )
+
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(70.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Button(
+                                onClick = { /*TODO*/
+                                    editarDadosPessoais.value = false},
+                                modifier = Modifier
+                                    .width(125.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(197, 197, 197),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(
+                                    text = "Cancelar",
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp
+                                    )
+                                )
+                            }
+
+                            Button(
+                                onClick = { /*TODO*/ },
+                                modifier = Modifier
+                                    .width(125.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(197, 197, 197),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(
+                                    text = "Confirmar",
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp
+                                    )
+                                )
+                            }
+                        }
+                    }
                 }
+                Spacer(modifier = Modifier.height(150.dp))
             }
-            Spacer(modifier = Modifier.height(150.dp))
         }
     }
 }
