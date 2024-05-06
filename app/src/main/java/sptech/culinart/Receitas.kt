@@ -1,11 +1,9 @@
 package sptech.culinart
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,6 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import coil.compose.AsyncImage
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -60,36 +62,40 @@ import sptech.culinart.api.data.receita.ReceitaDTO
 import sptech.culinart.ui.theme.CulinartTheme
 
 class Receitas : ComponentActivity() {
-    private var screenDataDto = MutableLiveData<PedidoByDataDto>()
     private val pedidosApiService = RetrofitInstace.getPedidosApiService()
+    //    private var screenDataDto: PedidoByDataDto? = null
+    private var screenDataDto = MutableLiveData<PedidoByDataDto>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             CulinartTheme {
-                Surface(color = MaterialTheme.colorScheme.background) {
-                    TelaReceitas()
+                Surface(
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
+                ) {
+                    runBlocking {
+                        async { getDatasPedidos() }.await()
+                    }
+                    TelaReceitas(screenDataDto) { getDatasPedidos() }
                 }
             }
+
         }
     }
 
     @SuppressLint("SuspiciousIndentation")
-    private fun getDatasPedidos() {
+    fun getDatasPedidos() {
         val prefsManager = PreferencesManager.getInstance(this)
-        val userId =  1 //prefsManager.getUserId()
+        val userId = 3
         val token = prefsManager.getToken()
 
         pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {
-            override fun onResponse(
-                call: Call<List<DatasPedidosDto>>,
-                response: Response<List<DatasPedidosDto>>
-            ) {
+            override fun onResponse(call: Call<List<DatasPedidosDto>>, response: Response<List<DatasPedidosDto>>) {
                 if (response.isSuccessful) {
                     val resposta = response.body()
                     if (!resposta.isNullOrEmpty()) {
-                        println(resposta)
+                        println("Resposta: "+resposta)
                         val dataString = resposta.lastOrNull()?.datasPedidos
-                        //val data = LocalDate.parse(dataString)
                         if (dataString != null) {
                             getProximoPedido(userId, dataString)
                         }
@@ -108,338 +114,345 @@ class Receitas : ComponentActivity() {
 
     }
 
-    private fun getProximoPedido(userId: Int, dataEntrega: String) {
-//        val pedido = PedidoDto(null, null, dataEntrega);
-        pedidosApiService.getProximoPedido(userId, dataEntrega)
-            .enqueue(object : Callback<PedidoByDataDto> {
-                override fun onResponse(
-                    call: Call<PedidoByDataDto>,
-                    response: Response<PedidoByDataDto>
-                ) {
-                    if (response.isSuccessful) {
-                        val resposta = response.body()
-                        println("PEDIDOS: " + resposta)
-                        if (resposta != null) {
-                            screenDataDto.postValue(resposta!!)
-                            // Faça algo com os dados do pedido aqui
-                        } else {
-                            println("Resposta do getProximoPedido nula")
+    private fun getProximoPedido( userId: Int, dataEntrega: String) {
+        pedidosApiService.getProximoPedido(userId, dataEntrega).enqueue(object : Callback<PedidoByDataDto> {
+            override fun onResponse(call: Call<PedidoByDataDto>, response: Response<PedidoByDataDto>) {
+                if (response.isSuccessful) {
+                    val resposta = response.body()
+                    if (resposta != null) {
+                        screenDataDto.postValue(resposta!!)
+                        // Faça algo com os dados do pedido aqui
+                    } else {
+                        println("Resposta do getProximoPedido nula")
+                    }
+                } else {
+                    println("Erro na resposta do getProximoPedido: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<PedidoByDataDto>, t: Throwable) {
+                println("Erro ao obter próximo pedido: $t")
+            }
+        })
+    }
+
+//    private fun mapDatasPedidosToDataEntrega(datasPedidosDto: DatasPedidosDto): DataEntregaDto {
+//        return DataEntregaDto(LocalDate.parse(datasPedidosDto.datasPedidos))
+//    }
+}
+
+@Composable
+fun TelaReceitas(
+    screenDataDtoRemember: MutableLiveData<PedidoByDataDto>,
+    getDatasPedidosDto: () -> Unit
+) {
+
+    val screenDataDto = screenDataDtoRemember.observeAsState().value
+
+    println("ScreenDataDto: $screenDataDto")
+
+    Column(
+        modifier = Modifier
+            .background(Color.White)
+    ) {
+        Row(
+            modifier = Modifier
+                .background(Color(0xFF00AE9E))
+                .padding(30.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.lista),
+                contentDescription = "Imagem da Receita",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(shape = RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "Culinart",
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Receitas",
+                color = Color(0xFF045D53),
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+
+            var pesquisaText = remember { mutableStateOf("") }
+            var receitas = remember { mutableStateOf<List<ReceitaDTO>>(emptyList()) }
+
+
+            TextField(
+                value = pesquisaText.value,
+                onValueChange = {
+                    pesquisaText.value = it
+                    if (it.isNotBlank()) {
+                        ObterReceitasDaApiPorTermo(pesquisaText.value) { receitasDaApi ->
+                            receitas.value = receitasDaApi
                         }
                     } else {
-                        println("Erro na resposta do getProximoPedido: $response")
+                        ObterReceitasDaApi { receitasDaApi ->
+                            receitas.value = receitasDaApi
+                        }
                     }
+                },
+                label = { Text("Pesquisar") },
+                placeholder = { Text("Ex: Bolo de Chocolate") },
+                colors = TextFieldDefaults.colors(
+                    unfocusedLabelColor = Color(4, 93, 83),
+                    focusedLabelColor = Color(4, 93, 83),
+                    unfocusedContainerColor = Color(249, 251, 251),
+                    focusedContainerColor = Color(232, 240, 239),
+                    unfocusedTextColor = Color(107, 107, 107, 255),
+                    focusedTextColor = Color.Black
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text
+                ),
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Search Icon",
+                        tint = Color(4, 93, 83) // Cor do ícone
+                    )
                 }
-
-                override fun onFailure(call: Call<PedidoByDataDto>, t: Throwable) {
-                    println("Erro ao obter próximo pedido: $t")
+            )
+            if (receitas.value.isEmpty()) {
+                ObterReceitasDaApi { receitasDaApi ->
+                    receitas.value = receitasDaApi
                 }
-            })
+            }
+            RecipeCard(receitas = receitas.value)
+        }
     }
 }
 
-    @Composable
-    fun TelaReceitas() {
+
+fun ObterReceitasDaApiPorTermo(termo: String, onReceitasCarregadas: (List<ReceitaDTO>) -> Unit) {
+    val receitaApiService = RetrofitInstace.getReceitasApiService()
+
+    receitaApiService.getReceitasPorTermo(termo).enqueue(object : Callback<List<ReceitaDTO>> {
+        override fun onResponse(
+            call: Call<List<ReceitaDTO>>,
+            response: Response<List<ReceitaDTO>>
+        ) {
+            if (response.isSuccessful) {
+                val receitasDTO = response.body() ?: emptyList()
+                onReceitasCarregadas(receitasDTO)
+            } else {
+                println("Requisição falhou!")
+            }
+        }
+
+        override fun onFailure(call: Call<List<ReceitaDTO>>, t: Throwable) {
+            println("Conexão com o Back-end falhou!")
+        }
+    })
+}
+
+
+fun ObterReceitasDaApi(onReceitasCarregadas: (List<ReceitaDTO>) -> Unit) {
+    val receitaApiService = RetrofitInstace.getReceitasApiService()
+
+    receitaApiService.getReceitas().enqueue(object : Callback<List<ReceitaDTO>> {
+        override fun onResponse(
+            call: Call<List<ReceitaDTO>>,
+            response: Response<List<ReceitaDTO>>
+        ) {
+            if (response.isSuccessful) {
+                val receitasDTO = response.body() ?: emptyList()
+                onReceitasCarregadas(receitasDTO)
+            } else {
+                println("Requisição falhou!")
+            }
+        }
+
+        override fun onFailure(call: Call<List<ReceitaDTO>>, t: Throwable) {
+            println("Conexão com o Back-end falhou!")
+        }
+    })
+}
+
+@Composable
+fun RecipeCard(receitas: List<ReceitaDTO>) {
+
+    if (receitas.isEmpty()) {
         Column(
             modifier = Modifier
-                .background(Color.White)
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
-                modifier = Modifier
-                    .background(Color(0xFF00AE9E))
-                    .padding(30.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.lista),
-                    contentDescription = "Imagem da Receita",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(shape = RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = "Culinart",
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Receitas",
-                    color = Color(0xFF045D53),
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-
-                var pesquisaText = remember { mutableStateOf("") }
-                var receitas = remember { mutableStateOf<List<ReceitaDTO>>(emptyList()) }
-
-
-                TextField(
-                    value = pesquisaText.value,
-                    onValueChange = {
-                        pesquisaText.value = it
-                        if (it.isNotBlank()) {
-                            ObterReceitasDaApiPorTermo(pesquisaText.value) { receitasDaApi ->
-                                receitas.value = receitasDaApi
-                            }
-                        }else{
-                            ObterReceitasDaApi { receitasDaApi ->
-                                receitas.value = receitasDaApi
-                            }
-                        }
-                    },
-                    label = { Text("Pesquisar") },
-                    placeholder = { Text("Ex: Bolo de Chocolate") },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedLabelColor = Color(4, 93, 83),
-                        focusedLabelColor = Color(4, 93, 83),
-                        unfocusedContainerColor = Color(249, 251, 251),
-                        focusedContainerColor = Color(232, 240, 239),
-                        unfocusedTextColor = Color(107, 107, 107, 255),
-                        focusedTextColor = Color.Black
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text
-                    ),
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "Search Icon",
-                            tint = Color(4, 93, 83) // Cor do ícone
-                        )
-                    }
-                )
-                if (receitas.value.isEmpty()) {
-                    ObterReceitasDaApi { receitasDaApi ->
-                        receitas.value = receitasDaApi
-                    }
-                }
-                RecipeCard(receitas = receitas.value)
-            }
+            Text(
+                text = "Nenhuma receita encontrada!",
+                color = Color.Gray,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Medium
+            )
         }
-    }
+    } else {
+        LazyColumn {
+            items(receitas) { receita ->
+                Column(
+                    modifier = Modifier
+                        .padding(36.dp)
+                        .shadow(elevation = 4.dp, shape = RoundedCornerShape(6.dp))
+                        .background(Color.White)
+                        .padding(18.dp)
+                        .fillMaxWidth()
+                ) {
 
-    fun ObterReceitasDaApiPorTermo(termo: String, onReceitasCarregadas: (List<ReceitaDTO>) -> Unit) {
-        val receitaApiService = RetrofitInstace.getReceitasApiService()
-
-        receitaApiService.getReceitasPorTermo(termo).enqueue(object : Callback<List<ReceitaDTO>> {
-            override fun onResponse(
-                call: Call<List<ReceitaDTO>>,
-                response: Response<List<ReceitaDTO>>
-            ) {
-                if (response.isSuccessful) {
-                    val receitasDTO = response.body() ?: emptyList()
-                    onReceitasCarregadas(receitasDTO)
-                } else {
-                    println("Requisição falhou!")
-                }
-            }
-
-            override fun onFailure(call: Call<List<ReceitaDTO>>, t: Throwable) {
-                println("Conexão com o Back-end falhou!")
-            }
-        })
-    }
-
-
-    fun ObterReceitasDaApi(onReceitasCarregadas: (List<ReceitaDTO>) -> Unit) {
-        val receitaApiService = RetrofitInstace.getReceitasApiService()
-
-        receitaApiService.getReceitas().enqueue(object : Callback<List<ReceitaDTO>> {
-            override fun onResponse(
-                call: Call<List<ReceitaDTO>>,
-                response: Response<List<ReceitaDTO>>
-            ) {
-                if (response.isSuccessful) {
-                    val receitasDTO = response.body() ?: emptyList()
-                    onReceitasCarregadas(receitasDTO)
-                } else {
-                    println("Requisição falhou!")
-                }
-            }
-
-            override fun onFailure(call: Call<List<ReceitaDTO>>, t: Throwable) {
-                println("Conexão com o Back-end falhou!")
-            }
-        })
-    }
-
-    @Composable
-    fun RecipeCard(receitas: List<ReceitaDTO>) {
-
-        if (receitas.isEmpty()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Nenhuma receita encontrada!",
-                    color = Color.Gray,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        } else {
-            LazyColumn {
-                items(receitas) { receita ->
-                    Column(
+                    AsyncImage(
+                        model = "https://drive.google.com/thumbnail?id=" + receita.imagem,
+                        contentDescription = "Imagem da Receita",
                         modifier = Modifier
-                            .padding(36.dp)
-                            .shadow(elevation = 4.dp, shape = RoundedCornerShape(6.dp))
-                            .background(Color.White)
-                            .padding(18.dp)
                             .fillMaxWidth()
-                    ) {
+                            .height(175.dp)
+                            .padding(4.dp)
+                            .clip(shape = RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop
+                    )
 
-                        AsyncImage(
-                            model = "https://drive.google.com/thumbnail?id=" + receita.imagem,
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = receita.nome,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.icon_tempo_receita),
                             contentDescription = "Imagem da Receita",
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(175.dp)
-                                .padding(4.dp)
-                                .clip(shape = RoundedCornerShape(8.dp)),
+                                .width(16.dp)
+                                .height(16.dp),
                             contentScale = ContentScale.Crop
                         )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Text(
-                            text = receita.nome,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.icon_tempo_receita),
-                                contentDescription = "Imagem da Receita",
-                                modifier = Modifier
-                                    .width(16.dp)
-                                    .height(16.dp),
-                                contentScale = ContentScale.Crop
-                            )
-                            Spacer(modifier = Modifier.width(3.dp))
-                            if (receita.horas == 1) {
-                                Text(
-                                    text = "1 Hora e " + receita.minutos + " minutos",
-                                    fontSize = 16.sp,
-                                    color = Color.Black,
-                                )
-                            } else {
-                                Text(
-                                    text = "" + receita.horas + " Horas e " + receita.minutos + " minutos",
-                                    fontSize = 16.sp,
-                                    color = Color.Black,
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.width(3.dp))
+                        Spacer(modifier = Modifier.width(3.dp))
+                        if (receita.horas == 1) {
                             Text(
-                                text = "| " + receita.categorias.get(0).categoria.nome,
-                                fontSize = 10.sp,
-                                color = Color.Black,
-                                fontWeight = FontWeight.Light
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        LazyRow {
-                            items(receita.preferencias) { preferencia ->
-                                Box(
-                                    modifier = Modifier
-                                        .border(
-                                            width = 1.dp,
-                                            color = Color.Black,
-                                            shape = RoundedCornerShape(8.dp)
-                                        )
-                                        .background(
-                                            color = Color(
-                                                android.graphics.Color.parseColor(
-                                                    "#" + preferencia.preferencia.corFundo
-                                                )
-                                            ),
-                                            shape = RoundedCornerShape(8.dp)
-                                        )
-                                ) {
-
-                                    Text(
-                                        text = preferencia.preferencia.nome,
-                                        fontSize = 12.sp,
-                                        color = Color(
-                                            android.graphics.Color.parseColor(
-                                                "#" + preferencia.preferencia.corTexto
-                                            )
-                                        ),
-                                        modifier = Modifier.padding(4.dp)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(5.dp))
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Row {
-                                Image(
-                                    painter = painterResource(id = R.drawable.icon_star_receita),
-                                    contentDescription = "Icone de estrela de avaliação",
-                                    modifier = Modifier
-                                        .width(10.dp)
-                                        .height(10.dp),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(3.dp))
-                            Text(
-                                text = "" + receita.mediaAvaliacoes + " (" + receita.qtdAvaliacoes + " avaliações)",
+                                text = "1 Hora e " + receita.minutos + " minutos",
                                 fontSize = 16.sp,
                                 color = Color.Black,
-                                fontWeight = FontWeight.Light
                             )
-                            Spacer(modifier = Modifier.width(80.dp))
-                            Image(
-                                painter = painterResource(id = R.drawable.icon_add_receita),
-                                contentDescription = "Icone de adicionar receita",
+                        } else {
+                            Text(
+                                text = "" + receita.horas + " Horas e " + receita.minutos + " minutos",
+                                fontSize = 16.sp,
+                                color = Color.Black,
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Text(
+                            text = "| " + receita.categorias.get(0).categoria.nome,
+                            fontSize = 10.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Light
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+                    LazyRow {
+                        items(receita.preferencias) { preferencia ->
+                            Box(
                                 modifier = Modifier
-                                    .width(30.dp)
-                                    .height(30.dp),
+                                    .border(
+                                        width = 1.dp,
+                                        color = Color.Black,
+                                        shape = RoundedCornerShape(8.dp)
+                                    )
+                                    .background(
+                                        color = Color(
+                                            android.graphics.Color.parseColor(
+                                                "#" + preferencia.preferencia.corFundo
+                                            )
+                                        ),
+                                        shape = RoundedCornerShape(8.dp)
+                                    )
+                            ) {
+
+                                Text(
+                                    text = preferencia.preferencia.nome,
+                                    fontSize = 12.sp,
+                                    color = Color(
+                                        android.graphics.Color.parseColor(
+                                            "#" + preferencia.preferencia.corTexto
+                                        )
+                                    ),
+                                    modifier = Modifier.padding(4.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(5.dp))
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Row {
+                            Image(
+                                painter = painterResource(id = R.drawable.icon_star_receita),
+                                contentDescription = "Icone de estrela de avaliação",
+                                modifier = Modifier
+                                    .width(10.dp)
+                                    .height(10.dp),
                                 contentScale = ContentScale.Crop
                             )
                         }
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Text(
+                            text = "" + receita.mediaAvaliacoes + " (" + receita.qtdAvaliacoes + " avaliações)",
+                            fontSize = 16.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Light
+                        )
+                        Spacer(modifier = Modifier.width(80.dp))
+                        Image(
+                            painter = painterResource(id = R.drawable.icon_add_receita),
+                            contentDescription = "Icone de adicionar receita",
+                            modifier = Modifier
+                                .width(30.dp)
+                                .height(30.dp),
+                            contentScale = ContentScale.Crop
+                        )
                     }
                 }
             }
         }
     }
+}
 
 
-    @Preview(showBackground = true)
-    @Composable
-    fun TelaReceitasPreview() {
-        CulinartTheme {
-            Surface(color = MaterialTheme.colorScheme.background) {
-                TelaReceitas()
-            }
+@Preview(showBackground = true)
+@Composable
+fun TelaReceitasPreview() {
+    CulinartTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            TelaReceitas(screenDataDtoRemember = MutableLiveData<PedidoByDataDto>(), { Unit })
         }
     }
+}
