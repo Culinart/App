@@ -185,7 +185,7 @@ fun Greeting(
     }
 
     val onSetaDireitaClick: () -> Unit = {
-        if (indexData > 0) {
+        if (indexData != listadeDatasPedidos.size -1) {
             val dataEntrega = listadeDatasPedidos[indexData + 1].datasPedidos
             indexData += 1
             getProximoPedido(userId, dataEntrega)
