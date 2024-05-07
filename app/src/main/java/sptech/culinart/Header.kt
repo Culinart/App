@@ -44,7 +44,6 @@ class Header : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CulinartTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -94,7 +93,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
 
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.4f)
+                .fillMaxWidth()
                 .fillMaxHeight()
                 .background(
                     color = Color(0, 174, 158),
@@ -133,7 +132,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
                             val telaPedidos = Intent(contexto, Pedido::class.java)
                             contexto.startActivity(telaPedidos)
                                    },
-                    horizontalArrangement = Arrangement.Start,
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
 
@@ -162,7 +161,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
                             val telaReceitas = Intent(contexto, Receitas::class.java)
                             contexto.startActivity(telaReceitas)
                         },
-                    horizontalArrangement = Arrangement.Start,
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
@@ -191,7 +190,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
                             val telaMeuPlano = Intent(contexto, Plano::class.java)
                             contexto.startActivity(telaMeuPlano)
                         },
-                    horizontalArrangement = Arrangement.Start,
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
@@ -218,7 +217,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(.8f),
-                    horizontalArrangement = Arrangement.Start,
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
@@ -248,7 +247,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
                             val telaEscolhas = Intent(contexto, PerfilEscolhas::class.java)
                             contexto.startActivity(telaEscolhas)
                         },
-                    horizontalArrangement = Arrangement.Start,
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
@@ -273,7 +272,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(.8f),
-                    horizontalArrangement = Arrangement.Start,
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 

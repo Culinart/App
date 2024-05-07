@@ -1,9 +1,11 @@
 package sptech.culinart
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontStyle
@@ -51,6 +54,7 @@ class PerfilEscolhas : ComponentActivity() {
 @Composable
 fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
     ComponenteHader(name = "Android", modifier = Modifier.zIndex(99f))
+    val contexto = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -96,7 +100,10 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(55.dp))
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    val telaInformacoesPessoais = Intent(contexto, PerfilInformacoesPessoais::class.java)
+                    contexto.startActivity(telaInformacoesPessoais)
+                },
                 modifier = Modifier
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
@@ -117,7 +124,10 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(45.dp))
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    val telaSenhaEAutenticacao = Intent(contexto, PerfilSenhaEAutenticacao::class.java)
+                    contexto.startActivity(telaSenhaEAutenticacao)
+                },
                 modifier = Modifier
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
@@ -138,7 +148,10 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(45.dp))
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    val telaMeusEnderecos = Intent(contexto, PerfilEnderecos::class.java)
+                    contexto.startActivity(telaMeusEnderecos)
+                },
                 modifier = Modifier
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
@@ -159,7 +172,10 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(45.dp))
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    val telaPagamento = Intent(contexto, PerfilPagamento::class.java)
+                    contexto.startActivity(telaPagamento)
+                },
                 modifier = Modifier
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
