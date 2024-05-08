@@ -1,12 +1,14 @@
 package sptech.culinart
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +43,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -58,11 +61,14 @@ import sptech.culinart.api.RetrofitInstace
 import sptech.culinart.api.data.PreferencesManager
 import sptech.culinart.api.data.pedido.DatasPedidosDto
 import sptech.culinart.api.data.pedido.PedidoByDataDto
+import sptech.culinart.api.data.pedido.ReceitaPedidoDto
 import sptech.culinart.api.data.receita.ReceitaDTO
+import sptech.culinart.api.data.receita.ReceitaExibicaoPedidoDto
 import sptech.culinart.ui.theme.CulinartTheme
 
 class Receitas : ComponentActivity() {
     private val pedidosApiService = RetrofitInstace.getPedidosApiService()
+
     //    private var screenDataDto: PedidoByDataDto? = null
     private var screenDataDto = MutableLiveData<PedidoByDataDto>()
 
@@ -73,10 +79,11 @@ class Receitas : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
+                    println("Entrou aqui")
                     runBlocking {
-                        async { getDatasPedidos() }.await()
+                        async { getDatasPedido() }.await()
                     }
-                    TelaReceitas(screenDataDto) { getDatasPedidos() }
+                    TelaReceitas(screenDataDto) { getDatasPedido() }
                 }
             }
 
@@ -84,17 +91,20 @@ class Receitas : ComponentActivity() {
     }
 
     @SuppressLint("SuspiciousIndentation")
-    fun getDatasPedidos() {
+    fun getDatasPedido() {
         val prefsManager = PreferencesManager.getInstance(this)
         val userId = 3
         val token = prefsManager.getToken()
 
         pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {
-            override fun onResponse(call: Call<List<DatasPedidosDto>>, response: Response<List<DatasPedidosDto>>) {
+            override fun onResponse(
+                call: Call<List<DatasPedidosDto>>,
+                response: Response<List<DatasPedidosDto>>
+            ) {
                 if (response.isSuccessful) {
                     val resposta = response.body()
                     if (!resposta.isNullOrEmpty()) {
-                        println("Resposta: "+resposta)
+                        println("Resposta: " + resposta)
                         val dataString = resposta.lastOrNull()?.datasPedidos
                         if (dataString != null) {
                             getProximoPedido(userId, dataString)
@@ -114,26 +124,30 @@ class Receitas : ComponentActivity() {
 
     }
 
-    private fun getProximoPedido( userId: Int, dataEntrega: String) {
-        pedidosApiService.getProximoPedido(userId, dataEntrega).enqueue(object : Callback<PedidoByDataDto> {
-            override fun onResponse(call: Call<PedidoByDataDto>, response: Response<PedidoByDataDto>) {
-                if (response.isSuccessful) {
-                    val resposta = response.body()
-                    if (resposta != null) {
-                        screenDataDto.postValue(resposta!!)
-                        // Faça algo com os dados do pedido aqui
+    private fun getProximoPedido(userId: Int, dataEntrega: String) {
+        pedidosApiService.getProximoPedido(userId, dataEntrega)
+            .enqueue(object : Callback<PedidoByDataDto> {
+                override fun onResponse(
+                    call: Call<PedidoByDataDto>,
+                    response: Response<PedidoByDataDto>
+                ) {
+                    if (response.isSuccessful) {
+                        val resposta = response.body()
+                        if (resposta != null) {
+                            screenDataDto.postValue(resposta!!)
+                            // Faça algo com os dados do pedido aqui
+                        } else {
+                            println("Resposta do getProximoPedido nula")
+                        }
                     } else {
-                        println("Resposta do getProximoPedido nula")
+                        println("Erro na resposta do getProximoPedido: $response")
                     }
-                } else {
-                    println("Erro na resposta do getProximoPedido: $response")
                 }
-            }
 
-            override fun onFailure(call: Call<PedidoByDataDto>, t: Throwable) {
-                println("Erro ao obter próximo pedido: $t")
-            }
-        })
+                override fun onFailure(call: Call<PedidoByDataDto>, t: Throwable) {
+                    println("Erro ao obter próximo pedido: $t")
+                }
+            })
     }
 
 //    private fun mapDatasPedidosToDataEntrega(datasPedidosDto: DatasPedidosDto): DataEntregaDto {
@@ -146,7 +160,6 @@ fun TelaReceitas(
     screenDataDtoRemember: MutableLiveData<PedidoByDataDto>,
     getDatasPedidosDto: () -> Unit
 ) {
-
     val screenDataDto = screenDataDtoRemember.observeAsState().value
 
     println("ScreenDataDto: $screenDataDto")
@@ -237,7 +250,10 @@ fun TelaReceitas(
                     receitas.value = receitasDaApi
                 }
             }
-            RecipeCard(receitas = receitas.value)
+
+            if (screenDataDto != null) {
+                ReceitaCard(receitas = receitas.value, pedido = screenDataDto)
+            }
         }
     }
 }
@@ -289,7 +305,9 @@ fun ObterReceitasDaApi(onReceitasCarregadas: (List<ReceitaDTO>) -> Unit) {
 }
 
 @Composable
-fun RecipeCard(receitas: List<ReceitaDTO>) {
+fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
+    val contexto = LocalContext.current
+    val pedidosApiService = RetrofitInstace.getPedidosApiService()
 
     if (receitas.isEmpty()) {
         Column(
@@ -431,14 +449,80 @@ fun RecipeCard(receitas: List<ReceitaDTO>) {
                             fontWeight = FontWeight.Light
                         )
                         Spacer(modifier = Modifier.width(80.dp))
-                        Image(
-                            painter = painterResource(id = R.drawable.icon_add_receita),
-                            contentDescription = "Icone de adicionar receita",
-                            modifier = Modifier
-                                .width(30.dp)
-                                .height(30.dp),
-                            contentScale = ContentScale.Crop
-                        )
+                        val pedidoActivity = Intent(contexto, Pedido::class.java)
+                        if (pedido.listaReceitas.any { it.id == receita.id }) {
+                            Image(
+                                painter = painterResource(id = R.drawable.icon_check_receita),
+                                contentDescription = "Icone de receita já adicionada",
+                                modifier = Modifier
+                                    .width(25.dp)
+                                    .height(25.dp)
+                                    .clickable {
+                                        pedidosApiService
+                                            .deleteReceitaPedido(receita.id, pedido.id)
+                                            .enqueue(object : Callback<Void> {
+                                                override fun onResponse(
+                                                    call: Call<Void>,
+                                                    response: Response<Void>
+                                                ) {
+                                                    if (response.isSuccessful) {
+                                                        println("Receita removida com sucesso!")
+                                                        contexto.startActivity(pedidoActivity)
+                                                    } else {
+                                                        println("Erro ao remover receita!")
+                                                        println(response.message())
+                                                    }
+                                                }
+
+                                                override fun onFailure(
+                                                    call: Call<Void>,
+                                                    t: Throwable
+                                                ) {
+                                                    println("Erro ao remover receita do pedido!")
+                                                }
+                                            })
+                                    },
+                                contentScale = ContentScale.Crop,
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.icon_add_receita),
+                                contentDescription = "Icone de adicionar receita",
+                                modifier = Modifier
+                                    .width(30.dp)
+                                    .height(30.dp)
+                                    .clickable {
+                                        pedidosApiService
+                                            .adcionarReceitaPedido(
+                                                ReceitaPedidoDto(
+                                                    receita.id,
+                                                    pedido.id
+                                                )
+                                            )
+                                            .enqueue(object : Callback<Void> {
+                                                override fun onResponse(
+                                                    call: Call<Void>,
+                                                    response: Response<Void>
+                                                ) {
+                                                    if (response.isSuccessful) {
+                                                        println("Receita adcionada com sucesso!")
+                                                        contexto.startActivity(pedidoActivity)
+                                                    } else {
+                                                        println("Erro ao remover receita!")
+                                                    }
+                                                }
+
+                                                override fun onFailure(
+                                                    call: Call<Void>,
+                                                    t: Throwable
+                                                ) {
+                                                    println("Erro ao adcionar receita ao pedido!")
+                                                }
+                                            })
+                                    },
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
                 }
             }

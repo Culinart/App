@@ -218,7 +218,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                                         usuarioTokenDTO.isAtivo.let { prefsManager.saveIsAtivo(it) }
 
                                         if (usuarioTokenDTO.permissao == "CLIENTE") {
-                                            val pedido = Intent(contexto, Pedido::class.java)
+                                            val pedido = Intent(contexto, Receitas::class.java)
                                             pedido.putExtra("token", usuarioTokenDTO.token)
                                             pedido.putExtra("nome", usuarioTokenDTO.nome)
                                             pedido.putExtra("permissao", usuarioTokenDTO.permissao)

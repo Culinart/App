@@ -2,12 +2,14 @@ package sptech.culinart.api.endpoints
 
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import sptech.culinart.api.data.pedido.DatasPedidosDto
 import sptech.culinart.api.data.pedido.PedidoByDataDto
+import sptech.culinart.api.data.pedido.ReceitaPedidoDto
 
 interface PedidoApiService {
 
@@ -23,4 +25,11 @@ interface PedidoApiService {
 
     @PUT("/api/pedidos/pularEntrega/{idPedido}")
     fun putPedidoCancelado(@Path("idPedido") idPedido: Int): Call<Void>
+
+    @DELETE("/api/pedidos/deletar/{receitaId}/{pedidoId}")
+    fun deleteReceitaPedido(@Path("receitaId") receitaId: Int, @Path("pedidoId") pedidoId: Int): Call<Void>
+
+    @POST("/api/pedidos/adicionar")
+    fun adcionarReceitaPedido(@Body receitaPedido: ReceitaPedidoDto): Call<Void>
+
 }
