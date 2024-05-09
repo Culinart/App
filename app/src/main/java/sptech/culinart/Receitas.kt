@@ -93,7 +93,7 @@ class Receitas : ComponentActivity() {
     @SuppressLint("SuspiciousIndentation")
     fun getDatasPedido() {
         val prefsManager = PreferencesManager.getInstance(this)
-        val userId = 3
+        val userId = prefsManager.getUserId()
         val token = prefsManager.getToken()
 
         pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {

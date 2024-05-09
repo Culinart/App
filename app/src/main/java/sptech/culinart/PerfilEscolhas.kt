@@ -29,9 +29,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import sptech.culinart.api.data.PreferencesManager
 import sptech.culinart.ui.theme.CulinartTheme
 
 class PerfilEscolhas : ComponentActivity() {
+    val prefsManager = PreferencesManager.getInstance(this)
+    val nome = prefsManager.getName()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -40,7 +43,9 @@ class PerfilEscolhas : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TelaPerfilEscolhas("Android")
+                    if (nome != null) {
+                        TelaPerfilEscolhas(nome)
+                    }
                 }
             }
         }
@@ -48,7 +53,7 @@ class PerfilEscolhas : ComponentActivity() {
 }
 
 @Composable
-fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
+fun TelaPerfilEscolhas(nome: String, modifier: Modifier = Modifier) {
     ComponenteHeader(name = "Android")
     val contexto = LocalContext.current
     Box(
@@ -77,14 +82,14 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            Text(
-                text = "Nome do Usuário",
-                style = TextStyle(
-                    Color(4, 93, 83),
-                    fontWeight = FontWeight.Light,
-                    fontSize = 24.sp
+                Text(
+                    text = nome,
+                    style = TextStyle(
+                        Color(4, 93, 83),
+                        fontWeight = FontWeight.Light,
+                        fontSize = 24.sp
+                    )
                 )
-            )
 
             Spacer(modifier = Modifier.height(15.dp))
 
