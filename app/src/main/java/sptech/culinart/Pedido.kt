@@ -72,7 +72,8 @@ import java.time.LocalDate
 
 class Pedido : ComponentActivity() {
     private val pedidosApiService = RetrofitInstace.getPedidosApiService()
-//    private var screenDataDto: PedidoByDataDto? = null
+
+    //    private var screenDataDto: PedidoByDataDto? = null
     private var screenDataDto = MutableLiveData<PedidoByDataDto>()
     private var listaDatasPedidos = mutableListOf<DatasPedidosDto>()
 
@@ -86,7 +87,11 @@ class Pedido : ComponentActivity() {
                     runBlocking {
                         async { getDatasPedidos() }.await()
                     }
-                    Greeting(screenDataDto, listaDatasPedidos, { getDatasPedidos() }, { userId, dataString -> getProximoPedido(userId, dataString) })
+                    Greeting(
+                        screenDataDto,
+                        listaDatasPedidos,
+                        { getDatasPedidos() },
+                        { userId, dataString -> getProximoPedido(userId, dataString) })
                 }
             }
 
@@ -99,53 +104,60 @@ class Pedido : ComponentActivity() {
         val userId = prefsManager.getUserId()
         val token = prefsManager.getToken()
 
-            pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {
-                override fun onResponse(call: Call<List<DatasPedidosDto>>, response: Response<List<DatasPedidosDto>>) {
-                    if (response.isSuccessful) {
-                        val resposta = response.body()
-                        if (!resposta.isNullOrEmpty()) {
-                            println("Resposta: $resposta")
-                            val dataString = resposta.lastOrNull()?.datasPedidos
-                            if (dataString != null) {
-                                listaDatasPedidos.clear()
-                                listaDatasPedidos.addAll(resposta)
-                                getProximoPedido(userId, dataString)
-                            }
-                        } else {
-                            println("Lista de datas de pedidos vazia ou nula")
+        pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {
+            override fun onResponse(
+                call: Call<List<DatasPedidosDto>>,
+                response: Response<List<DatasPedidosDto>>
+            ) {
+                if (response.isSuccessful) {
+                    val resposta = response.body()
+                    if (!resposta.isNullOrEmpty()) {
+                        println("Resposta: $resposta")
+                        val dataString = resposta.lastOrNull()?.datasPedidos
+                        if (dataString != null) {
+                            listaDatasPedidos.clear()
+                            listaDatasPedidos.addAll(resposta)
+                            getProximoPedido(userId, dataString)
                         }
                     } else {
-                        println("Erro na resposta do getDatasPedidos: $response")
+                        println("Lista de datas de pedidos vazia ou nula")
                     }
+                } else {
+                    println("Erro na resposta do getDatasPedidos: $response")
                 }
+            }
 
-                override fun onFailure(call: Call<List<DatasPedidosDto>>, t: Throwable) {
-                    println("Erro ao obter datas de pedidos: $t")
-                }
-            })
+            override fun onFailure(call: Call<List<DatasPedidosDto>>, t: Throwable) {
+                println("Erro ao obter datas de pedidos: $t")
+            }
+        })
 
     }
 
-    private fun getProximoPedido( userId: Int, dataEntrega: String) {
-        pedidosApiService.getProximoPedido(userId, dataEntrega).enqueue(object : Callback<PedidoByDataDto> {
-            override fun onResponse(call: Call<PedidoByDataDto>, response: Response<PedidoByDataDto>) {
-                if (response.isSuccessful) {
-                    val resposta = response.body()
-                    if (resposta != null) {
-                        screenDataDto.value = resposta!!
-                        // Faça algo com os dados do pedido aqui
+    private fun getProximoPedido(userId: Int, dataEntrega: String) {
+        pedidosApiService.getProximoPedido(userId, dataEntrega)
+            .enqueue(object : Callback<PedidoByDataDto> {
+                override fun onResponse(
+                    call: Call<PedidoByDataDto>,
+                    response: Response<PedidoByDataDto>
+                ) {
+                    if (response.isSuccessful) {
+                        val resposta = response.body()
+                        if (resposta != null) {
+                            screenDataDto.value = resposta!!
+                            // Faça algo com os dados do pedido aqui
+                        } else {
+                            println("Resposta do getProximoPedido nula")
+                        }
                     } else {
-                        println("Resposta do getProximoPedido nula")
+                        println("Erro na resposta do getProximoPedido: $response")
                     }
-                } else {
-                    println("Erro na resposta do getProximoPedido: $response")
                 }
-            }
 
-            override fun onFailure(call: Call<PedidoByDataDto>, t: Throwable) {
-                println("Erro ao obter próximo pedido: $t")
-            }
-        })
+                override fun onFailure(call: Call<PedidoByDataDto>, t: Throwable) {
+                    println("Erro ao obter próximo pedido: $t")
+                }
+            })
     }
 
 //    private fun mapDatasPedidosToDataEntrega(datasPedidosDto: DatasPedidosDto): DataEntregaDto {
@@ -186,14 +198,14 @@ fun Greeting(
     }
 
     val onSetaDireitaClick: () -> Unit = {
-        if (indexData != listadeDatasPedidos.size -1) {
+        if (indexData != listadeDatasPedidos.size - 1) {
             val dataEntrega = listadeDatasPedidos[indexData + 1].datasPedidos
             indexData += 1
             getProximoPedido(userId, dataEntrega)
         }
     }
 
-    if(screenDataDtoRemember.observeAsState().value != null) {
+    if (screenDataDtoRemember.observeAsState().value != null) {
 
         val screenDataDto = screenDataDtoRemember.observeAsState().value
 
@@ -257,14 +269,14 @@ fun Greeting(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if(position != 0){
+                if (position != 0) {
                     ImagemClicavel(
                         painterResource(id = R.mipmap.setaesquerda),
                         "Seta Esquerda",
                         onClick = onSetaEsquerdaClick
 
                     )
-                }else{
+                } else {
                     ImagemClicavel(
                         painterResource(id = R.mipmap.setaesquerda),
                         "Seta Esquerda",
@@ -332,14 +344,14 @@ fun Greeting(
                     }
 
                 }
-                if(position != listadeDatasPedidos.size -1){
+                if (position != listadeDatasPedidos.size - 1) {
                     ImagemClicavel(
                         painterResource(id = R.mipmap.setadireita),
                         "Seta Direita",
                         onClick = onSetaDireitaClick
 
                     )
-                }else{
+                } else {
                     ImagemClicavel(
                         painterResource(id = R.mipmap.setadireita),
                         "Seta Direita",
@@ -392,26 +404,28 @@ fun Greeting(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                if(position == listadeDatasPedidos.size -1){
+                if (position == listadeDatasPedidos.size - 1) {
                     Button(
                         onClick = {
 
                             if (screenDataDto != null) {
-                                pedidosApiService.putPedidoConcluido(screenDataDto.id).enqueue(object : Callback<Void> {
-                                    override fun onResponse(
-                                        call: Call<Void>,
-                                        response: Response<Void>
-                                    ) {
-                                        if (response.isSuccessful) {
-                                            getDatasPedidos()
-                                        } else {
-                                            println("Deu ruim")
+                                pedidosApiService.putPedidoConcluido(screenDataDto.id)
+                                    .enqueue(object : Callback<Void> {
+                                        override fun onResponse(
+                                            call: Call<Void>,
+                                            response: Response<Void>
+                                        ) {
+                                            if (response.isSuccessful) {
+                                                getDatasPedidos()
+                                            } else {
+                                                println("Deu ruim")
+                                            }
                                         }
-                                    }
-                                    override fun onFailure(call: Call<Void>, t: Throwable) {
-                                        println(t)
-                                    }
-                                })
+
+                                        override fun onFailure(call: Call<Void>, t: Throwable) {
+                                            println(t)
+                                        }
+                                    })
                             }
 
 
@@ -436,26 +450,28 @@ fun Greeting(
                     Spacer(modifier = Modifier.height(10.dp))
                 }
 
-                if(position == listadeDatasPedidos.size -1){
+                if (position == listadeDatasPedidos.size - 1) {
                     Button(
                         onClick = {
                             if (screenDataDto != null) {
-                                pedidosApiService.putPedidoCancelado(screenDataDto.id).enqueue(object : Callback<Void> {
-                                    override fun onResponse(
-                                        call: Call<Void>,
-                                        response: Response<Void>
-                                    ) {
-                                        if (response.isSuccessful) {
-                                            getDatasPedidos()
+                                pedidosApiService.putPedidoCancelado(screenDataDto.id)
+                                    .enqueue(object : Callback<Void> {
+                                        override fun onResponse(
+                                            call: Call<Void>,
+                                            response: Response<Void>
+                                        ) {
+                                            if (response.isSuccessful) {
+                                                getDatasPedidos()
 
-                                        } else {
-                                            println("Deu ruim")
+                                            } else {
+                                                println("Deu ruim")
+                                            }
                                         }
-                                    }
-                                    override fun onFailure(call: Call<Void>, t: Throwable) {
-                                        println(t)
-                                    }
-                                })
+
+                                        override fun onFailure(call: Call<Void>, t: Throwable) {
+                                            println(t)
+                                        }
+                                    })
                             }
                         },
                         modifier = Modifier.width(300.dp),
@@ -493,7 +509,12 @@ fun Greeting(
                 if (position == listadeDatasPedidos.size - 1) {
                     ultimoPedido = true
                 }
-                RecipeCard(receitas = screenDataDto.listaReceitas, pedidoId = screenDataDto.id, getDatasPedidos = getDatasPedidos, ultimoPedido)
+                RecipeCard(
+                    receitas = screenDataDto.listaReceitas,
+                    pedidoId = screenDataDto.id,
+                    getDatasPedidos = getDatasPedidos,
+                    ultimoPedido
+                )
             } else {
                 Text(
                     text = "Nenhuma receita encontrada!",
@@ -511,7 +532,12 @@ fun Greeting(
 }
 
 @Composable
-fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>, pedidoId: Int, getDatasPedidos: () -> Unit, ultimoPedido: Boolean) {
+fun RecipeCard(
+    receitas: List<ReceitaExibicaoPedidoDto>,
+    pedidoId: Int,
+    getDatasPedidos: () -> Unit,
+    ultimoPedido: Boolean
+) {
 
     if (receitas.isEmpty()) {
         Column(
@@ -636,7 +662,22 @@ fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>, pedidoId: Int, getDatas
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Spacer(modifier = Modifier.weight(1f)) // Espaço flexível para empurrar o ícone para a direita
+                            Image(
+                                painter = painterResource(id = R.drawable.icon_star_receita),
+                                contentDescription = "Icone de estrela de avaliação",
+                                modifier = Modifier
+                                    .width(10.dp)
+                                    .height(10.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                            Spacer(modifier = Modifier.width(3.dp))
+                            Text(
+                                text = "" + receita.mediaNotas + " (" + receita.qtdAvaliacoes + " avaliações)",
+                                fontSize = 16.sp,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Light
+                            )
+                            Spacer(modifier = Modifier.weight(50f)) // Espaço flexível para empurrar o ícone para a direita
                             Image(
                                 painter = painterResource(id = R.drawable.icon_lixo),
                                 contentDescription = "Icone de excluir receita",
@@ -646,7 +687,8 @@ fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>, pedidoId: Int, getDatas
                                     .clickable(onClick = { /* Adicione aqui a ação que deseja quando o ícone for clicado */
                                         val pedidosApiService =
                                             RetrofitInstace.getPedidosApiService()
-                                        pedidosApiService.deleteReceitaPedido(receita.id, pedidoId)
+                                        pedidosApiService
+                                            .deleteReceitaPedido(receita.id, pedidoId)
                                             .enqueue(object : Callback<Void> {
                                                 override fun onResponse(
                                                     call: Call<Void>,
@@ -671,21 +713,14 @@ fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>, pedidoId: Int, getDatas
                                     }),
                                 contentScale = ContentScale.Crop
                             )
-                        }
-                        Spacer(modifier = Modifier.width(3.dp))
-                        Text(
-                            text = "" + receita.mediaNotas + " (" + receita.qtdAvaliacoes + " avaliações)",
-                            fontSize = 16.sp,
-                            color = Color.Black,
-                            fontWeight = FontWeight.Light
-                        )
-                    }
 
+                        }
+                    }
                 }
             }
         }
     }
-
+}
 
 
 @Composable
@@ -705,6 +740,10 @@ fun ImagemClicavel(
 @Composable
 fun TelaPedidoPreview() {
     CulinartTheme {
-        Greeting(screenDataDtoRemember = MutableLiveData<PedidoByDataDto>(), listadeDatasPedidos = emptyList(), getDatasPedidos = {}, getProximoPedido = { _, _ -> })
+        Greeting(
+            screenDataDtoRemember = MutableLiveData<PedidoByDataDto>(),
+            listadeDatasPedidos = emptyList(),
+            getDatasPedidos = {},
+            getProximoPedido = { _, _ -> })
     }
 }
