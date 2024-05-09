@@ -107,6 +107,7 @@ class Pedido : ComponentActivity() {
                             println("Resposta: $resposta")
                             val dataString = resposta.lastOrNull()?.datasPedidos
                             if (dataString != null) {
+                                listaDatasPedidos.clear()
                                 listaDatasPedidos.addAll(resposta)
                                 getProximoPedido(userId, dataString)
                             }
@@ -131,7 +132,7 @@ class Pedido : ComponentActivity() {
                 if (response.isSuccessful) {
                     val resposta = response.body()
                     if (resposta != null) {
-                        screenDataDto.postValue(resposta!!)
+                        screenDataDto.value = resposta!!
                         // Faça algo com os dados do pedido aqui
                     } else {
                         println("Resposta do getProximoPedido nula")
@@ -487,7 +488,11 @@ fun Greeting(
             )
             Spacer(modifier = Modifier.height(15.dp))
             if (screenDataDto != null) {
-                RecipeCard(receitas = screenDataDto.listaReceitas)
+                var ultimoPedido = false
+                if (position == listadeDatasPedidos.size - 1) {
+                    ultimoPedido = true
+                }
+                RecipeCard(receitas = screenDataDto.listaReceitas, pedidoId = screenDataDto.id, getDatasPedidos = getDatasPedidos, ultimoPedido)
             } else {
                 Text(
                     text = "Nenhuma receita encontrada!",
@@ -505,7 +510,7 @@ fun Greeting(
 }
 
 @Composable
-fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>) {
+fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>, pedidoId: Int, getDatasPedidos: () -> Unit, ultimoPedido: Boolean) {
 
     if (receitas.isEmpty()) {
         Column(
@@ -626,32 +631,56 @@ fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>) {
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Row {
+                    if (ultimoPedido) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Spacer(modifier = Modifier.weight(1f)) // Espaço flexível para empurrar o ícone para a direita
                             Image(
-                                painter = painterResource(id = R.drawable.icon_star_receita),
-                                contentDescription = "Icone de estrela de avaliação",
+                                painter = painterResource(id = R.drawable.icon_lixo),
+                                contentDescription = "Icone de excluir receita",
                                 modifier = Modifier
-                                    .width(10.dp)
-                                    .height(10.dp),
+                                    .width(20.dp)
+                                    .height(25.dp)
+                                    .clickable(onClick = { /* Adicione aqui a ação que deseja quando o ícone for clicado */
+                                        val pedidosApiService =
+                                            RetrofitInstace.getPedidosApiService()
+                                        pedidosApiService.deleteReceitaPedido(receita.id, pedidoId)
+                                            .enqueue(object : Callback<Void> {
+                                                override fun onResponse(
+                                                    call: Call<Void>,
+                                                    response: Response<Void>
+                                                ) {
+                                                    if (response.isSuccessful) {
+                                                        println("Resposta do deleteReceitaPedido com sucesso: $response")
+                                                        getDatasPedidos()
+                                                    } else {
+                                                        error("Erro na resposta do deleteReceitaPedido: $response")
+                                                    }
+                                                }
+
+                                                override fun onFailure(
+                                                    call: Call<Void>,
+                                                    t: Throwable
+                                                ) {
+                                                    println("Erro ao obter próximo pedido: $t")
+                                                }
+                                            })
+
+                                    }),
                                 contentScale = ContentScale.Crop
                             )
                         }
                         Spacer(modifier = Modifier.width(3.dp))
-//                        Text(
-//                            text = "" + receita.mediaAvaliacoes + " (" + receita.qtdAvaliacoes + " avaliações)",
-//                            fontSize = 16.sp,
-//                            color = Color.Black,
-//                            fontWeight = FontWeight.Light
-//                        )
+                        }
                     }
+
                 }
             }
         }
     }
-}
+
+
 
 @Composable
 fun ImagemClicavel(
