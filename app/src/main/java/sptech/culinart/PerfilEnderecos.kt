@@ -15,10 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -29,8 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,9 +52,9 @@ class PerfilEnderecos : ComponentActivity() {
 @Composable
 fun TelaPerfilEnderecos(name: String, modifier: Modifier = Modifier) {
 
-    Column (modifier = Modifier.fillMaxSize()){
+    Column (modifier = Modifier.fillMaxSize().background(Color.White)){
         
-        ComponenteHader(name = "Android", modifier = Modifier.zIndex(99f))
+        ComponenteHeader(name = "Android", modifier = Modifier.zIndex(99f))
 
         Spacer(modifier = Modifier.height(30.dp))
 
@@ -128,7 +123,8 @@ fun TelaPerfilEnderecos(name: String, modifier: Modifier = Modifier) {
                             text = "Rua Haddock Lobo, 595",
                             style = TextStyle(
                                 fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black
                             )
                         )
 
@@ -150,7 +146,8 @@ fun TelaPerfilEnderecos(name: String, modifier: Modifier = Modifier) {
                         Text(
                             text = "Cerqueira César",
                             style = TextStyle(
-                                fontSize = 16.sp
+                                fontSize = 16.sp,
+                                color = Color.Black
                             )
                         )
 
@@ -163,7 +160,8 @@ fun TelaPerfilEnderecos(name: String, modifier: Modifier = Modifier) {
                             Text(
                                 text = "São Paulo - SP",
                                 style = TextStyle(
-                                    fontSize = 16.sp
+                                    fontSize = 16.sp,
+                                    color = Color.Black
                                 )
                             )
 
@@ -171,7 +169,8 @@ fun TelaPerfilEnderecos(name: String, modifier: Modifier = Modifier) {
                                 text = "01414-001",
                                 style = TextStyle(
                                     fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.Black
                                 )
                             )
 

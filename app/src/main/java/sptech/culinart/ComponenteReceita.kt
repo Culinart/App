@@ -65,7 +65,7 @@ class ComponenteReceita : ComponentActivity() {
 fun ComponenteReceita(name: String, modifier: Modifier = Modifier) {
     var selectedTabIndex = remember { mutableStateOf(0) }
 
-    ComponenteHader("Android", modifier = Modifier.zIndex(99f))
+    ComponenteHeader("Android", modifier = Modifier.zIndex(99f))
     Column(
         modifier = Modifier
             .fillMaxSize()

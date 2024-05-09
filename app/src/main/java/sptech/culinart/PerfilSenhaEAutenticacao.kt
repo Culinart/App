@@ -31,15 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import org.w3c.dom.Text
 import sptech.culinart.ui.theme.CulinartTheme
 
 class PerfilSenhaEAutenticacao : ComponentActivity() {
@@ -51,7 +48,7 @@ class PerfilSenhaEAutenticacao : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TelaPerfilPagamento("Android")
+                    TelaPerfilSenhaEAutenticacao("Android")
                 }
             }
         }
@@ -60,24 +57,28 @@ class PerfilSenhaEAutenticacao : ComponentActivity() {
 
 @Composable
 fun TelaPerfilSenhaEAutenticacao(name: String, modifier: Modifier = Modifier) {
-    Column {
+    Column(modifier = Modifier
+        .background(Color.White)
+    ) {
         val alterarSenha = remember { mutableStateOf(false) }
         val senha = remember { mutableStateOf("") }
         val novaSenha = remember { mutableStateOf("") }
         val confirmarSenha = remember { mutableStateOf("") }
-        ComponenteHader(name = "Android", modifier = Modifier.zIndex(99f))
+        ComponenteHeader(name = "Android", modifier = Modifier.zIndex(99f))
 
         Spacer(modifier = Modifier.height(45.dp))
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .zIndex(1f),
+                .zIndex(1f)
+                .background(Color.White),
             contentAlignment = Alignment.Center
         ){
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(.8f),
+                    .fillMaxWidth(.8f)
+                    .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Text(
@@ -167,7 +168,8 @@ fun TelaPerfilSenhaEAutenticacao(name: String, modifier: Modifier = Modifier) {
                                     "conta serão permanentemente removidos e não poderão ser recuperados.",
                             style = TextStyle(
                                 fontSize = 17.sp,
-                                fontWeight = FontWeight.Normal
+                                fontWeight = FontWeight.Normal,
+                                color = Color.Black
                             ),
                             modifier = Modifier
                                 .align(Alignment.Start)
