@@ -1,13 +1,13 @@
 package sptech.culinart
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.navigation.compose.rememberNavController
 import sptech.culinart.ui.theme.CulinartTheme
 
 class Header : ComponentActivity() {
@@ -48,7 +46,7 @@ class Header : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ComponenteHader("Android")
+                    ComponenteHeader("Android")
                 }
             }
         }
@@ -56,7 +54,7 @@ class Header : ComponentActivity() {
 }
 
 @Composable
-fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
+fun ComponenteHeader(name: String, modifier: Modifier = Modifier) {
     val isHeaderVisible = remember { mutableStateOf(false) }
     val contexto = LocalContext.current
     if (!isHeaderVisible.value) {
@@ -96,18 +94,13 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .background(
-                    color = Color(0, 174, 158),
-                    shape = RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = 20.dp,
-                        bottomEnd = 20.dp,
-                        bottomStart = 0.dp
-                    )
+                    color = Color(0, 174, 158)
                 )
                 .zIndex(100f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            Spacer(modifier = Modifier.height(25.dp))
             Icon(
                 painter = painterResource(id = R.mipmap.menu),
                 contentDescription = "Menu",
@@ -131,7 +124,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
                         .clickable {
                             val telaPedidos = Intent(contexto, Pedido::class.java)
                             contexto.startActivity(telaPedidos)
-                                   },
+                        },
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -216,7 +209,13 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(.8f),
+                        .fillMaxWidth(.8f)
+                        .clickable{
+                            val linkSuporte = "https://app.pipefy.com/public/form/VqIeVqHH"
+                            val intent =
+                                Intent(Intent.ACTION_VIEW, Uri.parse(linkSuporte))
+                            contexto.startActivity(intent)
+                        },
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -294,6 +293,7 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
                 }
             }
         }
+        Spacer(modifier = Modifier.height(25.dp))
     }
 }
 
@@ -301,6 +301,6 @@ fun ComponenteHader(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun ComponenteHaderPreview() {
     CulinartTheme {
-        ComponenteHader("Android")
+        ComponenteHeader("Android")
     }
 }

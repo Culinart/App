@@ -110,7 +110,7 @@ fun TelaPlano(modifier: Modifier = Modifier) {
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
+        ComponenteHeader("Android")
         Spacer(modifier = Modifier.height(30.dp))
 
         Text(

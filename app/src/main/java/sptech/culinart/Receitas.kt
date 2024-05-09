@@ -168,29 +168,7 @@ fun TelaReceitas(
         modifier = Modifier
             .background(Color.White)
     ) {
-        Row(
-            modifier = Modifier
-                .background(Color(0xFF00AE9E))
-                .padding(30.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.lista),
-                contentDescription = "Imagem da Receita",
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(shape = RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "Culinart",
-                color = Color.White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        ComponenteHeader("Android")
         Column(
             modifier = Modifier
                 .fillMaxWidth()

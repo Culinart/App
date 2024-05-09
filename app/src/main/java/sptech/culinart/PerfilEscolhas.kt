@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,8 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,7 +49,7 @@ class PerfilEscolhas : ComponentActivity() {
 
 @Composable
 fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
-    ComponenteHader(name = "Android", modifier = Modifier.zIndex(99f))
+    ComponenteHeader(name = "Android")
     val contexto = LocalContext.current
     Box(
         modifier = Modifier
@@ -63,9 +59,11 @@ fun TelaPerfilEscolhas(name: String, modifier: Modifier = Modifier) {
             .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
+
         Column(
             modifier = Modifier
-                .fillMaxWidth(.8f),
+                .fillMaxWidth(.8f)
+                .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(

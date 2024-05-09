@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,18 +61,19 @@ fun TelaPerfilInformacoesPessoais(name: String, modifier: Modifier = Modifier) {
     val editarDadosPessoais = remember { mutableStateOf(false) }
     val novoNome = remember { mutableStateOf("") }
     val novoEmail = remember { mutableStateOf("") }
-    Column {
-        ComponenteHader(name = "Android", modifier = Modifier.zIndex(99f))
-        Spacer(modifier = Modifier.height(30.dp))
+    Column(Modifier.background(Color.White)) {
+        ComponenteHeader(name = "Android", modifier = Modifier.zIndex(99f))
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .zIndex(1f),
+                .zIndex(1f)
+                .background(Color.White),
             contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(.8f),
+                    .fillMaxWidth(.8f)
+                    .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -140,7 +140,8 @@ fun TelaPerfilInformacoesPessoais(name: String, modifier: Modifier = Modifier) {
                                     text = "Nome Completo",
                                     style = TextStyle(
                                         fontWeight = FontWeight.Normal,
-                                        fontSize = 18.sp
+                                        fontSize = 18.sp,
+                                        color = Color.Black
                                     ),
                                     modifier = Modifier.padding(start = 15.dp)
                                 )
@@ -162,7 +163,8 @@ fun TelaPerfilInformacoesPessoais(name: String, modifier: Modifier = Modifier) {
                                     text = "user@mail.com",
                                     style = TextStyle(
                                         fontWeight = FontWeight.Normal,
-                                        fontSize = 18.sp
+                                        fontSize = 18.sp,
+                                        color = Color.Black
                                     ),
                                     modifier = Modifier.padding(start = 15.dp)
                                 )

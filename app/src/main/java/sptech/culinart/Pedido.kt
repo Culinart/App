@@ -192,6 +192,7 @@ fun Greeting(
             getProximoPedido(userId, dataEntrega)
         }
     }
+
     if(screenDataDtoRemember.observeAsState().value != null) {
 
         val screenDataDto = screenDataDtoRemember.observeAsState().value
@@ -223,7 +224,7 @@ fun Greeting(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
+            ComponenteHeader("Android")
             Spacer(modifier = Modifier.height(30.dp))
 
             Text(
@@ -672,7 +673,12 @@ fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>, pedidoId: Int, getDatas
                             )
                         }
                         Spacer(modifier = Modifier.width(3.dp))
-                        }
+                        Text(
+                            text = "" + receita.mediaNotas + " (" + receita.qtdAvaliacoes + " avaliações)",
+                            fontSize = 16.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Light
+                        )
                     }
 
                 }

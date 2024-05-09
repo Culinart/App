@@ -6,13 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,14 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import org.w3c.dom.Text
 import sptech.culinart.ui.theme.CulinartTheme
 
 class PerfilPagamento : ComponentActivity() {
@@ -52,15 +46,16 @@ class PerfilPagamento : ComponentActivity() {
 
 @Composable
 fun TelaPerfilPagamento(name: String, modifier: Modifier = Modifier) {
-    Column {
-        ComponenteHader(name = "Android", modifier = Modifier.zIndex(99f))
+    Column(Modifier.background(Color.White)) {
+        ComponenteHeader(name = "Android", modifier = Modifier.zIndex(99f))
 
         Spacer(modifier = Modifier.height(30.dp))
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .zIndex(1f),
+                .zIndex(1f)
+                .background(Color.White),
             contentAlignment = Alignment.Center
         ){
             Column(
@@ -103,6 +98,7 @@ fun TelaPerfilPagamento(name: String, modifier: Modifier = Modifier) {
                     text = "Veja a sua última cobrança através do link de pagamento.",
                     style = TextStyle(
                         fontSize = 16.sp,
+                        color = Color.Black
                     )
                 )
 
@@ -147,6 +143,7 @@ fun TelaPerfilPagamento(name: String, modifier: Modifier = Modifier) {
                             "e pode renovar a assinatura se desejar.",
                     style = TextStyle(
                         fontSize = 16.sp,
+                        color = Color.Black
                     )
                 )
 
