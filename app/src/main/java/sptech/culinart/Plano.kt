@@ -35,6 +35,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,11 +51,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.PreferencesManager
+import sptech.culinart.api.data.categoria.Categoria
+import sptech.culinart.api.data.plano.PlanoResponseDTO
+import sptech.culinart.api.data.plano.planoCategoria.CategoriaId
+import sptech.culinart.api.data.plano.planoCategoria.PlanoCategoriaResponse
 import sptech.culinart.ui.theme.CulinartTheme
 
 class Plano : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             CulinartTheme {
                
@@ -73,6 +86,13 @@ fun TelaPlano(modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
 
+    val prefsManager = PreferencesManager.getInstance(contexto);
+    val userId = prefsManager.getUserId()
+
+    val erroApi = remember { mutableStateOf("") }
+
+
+    val categorias = remember { mutableStateListOf<Categoria>() }
 
     val selectedDay = remember { mutableStateOf("") }
 
@@ -99,8 +119,118 @@ fun TelaPlano(modifier: Modifier = Modifier) {
         "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
         "18:00", "19:00", "20:00", "21:00", "22:00"
     )
+
+    val idPlano = remember { mutableStateOf(0) }
+
+    val planoCategoriasSelecionadas = remember { mutableStateListOf<String>() }
+
     val selectedHorario = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
+
+
+    val valorPlano = remember { mutableStateOf(600.0) }
+
+    val categoriasSelecionadas = remember { mutableStateListOf<Categoria>() }
+
+    val selectedMaiorPrecoCategoria = remember { mutableStateOf(1.0) }
+
+
+    val apiCategoria = RetrofitInstace.getApiCategoriaService()
+    val call = apiCategoria.getCategorias()
+    val erroApiCat = remember { mutableStateOf("") }
+    call.enqueue(object : Callback<List<Categoria>> {
+        override fun onResponse(call: Call<List<Categoria>>, response: Response<List<Categoria>>) {
+            if (response.isSuccessful) {
+                println("Entrou no sucess")
+
+                response.body()?.let {
+                    categorias.clear()
+                    categorias.addAll(it)
+                }
+
+                println("CATEGORIAS: ")
+                categorias.forEach { categoria ->
+                    println("Cateogira ID: ${categoria.id}, Categoria: ${categoria.nome}, Preço: ${categoria.valor}")
+                }
+
+            } else {
+                println("Erro ao trazer as categorias")
+                erroApiCat.value = "Erro ao trazer as categorias"
+            }
+        }
+        override fun onFailure(call: Call<List<Categoria>>, t: Throwable) {
+            println("Entrou no failure")
+            erroApiCat.value = "Falha na conexão: ${t.message}"
+        }
+    })
+
+
+    val apiService = RetrofitInstace.getApiPlanoService()
+    apiService.buscarPlano(userId).enqueue(object : Callback<PlanoResponseDTO> {
+        override fun onResponse(call: Call<PlanoResponseDTO>, response: Response<PlanoResponseDTO>) {
+            if (response.isSuccessful) {
+                println("Entrou no sucess em buscarPlano")
+
+                idPlano.value = response.body()?.id ?: 0
+                selectedDay.value = response.body()?.diaSemana ?: "SEGUNDA"
+                selectedHorario.value = response.body()?.horaEntrega ?: "06:00"
+                numeroDiasPorSemana.value = response.body()?.qtdDiasSemana ?: 1
+                numeroPessoas.value = response.body()?.qtdPessoas ?: 1
+                numeroRefeicoesDia.value = response.body()?.qtdRefeicoesDia ?: 1
+                valorPlano.value = response.body()?.valorPlano ?: 600.0
+
+            } else {
+                println("Erro em buscarPlano")
+                erroApi.value = "Erro em buscarPlano"
+            }
+        }
+
+        override fun onFailure(call: Call<PlanoResponseDTO>, t: Throwable) {
+            println("Entrou no failure em buscarPlano")
+            erroApi.value = "Falha na conexão: ${t.message}"
+        }
+    })
+
+
+    apiService.buscarPlanoCategorias(userId).enqueue(object : Callback<List<PlanoCategoriaResponse>> {
+        override fun onResponse(call: Call<List<PlanoCategoriaResponse>>, response: Response<List<PlanoCategoriaResponse>>) {
+            if (response.isSuccessful) {
+                println("Entrou no sucess em buscarPlanoCategorias")
+
+                response.body()?.forEach { planoCategoria ->
+                    planoCategoriasSelecionadas.add(planoCategoria.categoria.nome)
+                }
+
+                isCarnesClicked.value = "Carnes" in planoCategoriasSelecionadas
+                isVegetarianoClicked.value = "Vegetariano" in planoCategoriasSelecionadas
+                isPescetarianoClicked.value = "Pescetariano" in planoCategoriasSelecionadas
+                isVeganoClicked.value = "Vegano" in planoCategoriasSelecionadas
+                isRapidoFacilClicked.value = "Rápido e Fácil" in planoCategoriasSelecionadas
+                isFitSaudavelClicked.value = "Fit e Saudável" in planoCategoriasSelecionadas
+
+
+            } else {
+                println("Erro em buscarPlanoCategorias")
+                erroApi.value = "Erro em buscarPlanoCategorias"
+            }
+        }
+
+        override fun onFailure(call: Call<List<PlanoCategoriaResponse>>, t: Throwable) {
+            println("Entrou no failure em buscarPlanoCategorias")
+            erroApi.value = "Falha na conexão: ${t.message}"
+        }
+    })
+
+    LaunchedEffect(key1 = "repeatCalculation") {
+        while (true) {
+
+            selectedMaiorPrecoCategoria.value = categoriasSelecionadas.maxOfOrNull { categoria -> categoria.valor } ?: 1.0
+
+            valorPlano.value = (numeroPessoas.value * numeroRefeicoesDia.value *
+                    numeroDiasPorSemana.value * selectedMaiorPrecoCategoria.value).toDouble()
+            delay(4000)
+        }
+    }
 
 
     Column(
@@ -169,6 +299,15 @@ fun TelaPlano(modifier: Modifier = Modifier) {
             ){
                 TextButton(onClick = {
                     isCarnesClicked.value = !isCarnesClicked.value
+                    if (isCarnesClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Carnes", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Carnes", ignoreCase = true) }
+                    }
                 }) {
                     Column( modifier = modifier
                         .fillMaxHeight()
@@ -205,6 +344,15 @@ fun TelaPlano(modifier: Modifier = Modifier) {
             ){
                 TextButton(onClick = {
                     isVegetarianoClicked.value = !isVegetarianoClicked.value
+                    if (isVegetarianoClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Vegetariano", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Vegetariano", ignoreCase = true) }
+                    }
                 }) {
                     Column( modifier = modifier
                         .fillMaxHeight()
@@ -250,6 +398,15 @@ fun TelaPlano(modifier: Modifier = Modifier) {
             ){
                 TextButton(onClick = {
                     isPescetarianoClicked.value = !isPescetarianoClicked.value
+                    if (isPescetarianoClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Pescetariano", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Pescetariano", ignoreCase = true) }
+                    }
                 }) {
                     Column( modifier = modifier
                         .fillMaxHeight()
@@ -286,6 +443,15 @@ fun TelaPlano(modifier: Modifier = Modifier) {
             ){
                 TextButton(onClick = {
                     isVeganoClicked.value = !isVeganoClicked.value
+                    if (isVeganoClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Vegano", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Vegano", ignoreCase = true) }
+                    }
                 }) {
                     Column( modifier = modifier
                         .fillMaxHeight()
@@ -333,6 +499,15 @@ fun TelaPlano(modifier: Modifier = Modifier) {
             ) {
                 TextButton(onClick = {
                     isRapidoFacilClicked.value = !isRapidoFacilClicked.value
+                    if (isRapidoFacilClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Rápido e Fácil", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Rápido e Fácil", ignoreCase = true) }
+                    }
                 }) {
                     Column(
                         modifier = Modifier
@@ -374,6 +549,15 @@ fun TelaPlano(modifier: Modifier = Modifier) {
             ){
                 TextButton(onClick = {
                     isFitSaudavelClicked.value = !isFitSaudavelClicked.value
+                    if (isFitSaudavelClicked.value) {
+                        categorias.firstOrNull { it.nome.equals("Fit e Saudável", ignoreCase = true) }?.let {
+                            if (!categoriasSelecionadas.contains(it)) {
+                                categoriasSelecionadas.add(it)
+                            }
+                        }
+                    } else {
+                        categoriasSelecionadas.removeAll { it.nome.equals("Fit e Saudável", ignoreCase = true) }
+                    }
                 }) {
                     Column(
                         modifier = Modifier
@@ -779,31 +963,8 @@ fun TelaPlano(modifier: Modifier = Modifier) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("+ X Refeições")
-                    Text("R$00,00")
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Canvas(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                ) {
-                    drawRoundRect(
-                        color = Color(140, 140, 140),
-                        cornerRadius = CornerRadius(0f)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
                     Text("Total")
-                    Text("R$00,00")
+                    Text("R$" + valorPlano.value)
                 }
 
                 Spacer(modifier = Modifier.height(30.dp))

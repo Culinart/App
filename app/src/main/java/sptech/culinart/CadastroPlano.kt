@@ -132,7 +132,7 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
     val valorPlano = remember { mutableStateOf(0.0) }
 
-    val selectedMaiorPrecoCategoria = remember { mutableStateOf(0.0) }
+    val selectedMaiorPrecoCategoria = remember { mutableStateOf(1.0) }
 
     val erroApi = remember { mutableStateOf("") }
 
