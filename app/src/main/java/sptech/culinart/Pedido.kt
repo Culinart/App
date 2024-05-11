@@ -1,6 +1,8 @@
 package sptech.culinart
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -89,7 +91,6 @@ class Pedido : ComponentActivity() {
                     Greeting(screenDataDto, listaDatasPedidos, { getDatasPedidos() }, { userId, dataString -> getProximoPedido(userId, dataString) })
                 }
             }
-
         }
     }
 
@@ -148,9 +149,6 @@ class Pedido : ComponentActivity() {
         })
     }
 
-//    private fun mapDatasPedidosToDataEntrega(datasPedidosDto: DatasPedidosDto): DataEntregaDto {
-//        return DataEntregaDto(LocalDate.parse(datasPedidosDto.datasPedidos))
-//    }
 }
 
 
@@ -492,7 +490,7 @@ fun Greeting(
                 if (position == listadeDatasPedidos.size - 1) {
                     ultimoPedido = true
                 }
-                RecipeCard(receitas = screenDataDto.listaReceitas, pedidoId = screenDataDto.id, getDatasPedidos = getDatasPedidos, ultimoPedido)
+                RecipeCard(receitas = screenDataDto.listaReceitas, pedidoId = screenDataDto.id, getDatasPedidos = getDatasPedidos, ultimoPedido, contexto)
             } else {
                 Text(
                     text = "Nenhuma receita encontrada!",
@@ -510,7 +508,7 @@ fun Greeting(
 }
 
 @Composable
-fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>, pedidoId: Int, getDatasPedidos: () -> Unit, ultimoPedido: Boolean) {
+fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>, pedidoId: Int, getDatasPedidos: () -> Unit, ultimoPedido: Boolean, contexto: Context)  {
 
     if (receitas.isEmpty()) {
         Column(
@@ -546,7 +544,11 @@ fun RecipeCard(receitas: List<ReceitaExibicaoPedidoDto>, pedidoId: Int, getDatas
                             .fillMaxWidth()
                             .height(175.dp)
                             .padding(4.dp)
-                            .clip(shape = RoundedCornerShape(8.dp)),
+                            .clip(shape = RoundedCornerShape(8.dp))
+                            .clickable(onClick = {
+                                val infosReceita = Intent(contexto, ComponenteReceita::class.java)
+                                contexto.startActivity(infosReceita)
+                            }),
                         contentScale = ContentScale.Crop,
                     )
 
