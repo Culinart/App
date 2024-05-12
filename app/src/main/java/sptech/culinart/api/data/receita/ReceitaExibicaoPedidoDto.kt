@@ -3,6 +3,7 @@ package sptech.culinart.api.data.receita
 import com.google.gson.annotations.SerializedName
 import sptech.culinart.api.data.categoria.CategoriaCardDto
 import sptech.culinart.api.data.preferencia.PreferenciaCardDto
+import java.io.Serializable
 
 data class ReceitaExibicaoPedidoDto (
     val id: Int,
@@ -18,4 +19,4 @@ data class ReceitaExibicaoPedidoDto (
     val mediaNotas: Double,
     @SerializedName("qtd_avaliacoes")
     val qtdAvaliacoes: Int
-)
+) : Serializable

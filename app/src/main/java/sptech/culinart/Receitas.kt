@@ -63,8 +63,10 @@ import sptech.culinart.api.data.pedido.DatasPedidosDto
 import sptech.culinart.api.data.pedido.PedidoByDataDto
 import sptech.culinart.api.data.pedido.ReceitaPedidoDto
 import sptech.culinart.api.data.receita.ReceitaDTO
+import sptech.culinart.api.data.receita.ReceitaExibicaoDTO
 import sptech.culinart.api.data.receita.ReceitaExibicaoPedidoDto
 import sptech.culinart.ui.theme.CulinartTheme
+import java.io.Serializable
 
 class Receitas : ComponentActivity() {
     private val pedidosApiService = RetrofitInstace.getPedidosApiService()
@@ -343,8 +345,44 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
                             .fillMaxWidth()
                             .height(175.dp)
                             .padding(4.dp)
-                            .clip(shape = RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop
+                            .clip(shape = RoundedCornerShape(8.dp))
+                            .clickable(onClick = {
+                                val receitaApiService = RetrofitInstace.getReceitasApiService()
+                                receitaApiService
+                                    .getOneReceita(receita.id)
+                                    .enqueue(object : Callback<ReceitaExibicaoDTO> {
+                                        override fun onResponse(
+                                            call: Call<ReceitaExibicaoDTO>,
+                                            response: Response<ReceitaExibicaoDTO>
+                                        ) {
+                                            if (response.isSuccessful) {
+                                                println("Resposta do getOneReceita com sucesso: $response")
+                                                val receitaFull = response.body()
+                                                val infosReceita = Intent(
+                                                    contexto,
+                                                    ComponenteReceita::class.java
+                                                ).apply {
+                                                    putExtra(
+                                                        "receita",
+                                                        receitaFull as Serializable
+                                                    )
+
+                                                }
+                                                contexto.startActivity(infosReceita)
+                                            } else {
+                                                error("Erro na resposta do getOneReceita: $response")
+                                            }
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<ReceitaExibicaoDTO>,
+                                            t: Throwable
+                                        ) {
+                                            println("Erro ao obter getOneReceita: $t")
+                                        }
+                                    })
+                            }),
+                        contentScale = ContentScale.Crop,
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
