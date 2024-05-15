@@ -36,6 +36,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -59,7 +60,10 @@ class Cadastro : ComponentActivity() {
         setContent {
             CulinartTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
                     TelaCadastro("Android")
                 }
             }
@@ -127,11 +131,13 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
+        val textTitulo1 = stringResource(R.string.text_cadastro_inicial_titulo1)
+        val textTitulo2 = stringResource(R.string.text_cadastro_inicial_titulo2)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "Crie sua conta e",
+                text = textTitulo1,
                 modifier = Modifier.fillMaxWidth(),
                 style = TextStyle(
                     Color(4, 93, 83),
@@ -140,8 +146,9 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                     fontSize = 35.sp
                 )
             )
+
             Text(
-                "faça arte!",
+                text = textTitulo2,
                 modifier = Modifier.fillMaxWidth(),
                 style = TextStyle(
                     Color(4, 93, 83),
@@ -153,6 +160,7 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(10.dp))
 
+            val textNome = stringResource(R.string.text_cadastro_inicial_nome)
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
@@ -161,7 +169,7 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                     value = nome.value,
                     onValueChange = { nome.value = it },
                     label = {
-                        Text("Nome")
+                        Text(text = textNome)
                     },
                     placeholder = { Text("Nome Completo") },
                     colors = TextFieldDefaults.colors(
@@ -176,11 +184,14 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                         keyboardType = KeyboardType.Text
                     )
                 )
+
                 Spacer(modifier = Modifier.height(10.dp))
+
+                val textEmail = stringResource(R.string.text_cadastro_inicial_email)
                 TextField(
                     value = email.value,
                     onValueChange = { email.value = it },
-                    label = { Text("Email") },
+                    label = { Text(text = textEmail) },
                     placeholder = { Text("example@email.com") },
                     colors = TextFieldDefaults.colors(
                         unfocusedLabelColor = Color(4, 93, 83),
@@ -195,11 +206,12 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                     )
                 )
                 Spacer(modifier = Modifier.height(10.dp))
+                val textCpf = stringResource(R.string.text_cadastro_inicial_cpf)
                 TextField(
                     value = cpf.value,
                     onValueChange = { cpf.value = it },
                     label = {
-                        Text("CPF")
+                        Text(text = textCpf)
                     },
                     placeholder = { Text("000.000.000-01") },
                     colors = TextFieldDefaults.colors(
@@ -215,10 +227,11 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                     )
                 )
                 Spacer(modifier = Modifier.height(10.dp))
+                val textTelefone = stringResource(R.string.text_cadastro_inicial_telefone)
                 TextField(
                     value = telefone.value,
                     onValueChange = { telefone.value = it },
-                    label = { Text("Telefone") },
+                    label = { Text(text = textTelefone) },
                     placeholder = { Text("(99) 99999-9999") },
                     colors = TextFieldDefaults.colors(
                         unfocusedLabelColor = Color(4, 93, 83),
@@ -233,10 +246,11 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                     )
                 )
                 Spacer(modifier = Modifier.height(10.dp))
+                val textSenha = stringResource(R.string.text_cadastro_inicial_senha)
                 TextField(
                     value = senha.value,
                     onValueChange = { senha.value = it },
-                    label = { Text("Senha") },
+                    label = { Text(text = textSenha) },
                     placeholder = { Text("********") },
                     colors = TextFieldDefaults.colors(
                         unfocusedLabelColor = Color(4, 93, 83),
@@ -252,29 +266,42 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
-
+                val textCadastrar = stringResource(R.string.text_cadastro_inicial_cadastrar)
                 Button(
                     onClick = {
                         val usuarioApiService = RetrofitInstace.getUsuarioApiService()
-                        val usuarioCriacaoDTO = UsuarioCriacaoDTO(nome.value, email.value, senha.value, cpf.value, telefone.value, )
+                        val usuarioCriacaoDTO = UsuarioCriacaoDTO(
+                            nome.value,
+                            email.value,
+                            senha.value,
+                            cpf.value,
+                            telefone.value,
+                        )
 
 
-                        usuarioApiService.cadastro(usuarioCriacaoDTO).enqueue(object : Callback<UsuarioExibicaoDTO> {
-                            override fun onResponse(call: Call<UsuarioExibicaoDTO>, response: Response<UsuarioExibicaoDTO>) {
-                                if (response.isSuccessful) {
-                                    val resposta = response.body()
-                                    println(resposta)
-                                    val telaLogin = Intent(contexto, MainActivity::class.java)
-                                    contexto.startActivity(telaLogin)
-                                } else {
-                                    println("Deu erro, na resposta do post ${response}")
+                        usuarioApiService.cadastro(usuarioCriacaoDTO)
+                            .enqueue(object : Callback<UsuarioExibicaoDTO> {
+                                override fun onResponse(
+                                    call: Call<UsuarioExibicaoDTO>,
+                                    response: Response<UsuarioExibicaoDTO>
+                                ) {
+                                    if (response.isSuccessful) {
+                                        val resposta = response.body()
+                                        println(resposta)
+                                        val telaLogin = Intent(contexto, MainActivity::class.java)
+                                        contexto.startActivity(telaLogin)
+                                    } else {
+                                        println("Deu erro, na resposta do post ${response}")
+                                    }
                                 }
-                            }
 
-                            override fun onFailure(call: Call<UsuarioExibicaoDTO>, t: Throwable) {
-                                println("Deu erro $t")
-                            }
-                        })
+                                override fun onFailure(
+                                    call: Call<UsuarioExibicaoDTO>,
+                                    t: Throwable
+                                ) {
+                                    println("Deu erro $t")
+                                }
+                            })
                     },
                     modifier = Modifier.width(250.dp),
                     shape = RoundedCornerShape(10.dp),
@@ -286,8 +313,10 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
                         containerColor = Color(255, 159, 28),
                         contentColor = Color.White
                     )
-                ) {
-                    Text("Cadastrar")
+                )
+
+                {
+                    Text(text = textCadastrar)
                 }
 
                 Spacer(modifier = Modifier.height(15.dp))
@@ -307,13 +336,16 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
 
                     Spacer(modifier = Modifier.width(10.dp))
 
-                    Text("ou",
+                    val textOu = stringResource(R.string.text_ou)
+                    Text(
+                        text = textOu,
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
                             fontSize = 25.sp,
                             color = Color.Black
-                        ))
+                        )
+                    )
 
                     Spacer(modifier = Modifier.width(10.dp))
 
@@ -330,17 +362,20 @@ fun TelaCadastro(name: String, modifier: Modifier = Modifier) {
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                Button(onClick =
-                {val login = Intent(contexto, MainActivity::class.java)
+                val textEntre = stringResource(R.string.text_cadastro_inicial_entre)
+                Button(
+                    onClick =
+                    {
+                        val login = Intent(contexto, MainActivity::class.java)
 
-                    contexto.startActivity(login)
-                },
+                        contexto.startActivity(login)
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent
                     )
                 ) {
                     Text(
-                        "Entre na sua conta",
+                        text = textEntre,
                         modifier = Modifier.fillMaxWidth(),
                         style = TextStyle(
                             Color(46, 196, 182),
