@@ -1,6 +1,8 @@
 package sptech.culinart
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -64,9 +66,11 @@ import sptech.culinart.api.RetrofitInstace
 import sptech.culinart.api.data.PreferencesManager
 import sptech.culinart.api.data.pedido.DatasPedidosDto
 import sptech.culinart.api.data.pedido.PedidoByDataDto
+import sptech.culinart.api.data.receita.ReceitaExibicaoDTO
 import sptech.culinart.api.data.receita.ReceitaExibicaoPedidoDto
 import sptech.culinart.api.utils.converterDataParaFormatoDescritivo
 import sptech.culinart.ui.theme.CulinartTheme
+import java.io.Serializable
 import java.time.LocalDate
 
 
@@ -159,10 +163,6 @@ class Pedido : ComponentActivity() {
                 }
             })
     }
-
-//    private fun mapDatasPedidosToDataEntrega(datasPedidosDto: DatasPedidosDto): DataEntregaDto {
-//        return DataEntregaDto(LocalDate.parse(datasPedidosDto.datasPedidos))
-//    }
 }
 
 
@@ -513,9 +513,10 @@ fun Greeting(
                     receitas = screenDataDto.listaReceitas,
                     pedidoId = screenDataDto.id,
                     getDatasPedidos = getDatasPedidos,
-                    ultimoPedido
+                    ultimoPedido,
+                    contexto
                 )
-            } else {
+            }  else {
                 Text(
                     text = "Nenhuma receita encontrada!",
                     modifier = Modifier.fillMaxWidth(),
@@ -536,7 +537,8 @@ fun RecipeCard(
     receitas: List<ReceitaExibicaoPedidoDto>,
     pedidoId: Int,
     getDatasPedidos: () -> Unit,
-    ultimoPedido: Boolean
+    ultimoPedido: Boolean,
+    contexto: Context
 ) {
 
     if (receitas.isEmpty()) {
@@ -573,9 +575,46 @@ fun RecipeCard(
                             .fillMaxWidth()
                             .height(175.dp)
                             .padding(4.dp)
-                            .clip(shape = RoundedCornerShape(8.dp)),
+                            .clip(shape = RoundedCornerShape(8.dp))
+                            .clickable(onClick = {
+                                val receitaApiService = RetrofitInstace.getReceitasApiService()
+                                receitaApiService
+                                    .getOneReceita(receita.id)
+                                    .enqueue(object : Callback<ReceitaExibicaoDTO> {
+                                        override fun onResponse(
+                                            call: Call<ReceitaExibicaoDTO>,
+                                            response: Response<ReceitaExibicaoDTO>
+                                        ) {
+                                            if (response.isSuccessful) {
+                                                println("Resposta do getOneReceita com sucesso: $response")
+                                                val receitaFull = response.body()
+                                                val infosReceita = Intent(
+                                                    contexto,
+                                                    ComponenteReceita::class.java
+                                                ).apply {
+                                                    putExtra(
+                                                        "receita",
+                                                        receitaFull as Serializable
+                                                    )
+                                                    putExtra("qtdPorcoes", receita.qtdPorcoes)
+                                                }
+                                                contexto.startActivity(infosReceita)
+                                            } else {
+                                                error("Erro na resposta do getOneReceita: $response")
+                                            }
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<ReceitaExibicaoDTO>,
+                                            t: Throwable
+                                        ) {
+                                            println("Erro ao obter getOneReceita: $t")
+                                        }
+                                    })
+                            }),
                         contentScale = ContentScale.Crop,
                     )
+
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -662,22 +701,7 @@ fun RecipeCard(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.icon_star_receita),
-                                contentDescription = "Icone de estrela de avaliação",
-                                modifier = Modifier
-                                    .width(10.dp)
-                                    .height(10.dp),
-                                contentScale = ContentScale.Crop
-                            )
-                            Spacer(modifier = Modifier.width(3.dp))
-                            Text(
-                                text = "" + receita.mediaNotas + " (" + receita.qtdAvaliacoes + " avaliações)",
-                                fontSize = 16.sp,
-                                color = Color.Black,
-                                fontWeight = FontWeight.Light
-                            )
-                            Spacer(modifier = Modifier.weight(50f)) // Espaço flexível para empurrar o ícone para a direita
+                            Spacer(modifier = Modifier.weight(1f)) // Espaço flexível para empurrar o ícone para a direita
                             Image(
                                 painter = painterResource(id = R.drawable.icon_lixo),
                                 contentDescription = "Icone de excluir receita",
@@ -713,8 +737,8 @@ fun RecipeCard(
                                     }),
                                 contentScale = ContentScale.Crop
                             )
-
                         }
+                        Spacer(modifier = Modifier.width(3.dp))
                     }
                 }
             }
