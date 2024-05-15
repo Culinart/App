@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -176,7 +177,7 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
     ) {
         Image(
             painter = painterResource(id = R.mipmap.cadastrosegundaetapa),
-            contentDescription = "Cadastro etapa de Endereço",
+            contentDescription = "Cadastro etapa de Plano",
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -184,8 +185,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(30.dp))
 
+        val tituloDaPagina = stringResource(R.string.text_cadastro_plano_titulo)
         Text(
-            "Personalize seu Plano!",
+            text = tituloDaPagina,
             modifier = Modifier.fillMaxWidth(),
             style = TextStyle(
                 Color(255, 159, 28),
@@ -197,8 +199,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(30.dp))
 
+        val subtituloCategoria = stringResource(R.string.text_cadastro_plano_subtitulo_categoria)
         Text(
-            "Categorias",
+            text = subtituloCategoria,
             modifier = Modifier.fillMaxWidth(),
             style = TextStyle(
                 Color(4, 93, 83),
@@ -243,8 +246,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(painter = painterResource(id = R.mipmap.iconecarnes), contentDescription = "Ícone de Carnes")
+                        val categoriaCarnes = stringResource(R.string.text_cadastro_plano_categoria_carnes)
                         Text(
-                            "Carnes",
+                            text = categoriaCarnes,
                             modifier = Modifier.fillMaxWidth(),
                             style = TextStyle(
                                 Color(4, 93, 83),
@@ -289,8 +293,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(painter = painterResource(id = R.mipmap.iconevegetariano), contentDescription = "Ícone de Vegetariano")
+                        val categoriaVegetariano = stringResource(R.string.text_cadastro_plano_categoria_vegetariano)
                         Text(
-                            "Vegetariano",
+                            text = categoriaVegetariano,
                             modifier = Modifier.fillMaxWidth(),
                             style = TextStyle(
                                 Color(4, 93, 83),
@@ -343,8 +348,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(painter = painterResource(id = R.mipmap.iconepescetariano), contentDescription = "Ícone pescetariano")
+                        val categoriaPescetariano = stringResource(R.string.text_cadastro_plano_categoria_pescetariano)
                         Text(
-                            "Pescetariano",
+                            text = categoriaPescetariano,
                             modifier = Modifier.fillMaxWidth(),
                             style = TextStyle(
                                 Color(4, 93, 83),
@@ -388,8 +394,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(painter = painterResource(id = R.mipmap.iconevegano), contentDescription = "Ícone vegano")
+                        val categoriaVegano = stringResource(R.string.text_cadastro_plano_categoria_vegano)
                         Text(
-                            "Vegano",
+                            text = categoriaVegano,
                             modifier = Modifier.fillMaxWidth(),
                             style = TextStyle(
                                 Color(4, 93, 83),
@@ -448,8 +455,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                             painter = painterResource(id = R.mipmap.iconerapidoefacil),
                             contentDescription = "Ícone rápido e fácil"
                         )
+                        val categoriaRapidoEFacil = stringResource(R.string.text_cadastro_plano_categoria_rapido_e_facil)
                         Text(
-                            "Rápido e Fácil",
+                            text = categoriaRapidoEFacil,
                             modifier = Modifier.fillMaxWidth(),
                             style = TextStyle(
                                 color = Color(4, 93, 83),
@@ -495,8 +503,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(painter = painterResource(id = R.mipmap.iconefitesaudavel), contentDescription = "Ícone fit e saudável")
+                        val categoriaFitESaudavael = stringResource(R.string.text_cadastro_plano_categoria_fit_e_saudavel)
                         Text(
-                            "Fit e Saudável",
+                            text = categoriaFitESaudavael,
                             modifier = Modifier.fillMaxWidth(),
                             style = TextStyle(
                                 Color(4, 93, 83),
@@ -516,8 +525,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(60.dp))
 
+        val subtituloQtd = stringResource(R.string.text_cadastro_plano_subtitulo_quantidade)
         Text(
-            "Quantidades",
+            text = subtituloQtd,
             modifier = Modifier.fillMaxWidth(),
             style = TextStyle(
                 Color(4, 93, 83),
@@ -537,8 +547,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.weight(1f))
 
+            val qtdPessoas = stringResource(R.string.text_cadastro_plano_qtd_pessoas)
             Text(
-                "Pessoas",
+                text = qtdPessoas,
                 style = TextStyle(
                     Color(220,119,38),
                     fontWeight = FontWeight.SemiBold,
@@ -604,8 +615,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.weight(1f))
 
+            val qtdRefeicoesPorDia = stringResource(R.string.text_cadastro_plano_qtd_refeicoes_por_dia)
             Text(
-                "Refeições Por Dia",
+                text = qtdRefeicoesPorDia,
                 style = TextStyle(
                     Color(220,119,38),
                     fontWeight = FontWeight.SemiBold,
@@ -671,8 +683,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.weight(1f))
 
+            val qtdDiasPorSemana = stringResource(R.string.text_cadastro_plano_qtd_dia_por_semana)
             Text(
-                "Dias Por Semana",
+                text = qtdDiasPorSemana,
                 style = TextStyle(
                     Color(220,119,38),
                     fontWeight = FontWeight.SemiBold,
@@ -738,8 +751,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.weight(1f))
 
+            val qtdDiasParaEntrega = stringResource(R.string.text_cadastro_plano_qtd_dias_para_entrega)
             Text(
-                "Dia para a Entrega",
+                text = qtdDiasParaEntrega,
                 style = TextStyle(
                     Color(220,119,38),
                     fontWeight = FontWeight.SemiBold,
@@ -792,8 +806,9 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.weight(1f))
 
+            val horarioRecebimentoEntrega = stringResource(R.string.text_cadastro_plano_horario_recebimento_entrega)
             Text(
-                "Horário para a Entrega",
+                text = horarioRecebimentoEntrega,
                 style = TextStyle(
                     Color(220,119,38),
                     fontWeight = FontWeight.SemiBold,
@@ -988,7 +1003,8 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                 contentColor = Color.White
             )
         ) {
-            Text("Confirmar")
+            val buttonConfirmar = stringResource(R.string.button_confirmar)
+            Text(text = buttonConfirmar)
         }
 
         Spacer(modifier = Modifier.height(40.dp))
