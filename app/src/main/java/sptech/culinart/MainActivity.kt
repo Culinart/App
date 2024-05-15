@@ -2,7 +2,6 @@ package sptech.culinart
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
@@ -46,14 +45,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import sptech.culinart.ui.theme.CulinartTheme
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import sptech.culinart.api.RetrofitInstace
-import sptech.culinart.api.data.PreferencesManager
-import sptech.culinart.api.data.usuario.UsuarioExibicaoDTO
 import sptech.culinart.api.data.usuario.UsuarioLoginDTO
-import sptech.culinart.api.data.usuario.UsuarioTokenDTO
+import sptech.culinart.api.viewModel.LoginViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -63,7 +57,7 @@ class MainActivity : ComponentActivity() {
             CulinartTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    TelaLogin("Android")
+                    TelaLogin()
                 }
             }
         }
@@ -71,7 +65,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TelaLogin(name: String, modifier: Modifier = Modifier) {
+fun TelaLogin(loginViewModel: LoginViewModel = LoginViewModel(), modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
 
@@ -202,56 +196,8 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         val usuarioApiService = RetrofitInstace.getUsuarioApiService()
 
                         val credenciais = UsuarioLoginDTO(email = email.value, senha = senha.value)
-                        //val credenciais = UsuarioLoginDTO(email = "lucasakiama@gmail.com", senha = "senhaQualquer123")
-                        usuarioApiService.login(credenciais).enqueue(object : Callback<UsuarioTokenDTO> {
-                            override fun onResponse(call: Call<UsuarioTokenDTO>, response: Response<UsuarioTokenDTO>) {
-                                if (response.isSuccessful) {
-                                    val usuarioTokenDTO = response.body()
-                                    println(response.body())
-                                    val prefsManager = PreferencesManager.getInstance(contexto)
-                                    if (usuarioTokenDTO != null) {
-                                        usuarioTokenDTO.token.let { prefsManager.saveToken(it) }
-                                        usuarioTokenDTO.nome.let { prefsManager.saveName(it) }
-                                        usuarioTokenDTO.permissao.let { prefsManager.savePermission(it) }
-                                        usuarioTokenDTO.userID.let { prefsManager.saveUserId(it) }
-                                        usuarioTokenDTO.email.let { prefsManager.saveEmail(it) }
-                                        usuarioTokenDTO.isAtivo.let { prefsManager.saveIsAtivo(it) }
 
-                                        if (usuarioTokenDTO.permissao == "CLIENTE") {
-                                            val pedido = Intent(contexto, Pedido::class.java)
-                                            pedido.putExtra("token", usuarioTokenDTO.token)
-                                            pedido.putExtra("nome", usuarioTokenDTO.nome)
-                                            pedido.putExtra("permissao", usuarioTokenDTO.permissao)
-                                            pedido.putExtra("userID", usuarioTokenDTO.userID)
-                                            pedido.putExtra("email", usuarioTokenDTO.email)
-                                            pedido.putExtra("isAtivo", usuarioTokenDTO.isAtivo)
-                                            contexto.startActivity(pedido)
-                                        } else {
-                                            val cadastroEndereco = Intent(contexto, CadastroEndereco::class.java)
-                                            cadastroEndereco.putExtra("token", usuarioTokenDTO.token)
-                                            cadastroEndereco.putExtra("nome", usuarioTokenDTO.nome)
-                                            cadastroEndereco.putExtra("permissao", usuarioTokenDTO.permissao)
-                                            cadastroEndereco.putExtra("userID", usuarioTokenDTO.userID)
-                                            cadastroEndereco.putExtra("email", usuarioTokenDTO.email)
-                                            cadastroEndereco.putExtra("isAtivo", usuarioTokenDTO.isAtivo)
-                                            contexto.startActivity(cadastroEndereco)
-                                        }
-
-
-                                    }
-                                    println("Token salvo: ${prefsManager.getToken()}")
-                                    println("Nome salvo: ${prefsManager.getName()}")
-
-                                } else {
-                                    println("Deu ruim")
-                                }
-                            }
-
-                            override fun onFailure(call: Call<UsuarioTokenDTO>, t: Throwable) {
-                                println(t)
-                            }
-                        })
-
+                        loginViewModel.login(credenciais, contexto)
                     },
                     modifier = Modifier.width(250.dp),
                     shape = RoundedCornerShape(10.dp),
@@ -339,6 +285,6 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun TelaLoginPreview() {
     CulinartTheme {
-        TelaLogin("Android")
+        TelaLogin()
     }
 }
