@@ -53,4 +53,24 @@
     <string name="text_cadastro_inicial_senha">Senha</string>
     <string name="text_cadastro_inicial_cadastrar">Cadastrar</string>
     <string name="text_cadastro_inicial_entre">Entre na sua conta</string>
+    <string name="text_cadastro_plano_titulo">Personalize seu Plano!</string>
+    <string name="text_cadastro_plano_subtitulo_categoria">Categoria</string>
+    <string name="text_cadastro_plano_categoria_carnes">Carnes</string>
+    <string name="text_cadastro_plano_categoria_pescetariano">Pescetariano</string>
+    <string name="text_cadastro_plano_categoria_rapido_e_facil">Rápido e Fácil</string>
+    <string name="text_cadastro_plano_categoria_vegetariano">Vegetariano</string>
+    <string name="text_cadastro_plano_categoria_vegano">Vegano</string>
+    <string name="text_cadastro_plano_categoria_fit_e_saudavel">Fit e Saudável</string>
+    <string name="text_cadastro_plano_subtitulo_quantidade">Quantidade</string>
+    <string name="text_cadastro_plano_qtd_pessoas">Pessoas</string>
+    <string name="text_cadastro_plano_qtd_refeicoes_por_dia">Refeições por dia</string>
+    <string name="text_cadastro_plano_qtd_dia_por_semana">Dias por semana</string>
+    <string name="text_cadastro_plano_qtd_dias_para_entrega">Dias para entrega</string>
+    <string name="text_cadastro_plano_horario_recebimento_entrega">Horário para receber a entrega</string>
+
+    <string name="button_confirmar">Confirmar</string>
+
+    <string name="text_chekout_titulo_pagina">Checkout</string>
+    <string name="text_chekout_refeicoes">- Refeições</string>
+    <string name="text_button_finalizar_assinatura">Finalizar Assinatura</string>
 </resources>
