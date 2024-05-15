@@ -131,7 +131,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "Bem Vindo,",
+                contexto.getString(R.string.text_bem_vindo),
                 modifier = Modifier.fillMaxWidth(),
                 style = TextStyle(
                     Color(255,159,28),
@@ -141,7 +141,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 )
             )
             Text(
-                "Chef!",
+                contexto.getString(R.string.text_chef),
                 modifier = Modifier.fillMaxWidth(),
                 style = TextStyle(
                     Color(255,159,28),
@@ -160,8 +160,8 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 TextField(
                     value = email.value,
                     onValueChange = { email.value = it },
-                    label = { Text("Email") },
-                    placeholder = { Text("example@email.com") },
+                    label = { Text(contexto.getString(R.string.text_label_email)) },
+                    placeholder = { Text(contexto.getString(R.string.text_placeholder_email)) },
                     colors = TextFieldDefaults.colors(
                         unfocusedLabelColor = Color(4, 93, 83),
                         focusedLabelColor = Color(4, 93, 83),
@@ -178,8 +178,8 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 TextField(
                     value = senha.value,
                     onValueChange = { senha.value = it },
-                    label = { Text("Senha") },
-                    placeholder = { Text("********") },
+                    label = { Text(contexto.getString(R.string.text_label_senha)) },
+                    placeholder = { Text(contexto.getString(R.string.text_placeholder_senha)) },
                     colors = TextFieldDefaults.colors(
                         unfocusedLabelColor = Color(4, 93, 83),
                         focusedLabelColor = Color(4, 93, 83),
@@ -264,7 +264,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         contentColor = Color.White
                     )
                 ) {
-                    Text("Entrar")
+                    Text(contexto.getString(R.string.text_entrar))
                 }
 
                 Spacer(modifier = Modifier.height(15.dp))
@@ -284,7 +284,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
 
                     Spacer(modifier = Modifier.width(10.dp))
 
-                    Text("ou",
+                    Text(contexto.getString(R.string.text_ou),
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
@@ -315,7 +315,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                     )
                 ) {
                     Text(
-                        "Cadastre uma conta",
+                        contexto.getString(R.string.text_cadastre_conta),
                         modifier = Modifier.fillMaxWidth(),
                         style = TextStyle(
                             Color(46, 196, 182),

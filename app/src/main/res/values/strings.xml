@@ -27,4 +27,13 @@
     <string name="text_avaliacoes">avaliações</string>
     <string name="text_icon_receitas_adicionadas">Icone de receita já adicionada</string>
     <string name="text_icon_adicionar_receita">Icone de adicionar receita</string>
+    <string name="text_bem_vindo">Bem Vindo,</string>
+    <string name="text_chef">Chef!</string>
+    <string name="text_label_email">Email</string>
+    <string name="text_label_senha">Senha</string>
+    <string name="text_placeholder_email">example@email.com</string>
+    <string name="text_placeholder_senha">********</string>
+    <string name="text_entrar">Entrar</string>
+    <string name="text_ou">ou</string>
+    <string name="text_cadastre_conta">Cadastre uma conta</string>
 </resources>
