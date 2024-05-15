@@ -36,4 +36,21 @@
     <string name="text_entrar">Entrar</string>
     <string name="text_ou">ou</string>
     <string name="text_cadastre_conta">Cadastre uma conta</string>
+    <string name="text_cadastro_endereco_titulo">Onde fica sua cozinha, chef?</string>
+    <string name="text_cadastro_endereco_CEP">CEP</string>
+    <string name="text_cadastro_endereco_estado">Estado</string>
+    <string name="text_cadastro_endereco_cidade">Cidade</string>
+    <string name="text_cadastro_endereco_bairro">Bairro</string>
+    <string name="text_cadastro_endereco_logradouro">Logradouro</string>
+    <string name="text_cadastro_endereco_numero">Número</string>
+    <string name="text_cadastro_endereco_complemento">Complemento</string>
+    <string name="text_cadastro_inicial_titulo1">Crie sua conta e</string>
+    <string name="text_cadastro_inicial_titulo2">faça arte!</string>
+    <string name="text_cadastro_inicial_nome">Nome</string>
+    <string name="text_cadastro_inicial_email">Email</string>
+    <string name="text_cadastro_inicial_telefone">Telefone</string>
+    <string name="text_cadastro_inicial_cpf">CPF</string>
+    <string name="text_cadastro_inicial_senha">Senha</string>
+    <string name="text_cadastro_inicial_cadastrar">Cadastrar</string>
+    <string name="text_cadastro_inicial_entre">Entre na sua conta</string>
 </resources>
