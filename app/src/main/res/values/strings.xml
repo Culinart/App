@@ -69,4 +69,8 @@
     <string name="text_cadastro_plano_horario_recebimento_entrega">Horário para receber a entrega</string>
 
     <string name="button_confirmar">Confirmar</string>
+
+    <string name="text_chekout_titulo_pagina">Checkout</string>
+    <string name="text_chekout_refeicoes">- Refeições</string>
+    <string name="text_button_finalizar_assinatura">Finalizar Assinatura</string>
 </resources>
