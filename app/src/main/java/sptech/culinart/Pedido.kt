@@ -388,11 +388,12 @@ fun Greeting(
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-
+                    val stringReceitas = contexto.getString(R.string.receitas)
+                    val stringPocoes = contexto.getString(R.string.porcoes)
                     Text(
                         "${categorias}\n"
-                                + "${screenDataDto?.listaReceitas?.size} Receitas \n"
-                                + "${qtdPocoesTotal} Porções",
+                                + "${screenDataDto?.listaReceitas?.size} $stringReceitas \n"
+                                + "${qtdPocoesTotal} $stringPocoes",
                         style = TextStyle(
                             textAlign = TextAlign.Start,
                             color = Color.Black
@@ -439,8 +440,9 @@ fun Greeting(
                             containerColor = Color(243, 140, 0), contentColor = Color.White
                         )
                     ) {
+                        val stringConfirmarEntrega = contexto.getString(R.string.text_button_confirmar_entrega)
                         Text(
-                            "Confirmar Entrega", style = TextStyle(
+                            stringConfirmarEntrega, style = TextStyle(
                                 fontWeight = FontWeight.Bold, fontSize = 16.sp,
                                 color = Color.Black
                             )
@@ -483,8 +485,9 @@ fun Greeting(
                             containerColor = Color(105, 160, 155), contentColor = Color.White
                         )
                     ) {
+                        val stringPularEntrega = contexto.getString(R.string.text_button_pular_entrega)
                         Text(
-                            "Pular Entrega", style = TextStyle(
+                            stringPularEntrega, style = TextStyle(
                                 fontWeight = FontWeight.Bold, fontSize = 16.sp
                             )
                         )
@@ -494,9 +497,9 @@ fun Greeting(
             }
 
             Spacer(modifier = Modifier.height(30.dp))
-
+            val stringReceitasDaEntrega = contexto.getString(R.string.text_field_receitas_da_entrega_pedido)
             Text(
-                "Receitas da Entrega", modifier = Modifier.fillMaxWidth(0.75f), style = TextStyle(
+                stringReceitasDaEntrega, modifier = Modifier.fillMaxWidth(0.75f), style = TextStyle(
                     Color(4, 93, 83),
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Start,
@@ -517,8 +520,9 @@ fun Greeting(
                     contexto
                 )
             }  else {
+                val stringNenhumaReceitaEncontrada= contexto.getString(R.string.text_field_nenhuma_receita_encontrada)
                 Text(
-                    text = "Nenhuma receita encontrada!",
+                    text = stringNenhumaReceitaEncontrada,
                     modifier = Modifier.fillMaxWidth(),
                     style = TextStyle(
                         Color(4, 93, 83),
@@ -549,8 +553,9 @@ fun RecipeCard(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val stringNenhumaReceitaEncontrada= contexto.getString(R.string.text_field_nenhuma_receita_encontrada)
             Text(
-                text = "Nenhuma receita encontrada!",
+                text = stringNenhumaReceitaEncontrada,
                 color = Color.Gray,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Medium
@@ -567,10 +572,11 @@ fun RecipeCard(
                         .padding(18.dp)
                         .fillMaxWidth()
                 ) {
-
+                    val stringContentDescriptionImagem= contexto.getString(R.string.text_content_description_imagem_receita)
                     AsyncImage(
                         model = "https://drive.google.com/thumbnail?id=" + receita.imagem,
-                        contentDescription = "Imagem da Receita",
+
+                        contentDescription = stringContentDescriptionImagem,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(175.dp)
@@ -632,22 +638,26 @@ fun RecipeCard(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.icon_tempo_receita),
-                            contentDescription = "Imagem da Receita",
+                            contentDescription = stringContentDescriptionImagem,
                             modifier = Modifier
                                 .width(16.dp)
                                 .height(16.dp),
                             contentScale = ContentScale.Crop
                         )
                         Spacer(modifier = Modifier.width(3.dp))
+                        val stringMinutos= contexto.getString(R.string.text_field_minutos)
+                        val stringE= contexto.getString(R.string.text_e)
                         if (receita.horas == 1) {
+                            val stringHora= contexto.getString(R.string.text_field_hora)
                             Text(
-                                text = "1 Hora e " + receita.minutos + " minutos",
+                                text = "1 $stringHora $stringE " + receita.minutos + " $stringMinutos",
                                 fontSize = 16.sp,
                                 color = Color.Black,
                             )
                         } else {
+                            val stringHoras = contexto.getString(R.string.text_field_horas)
                             Text(
-                                text = "" + receita.horas + " Horas e " + receita.minutos + " minutos",
+                                text = "" + receita.horas + " $stringHoras $stringE " + receita.minutos + " $stringMinutos",
                                 fontSize = 16.sp,
                                 color = Color.Black,
                             )
@@ -702,9 +712,10 @@ fun RecipeCard(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Spacer(modifier = Modifier.weight(1f)) // Espaço flexível para empurrar o ícone para a direita
+                            val stringContentDescriptionIconLixeira = contexto.getString(R.string.text_content_description_icon_lixeira)
                             Image(
                                 painter = painterResource(id = R.drawable.icon_lixo),
-                                contentDescription = "Icone de excluir receita",
+                                contentDescription = stringContentDescriptionIconLixeira,
                                 modifier = Modifier
                                     .width(20.dp)
                                     .height(25.dp)

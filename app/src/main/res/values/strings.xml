@@ -9,4 +9,22 @@
     <string name="title_activity_cadastro_checkout">CadastroCheckout</string>
     <string name="title_activity_plano">Plano</string>
     <string name="title_activity_pedido">Pedido</string>
+    <string name="receitas">Receitas</string>
+    <string name="porcoes">Porções</string>
+    <string name="text_button_confirmar_entrega">Confirmar Entrega</string>
+    <string name="text_button_pular_entrega">Pular Entrega</string>
+    <string name="text_field_receitas_da_entrega_pedido">Receitas da Entrega</string>
+    <string name="text_field_nenhuma_receita_encontrada">Nenhuma receita encontrada!</string>
+    <string name="text_content_description_imagem_receita">Imagem da Receita</string>
+    <string name="text_field_hora">Hora</string>
+    <string name="text_field_horas">Horas</string>
+    <string name="text_field_minutos">Minutos</string>
+    <string name="text_e">e</string>
+    <string name="text_content_description_icon_lixeira">Icon de excluir receita</string>
+    <string name="text_label_pesquisar">Pesquisar</string>
+    <string name="text_placeholder_bolo_de_chocolate">Ex: Bolo de Chocolate</string>
+    <string name="text_icon_estrela_avalicao">Icone de estrela de avaliação</string>
+    <string name="text_avaliacoes">avaliações</string>
+    <string name="text_icon_receitas_adicionadas">Icone de receita já adicionada</string>
+    <string name="text_icon_adicionar_receita">Icone de adicionar receita</string>
 </resources>
