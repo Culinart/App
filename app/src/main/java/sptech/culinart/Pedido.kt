@@ -444,7 +444,7 @@ fun Greeting(
                         Text(
                             stringConfirmarEntrega, style = TextStyle(
                                 fontWeight = FontWeight.Bold, fontSize = 16.sp,
-                                color = Color.Black
+                                color = Color.White
                             )
                         )
                     }

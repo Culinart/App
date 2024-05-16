@@ -323,7 +323,7 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
                             style = TextStyle(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = Color.Black
                             )
                         )
                     }
@@ -345,7 +345,7 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
                             text = "Aguarde um momento por favor...",
                             style = TextStyle(
                                 fontSize = 14.sp,
-                                color = Color.Gray
+                                color = Color.Black
                             )
                         )
                     }
