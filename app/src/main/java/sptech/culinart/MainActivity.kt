@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,14 +14,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -35,23 +32,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import sptech.culinart.ui.theme.CulinartTheme
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.usuario.UsuarioLoginDTO
+import sptech.culinart.api.viewModel.LoginViewModel
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +58,7 @@ class MainActivity : ComponentActivity() {
             CulinartTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    TelaLogin("Android")
+                    TelaLogin()
                 }
             }
         }
@@ -68,7 +66,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TelaLogin(name: String, modifier: Modifier = Modifier) {
+fun TelaLogin(loginViewModel: LoginViewModel = LoginViewModel(), modifier: Modifier = Modifier) {
 
     val contexto = LocalContext.current
 
@@ -128,7 +126,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "Bem Vindo,",
+                contexto.getString(R.string.text_bem_vindo),
                 modifier = Modifier.fillMaxWidth(),
                 style = TextStyle(
                     Color(255,159,28),
@@ -138,7 +136,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 )
             )
             Text(
-                "Chef!",
+                contexto.getString(R.string.text_chef),
                 modifier = Modifier.fillMaxWidth(),
                 style = TextStyle(
                     Color(255,159,28),
@@ -157,8 +155,8 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 TextField(
                     value = email.value,
                     onValueChange = { email.value = it },
-                    label = { Text("Email") },
-                    placeholder = { Text("example@email.com") },
+                    label = { Text(contexto.getString(R.string.text_label_email)) },
+                    placeholder = { Text(contexto.getString(R.string.text_placeholder_email)) },
                     colors = TextFieldDefaults.colors(
                         unfocusedLabelColor = Color(4, 93, 83),
                         focusedLabelColor = Color(4, 93, 83),
@@ -175,8 +173,8 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 TextField(
                     value = senha.value,
                     onValueChange = { senha.value = it },
-                    label = { Text("Senha") },
-                    placeholder = { Text("********") },
+                    label = { Text(contexto.getString(R.string.text_label_senha)) },
+                    placeholder = { Text(contexto.getString(R.string.text_placeholder_senha)) },
                     colors = TextFieldDefaults.colors(
                         unfocusedLabelColor = Color(4, 93, 83),
                         focusedLabelColor = Color(4, 93, 83),
@@ -185,15 +183,23 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         unfocusedTextColor = Color(107, 107, 107, 255),
                         focusedTextColor = Color.Black
                     ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    visualTransformation = PasswordVisualTransformation(),
                     )
-                )
+
 
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+
+                        // Faça a chamada ao serviço da API
+                        val usuarioApiService = RetrofitInstace.getUsuarioApiService()
+
+                        val credenciais = UsuarioLoginDTO(email = email.value, senha = senha.value)
+
+                        loginViewModel.login(credenciais, contexto)
+                    },
                     modifier = Modifier.width(250.dp),
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(
@@ -205,7 +211,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         contentColor = Color.White
                     )
                 ) {
-                    Text("Cadastrar")
+                    Text(contexto.getString(R.string.text_entrar))
                 }
 
                 Spacer(modifier = Modifier.height(15.dp))
@@ -225,7 +231,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
 
                     Spacer(modifier = Modifier.width(10.dp))
 
-                    Text("ou",
+                    Text(contexto.getString(R.string.text_ou),
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
@@ -249,8 +255,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Button(onClick =
-                {val cadastro = Intent(contexto, Cadastro::class.java)
-
+                {   val cadastro = Intent(contexto, Cadastro::class.java)
                     contexto.startActivity(cadastro)
                 },
                     colors = ButtonDefaults.buttonColors(
@@ -258,7 +263,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                     )
                 ) {
                     Text(
-                        "Cadastre uma conta",
+                        contexto.getString(R.string.text_cadastre_conta),
                         modifier = Modifier.fillMaxWidth(),
                         style = TextStyle(
                             Color(46, 196, 182),
@@ -281,6 +286,6 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun TelaLoginPreview() {
     CulinartTheme {
-        TelaLogin("Android")
+        TelaLogin()
     }
 }

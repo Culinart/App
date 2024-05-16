@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,11 +13,81 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Culinart"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ComponenteReceita"
+            android:exported="false"
+            android:label="ComponenteReceita" />
+        <activity
+            android:name=".Pedido"
+            android:exported="false"
+            android:label="@string/title_activity_pedido"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".Receitas"
+            android:exported="false"
+            android:label="Receitas"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".Plano"
+            android:exported="false"
+            android:label="@string/title_activity_plano"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".CadastroCheckout"
+            android:exported="false"
+            android:label="@string/title_activity_cadastro_checkout"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".CadastroPlano"
+            android:exported="false"
+            android:label="@string/title_activity_cadastro_plano"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".MainActivity2"
+            android:exported="false"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".componentes.Input"
+            android:exported="false"
+            android:label="@string/title_activity_input"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".CadastroEndereco"
+            android:exported="false"
+            android:label="@string/title_activity_cadastro_endereco"
+            android:theme="@style/Theme.Culinart" />
         <activity
             android:name=".Cadastro"
             android:exported="false"
-            android:label="@string/title_activity_cadastro"
+            android:label="Cadastro"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".PerfilEscolhas"
+            android:exported="false"
+            android:label="PerfilEscolhas"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".PerfilEnderecos"
+            android:exported="false"
+            android:label="PerfilEnderecos"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".PerfilInformacoesPessoais"
+            android:exported="false"
+            android:label="PerfilInformacoesPessoais"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".PerfilPagamento"
+            android:exported="false"
+            android:label="PerfilPagamento"
+            android:theme="@style/Theme.Culinart" />
+        <activity
+            android:name=".PerfilSenhaEAutenticacao"
+            android:exported="false"
+            android:label="PerfilSenhaEAutenticacao"
             android:theme="@style/Theme.Culinart" />
         <activity
             android:name=".MainActivity"
