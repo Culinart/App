@@ -515,6 +515,7 @@ fun Greeting(
                 RecipeCard(
                     receitas = screenDataDto.listaReceitas,
                     pedidoId = screenDataDto.id,
+                    pedidoData = screenDataDto.dataEntrega,
                     getDatasPedidos = getDatasPedidos,
                     ultimoPedido,
                     contexto
@@ -540,6 +541,7 @@ fun Greeting(
 fun RecipeCard(
     receitas: List<ReceitaExibicaoPedidoDto>,
     pedidoId: Int,
+    pedidoData: String,
     getDatasPedidos: () -> Unit,
     ultimoPedido: Boolean,
     contexto: Context
@@ -705,51 +707,56 @@ fun RecipeCard(
                             Spacer(modifier = Modifier.width(5.dp))
                         }
                     }
-
                     Spacer(modifier = Modifier.height(12.dp))
-                    if (ultimoPedido) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Spacer(modifier = Modifier.weight(1f)) // Espaço flexível para empurrar o ícone para a direita
-                            val stringContentDescriptionIconLixeira = contexto.getString(R.string.text_content_description_icon_lixeira)
-                            Image(
-                                painter = painterResource(id = R.drawable.icon_lixo),
-                                contentDescription = stringContentDescriptionIconLixeira,
-                                modifier = Modifier
-                                    .width(20.dp)
-                                    .height(25.dp)
-                                    .clickable(onClick = { /* Adicione aqui a ação que deseja quando o ícone for clicado */
-                                        val pedidosApiService =
-                                            RetrofitInstace.getPedidosApiService()
-                                        pedidosApiService
-                                            .deleteReceitaPedido(receita.id, pedidoId)
-                                            .enqueue(object : Callback<Void> {
-                                                override fun onResponse(
-                                                    call: Call<Void>,
-                                                    response: Response<Void>
-                                                ) {
-                                                    if (response.isSuccessful) {
-                                                        println("Resposta do deleteReceitaPedido com sucesso: $response")
-                                                        getDatasPedidos()
-                                                    } else {
-                                                        error("Erro na resposta do deleteReceitaPedido: $response")
+
+                    //Preciso de uma logica que verifique se a data do pedido é 3 dias antes da data de entrega do pedido
+                    if(LocalDate.parse(pedidoData).minusDays(3).isAfter(LocalDate.now())){
+                        if (ultimoPedido) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Spacer(modifier = Modifier.weight(1f)) // Espaço flexível para empurrar o ícone para a direita
+                                val stringContentDescriptionIconLixeira = contexto.getString(R.string.text_content_description_icon_lixeira)
+                                Image(
+                                    painter = painterResource(id = R.drawable.icon_lixo),
+                                    contentDescription = stringContentDescriptionIconLixeira,
+                                    modifier = Modifier
+                                        .width(20.dp)
+                                        .height(25.dp)
+                                        .clickable(onClick = { /* Adicione aqui a ação que deseja quando o ícone for clicado */
+                                            val pedidosApiService =
+                                                RetrofitInstace.getPedidosApiService()
+                                            pedidosApiService
+                                                .deleteReceitaPedido(receita.id, pedidoId)
+                                                .enqueue(object : Callback<Void> {
+                                                    override fun onResponse(
+                                                        call: Call<Void>,
+                                                        response: Response<Void>
+                                                    ) {
+                                                        if (response.isSuccessful) {
+                                                            println("Resposta do deleteReceitaPedido com sucesso: $response")
+                                                            getDatasPedidos()
+                                                        } else {
+                                                            error("Erro na resposta do deleteReceitaPedido: $response")
+                                                        }
                                                     }
-                                                }
 
-                                                override fun onFailure(
-                                                    call: Call<Void>,
-                                                    t: Throwable
-                                                ) {
-                                                    println("Erro ao obter próximo pedido: $t")
-                                                }
-                                            })
+                                                    override fun onFailure(
+                                                        call: Call<Void>,
+                                                        t: Throwable
+                                                    ) {
+                                                        println("Erro ao obter próximo pedido: $t")
+                                                    }
+                                                })
 
-                                    }),
-                                contentScale = ContentScale.Crop
-                            )
+                                        }),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(3.dp))
                         }
-                        Spacer(modifier = Modifier.width(3.dp))
+                    }else{
+                        Spacer(modifier = Modifier.height(12.dp))
                     }
                 }
             }

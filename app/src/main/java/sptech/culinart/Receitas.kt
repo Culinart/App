@@ -67,6 +67,7 @@ import sptech.culinart.api.data.receita.ReceitaExibicaoDTO
 import sptech.culinart.api.data.receita.ReceitaExibicaoPedidoDto
 import sptech.culinart.ui.theme.CulinartTheme
 import java.io.Serializable
+import java.time.LocalDate
 
 class Receitas : ComponentActivity() {
     private val pedidosApiService = RetrofitInstace.getPedidosApiService()
@@ -477,6 +478,8 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
                         )
                         Spacer(modifier = Modifier.width(80.dp))
                         val pedidoActivity = Intent(contexto, Pedido::class.java)
+
+                        if(LocalDate.parse(pedido.dataEntrega).minusDays(3).isAfter(LocalDate.now())){
                         if (pedido.listaReceitas.any { it.id == receita.id }) {
                             val stringIconReceitasAdicionada= contexto.getString(R.string.text_icon_receitas_adicionadas)
                             Image(
@@ -550,7 +553,9 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
                                             })
                                     },
                                 contentScale = ContentScale.Crop
-                            )
+                            )}
+                        }else{
+                            Spacer(modifier = Modifier.width(30.dp))
                         }
                     }
                 }
