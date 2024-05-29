@@ -237,7 +237,7 @@ fun Greeting(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ComponenteHeader("Android")
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 "Pedido", modifier = Modifier.fillMaxWidth(), style = TextStyle(
@@ -250,7 +250,7 @@ fun Greeting(
 
             //RecipeCardPedido()
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Canvas(
                 modifier = Modifier
@@ -262,7 +262,7 @@ fun Greeting(
                 )
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -363,7 +363,7 @@ fun Greeting(
 
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Column(
                 modifier = Modifier
@@ -386,117 +386,130 @@ fun Greeting(
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
 
-                    val stringReceitas = contexto.getString(R.string.receitas)
-                    val stringPocoes = contexto.getString(R.string.porcoes)
                     Text(
-                        "${categorias}\n"
-                                + "${screenDataDto?.listaReceitas?.size} $stringReceitas \n"
-                                + "${qtdPocoesTotal} $stringPocoes",
+                        "Status: ${screenDataDtoRemember.value?.status} ",
                         style = TextStyle(
                             textAlign = TextAlign.Start,
                             color = Color.Black
                         )
                     )
 
+                    //val stringReceitas = contexto.getString(R.string.receitas)
+                    //val stringPocoes = contexto.getString(R.string.porcoes)
+                    //Text(
+                    //    "${categorias}\n"
+                    //            + "${screenDataDto?.listaReceitas?.size} $stringReceitas \n"
+                    //            + "${qtdPocoesTotal} $stringPocoes",
+                    //    style = TextStyle(
+                    //        textAlign = TextAlign.Start,
+                    //        color = Color.Black
+                    //    )
+                    //)
+
 
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 if (position == listadeDatasPedidos.size - 1) {
-                    Button(
-                        onClick = {
+                    if (screenDataDtoRemember.value?.status.equals("PREPARANDO")) {
+                        Button(
+                            onClick = {
 
-                            if (screenDataDto != null) {
-                                pedidosApiService.putPedidoConcluido(screenDataDto.id)
-                                    .enqueue(object : Callback<Void> {
-                                        override fun onResponse(
-                                            call: Call<Void>,
-                                            response: Response<Void>
-                                        ) {
-                                            if (response.isSuccessful) {
-                                                getDatasPedidos()
-                                            } else {
-                                                println("Deu ruim")
+                                if (screenDataDto != null) {
+                                    pedidosApiService.putPedidoConcluido(screenDataDto.id)
+                                        .enqueue(object : Callback<Void> {
+                                            override fun onResponse(
+                                                call: Call<Void>,
+                                                response: Response<Void>
+                                            ) {
+                                                if (response.isSuccessful) {
+                                                    getDatasPedidos()
+                                                } else {
+                                                    println("Deu ruim")
+                                                }
                                             }
-                                        }
 
-                                        override fun onFailure(call: Call<Void>, t: Throwable) {
-                                            println(t)
-                                        }
-                                    })
-                            }
+                                            override fun onFailure(call: Call<Void>, t: Throwable) {
+                                                println(t)
+                                            }
+                                        })
+                                }
 
 
-                        },
-                        modifier = Modifier.width(300.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = ButtonDefaults.buttonElevation(
-                            defaultElevation = 8.dp, pressedElevation = 4.dp
-                        ),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(243, 140, 0), contentColor = Color.White
-                        )
-                    ) {
-                        val stringConfirmarEntrega = contexto.getString(R.string.text_button_confirmar_entrega)
-                        Text(
-                            stringConfirmarEntrega, style = TextStyle(
-                                fontWeight = FontWeight.Bold, fontSize = 16.sp,
-                                color = Color.White
+                            },
+                            modifier = Modifier.width(250.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = ButtonDefaults.buttonElevation(
+                                defaultElevation = 8.dp, pressedElevation = 4.dp
+                            ),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(243, 140, 0), contentColor = Color.White
                             )
-                        )
+                        ) {
+                            val stringConfirmarEntrega = contexto.getString(R.string.text_button_confirmar_entrega)
+                            Text(
+                                stringConfirmarEntrega, style = TextStyle(
+                                    fontWeight = FontWeight.Bold, fontSize = 14.sp,
+                                    color = Color.White
+                                )
+                            )
+                        }
                     }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
                 }
 
                 if (position == listadeDatasPedidos.size - 1) {
-                    Button(
-                        onClick = {
-                            if (screenDataDto != null) {
-                                pedidosApiService.putPedidoCancelado(screenDataDto.id)
-                                    .enqueue(object : Callback<Void> {
-                                        override fun onResponse(
-                                            call: Call<Void>,
-                                            response: Response<Void>
-                                        ) {
-                                            if (response.isSuccessful) {
-                                                getDatasPedidos()
+                    if (screenDataDtoRemember.value?.status.equals("ATIVO")) {
+                        Button(
+                            onClick = {
+                                if (screenDataDto != null) {
+                                    pedidosApiService.putPedidoCancelado(screenDataDto.id)
+                                        .enqueue(object : Callback<Void> {
+                                            override fun onResponse(
+                                                call: Call<Void>,
+                                                response: Response<Void>
+                                            ) {
+                                                if (response.isSuccessful) {
+                                                    getDatasPedidos()
 
-                                            } else {
-                                                println("Deu ruim")
+                                                } else {
+                                                    println("Deu ruim")
+                                                }
                                             }
-                                        }
 
-                                        override fun onFailure(call: Call<Void>, t: Throwable) {
-                                            println(t)
-                                        }
-                                    })
-                            }
-                        },
-                        modifier = Modifier.width(300.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = ButtonDefaults.buttonElevation(
-                            defaultElevation = 8.dp, pressedElevation = 4.dp
-                        ),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(105, 160, 155), contentColor = Color.White
-                        )
-                    ) {
-                        val stringPularEntrega = contexto.getString(R.string.text_button_pular_entrega)
-                        Text(
-                            stringPularEntrega, style = TextStyle(
-                                fontWeight = FontWeight.Bold, fontSize = 16.sp
+                                            override fun onFailure(call: Call<Void>, t: Throwable) {
+                                                println(t)
+                                            }
+                                        })
+                                }
+                            },
+                            modifier = Modifier.width(250.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = ButtonDefaults.buttonElevation(
+                                defaultElevation = 8.dp, pressedElevation = 4.dp
+                            ),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(105, 160, 155), contentColor = Color.White
                             )
-                        )
+                        ) {
+                            val stringPularEntrega =
+                                contexto.getString(R.string.text_button_pular_entrega)
+                            Text(
+                                stringPularEntrega, style = TextStyle(
+                                    fontWeight = FontWeight.Bold, fontSize = 14.sp
+                                )
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             val stringReceitasDaEntrega = contexto.getString(R.string.text_field_receitas_da_entrega_pedido)
             Text(
                 stringReceitasDaEntrega, modifier = Modifier.fillMaxWidth(0.75f), style = TextStyle(
@@ -506,7 +519,7 @@ fun Greeting(
                     fontSize = 20.sp
                 )
             )
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             if (screenDataDto != null) {
                 var ultimoPedido = false
                 if (position == listadeDatasPedidos.size - 1) {
@@ -673,7 +686,7 @@ fun RecipeCard(
                             fontWeight = FontWeight.Light
                         )
                     }
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                     LazyRow {
                         items(receita.preferencias) { preferencia ->
                             Box(
@@ -707,7 +720,7 @@ fun RecipeCard(
                             Spacer(modifier = Modifier.width(5.dp))
                         }
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
 
                     //Preciso de uma logica que verifique se a data do pedido é 3 dias antes da data de entrega do pedido
                     if(LocalDate.parse(pedidoData).minusDays(3).isAfter(LocalDate.now())){
@@ -756,7 +769,7 @@ fun RecipeCard(
                             Spacer(modifier = Modifier.width(3.dp))
                         }
                     }else{
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
             }
