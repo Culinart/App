@@ -10,11 +10,12 @@ import sptech.culinart.api.endpoints.EnderecoApiService
 import sptech.culinart.api.endpoints.PagamentoApiService
 import sptech.culinart.api.endpoints.PlanoApiService
 import sptech.culinart.api.endpoints.PreferenciaApiService
+import sptech.culinart.api.endpoints.PreferenciaUsuarioApiService
 import sptech.culinart.api.endpoints.UsuarioApiService
 
 object RetrofitInstace {
     //local
-    val BASE_URL = "http://10.18.37.87:8080/"
+    val BASE_URL = "http://192.168.15.42:8080/"
     //internet
     //private const val BASE_URL = "https://sua-api.com/"
 
@@ -69,5 +70,9 @@ object RetrofitInstace {
 
     fun getPreferenciaApiService(): PreferenciaApiService {
         return retrofit.create(PreferenciaApiService::class.java)
+    }
+
+    fun getPreferenciaUsuarioApiService(): PreferenciaUsuarioApiService {
+        return retrofit.create(PreferenciaUsuarioApiService::class.java)
     }
 }

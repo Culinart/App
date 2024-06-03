@@ -1,4 +1,4 @@
-/*package sptech.culinart
+package sptech.culinart
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,14 +11,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -26,13 +23,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -40,23 +33,82 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
 import retrofit2.Call
 import retrofit2.Response
-import sptech.culinart.api.RetrofitService
-import sptech.culinart.classes.Preferencia
+import sptech.culinart.api.RetrofitInstace
+import sptech.culinart.api.data.PreferencesManager
+import sptech.culinart.api.data.preferencia.PreferenciasDTO
+import sptech.culinart.api.data.usuario.UsuarioPreferenciaDTO
 import sptech.culinart.ui.theme.CulinartTheme
-import javax.security.auth.callback.Callback
 
 class Preferencias : ComponentActivity() {
+    private val preferenciaApiService = RetrofitInstace.getPreferenciaApiService()
+    private val preferenciaUsuarioApiService = RetrofitInstace.getPreferenciaUsuarioApiService()
+    private var screenDataDto = MutableLiveData<List<PreferenciasDTO>>()
+    private var screenDataDtoUsuario = MutableLiveData<List<UsuarioPreferenciaDTO>>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             CulinartTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    TelaPreferencias()
+                    getPreferencias()
+
+                    TelaPreferencias(screenDataDto, screenDataDtoUsuario)
                 }
             }
         }
+    }
+
+    fun getPreferenciasUsuario(){
+        val prefsManager = PreferencesManager.getInstance(this)
+        val userId = prefsManager.getUserId()
+
+        preferenciaUsuarioApiService.getPreferenciasUsuario(userId).enqueue(object :
+            retrofit2.Callback<List<UsuarioPreferenciaDTO>> {
+            override fun onResponse(call: Call<List<UsuarioPreferenciaDTO>>, response: Response<List<UsuarioPreferenciaDTO>>) {
+                if (response.isSuccessful) {
+                    val resposta = response.body()
+                    if (!resposta.isNullOrEmpty()) {
+                        println("Resposta: "+resposta)
+                        screenDataDtoUsuario.postValue(resposta!!)
+
+                    } else {
+                        println("Lista preferencias vazia ou nula")
+                    }
+                } else {
+                    println("Erro na resposta do getPreferencias: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<List<UsuarioPreferenciaDTO>>, t: Throwable) {
+                println("Erro ao obter datas de pedidos: $t")
+            }
+        })
+    }
+    fun getPreferencias(){
+        preferenciaApiService.getAllPreferencias().enqueue(object :
+            retrofit2.Callback<List<PreferenciasDTO>> {
+            override fun onResponse(call: Call<List<PreferenciasDTO>>, response: Response<List<PreferenciasDTO>>) {
+                if (response.isSuccessful) {
+                    val resposta = response.body()
+                    if (!resposta.isNullOrEmpty()) {
+                        println("Resposta: "+resposta)
+                        screenDataDto.postValue(resposta!!)
+
+                    } else {
+                        println("Lista preferencias vazia ou nula")
+                    }
+                } else {
+                    println("Erro na resposta do getPreferencias: $response")
+                }
+            }
+
+            override fun onFailure(call: Call<List<PreferenciasDTO>>, t: Throwable) {
+                println("Erro ao obter datas de pedidos: $t")
+            }
+        })
     }
 }
 
@@ -66,7 +118,7 @@ val preferencias = listOf(
 
 
 @Composable
-fun TelaPreferencias() {
+fun TelaPreferencias(screenDataDtoRemember: MutableLiveData<List<PreferenciasDTO>>, screenDataDtoUsuarioRemember: MutableLiveData<List<UsuarioPreferenciaDTO>>) {
     Column {
         Row(
             modifier = Modifier
@@ -144,7 +196,8 @@ fun TelaPreferencias() {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 if (i < preferencias.size) {
-                                    Preferencia(cor = "#FF0000", corTexto = "#FFFFFF", preferencia = preferencias[i])
+                                    screenDataDtoUsuarioRemember.value?.get(i)
+                                        ?.let { Preferencia(it.preferencias) }
                                     Spacer(modifier = Modifier.height(14.dp))
                                 }
                             }
@@ -153,9 +206,8 @@ fun TelaPreferencias() {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 if (i + 1 < preferencias.size) {
-                                    Preferencia(
-                                        cor = "#FF0000", corTexto = "#FFFFFF", preferencia = preferencias[i + 1]
-                                    )
+                                    screenDataDtoUsuarioRemember.value?.get(i)
+                                        ?.let { Preferencia(it.preferencias) }
                                 }
                             }
                         }
@@ -203,7 +255,7 @@ fun TelaPreferencias() {
                                     modifier = Modifier.weight(1f),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Preferencia(cor = "#FF0000", corTexto = "#FFFFFF", preferencia = preferencias[j]) /*A preferencia da api tem que ser inserida aqui*/
+                                    screenDataDtoRemember.value?.let { Preferencia( it.get(j)) } /*A preferencia da api tem que ser inserida aqui*/
                                     Spacer(modifier = Modifier.height(14.dp))
                                 }
                             } else {
@@ -218,99 +270,7 @@ fun TelaPreferencias() {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun TelaPreferenciasPreview() {
-    CulinartTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
-            TelaPreferencias()
-        }
-    }
-}*/
 
-
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.MutableLiveData
-import retrofit2.Call
-import retrofit2.Response
-import sptech.culinart.api.RetrofitInstace
-import sptech.culinart.api.data.preferencia.PreferenciasDTO
-
-class Preferencias : ComponentActivity() {
-    private val preferenciaApiService = RetrofitInstace.getPreferenciaApiService()
-    private var screenDataDto = MutableLiveData<List<PreferenciasDTO>>()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            //getPreferencias()
-            TelaPreferencias(screenDataDto)
-
-        }
-    }
-
-    fun getPreferencias(){
-        preferenciaApiService.getAllPreferencias().enqueue(object :
-            retrofit2.Callback<List<PreferenciasDTO>> {
-            override fun onResponse(call: Call<List<PreferenciasDTO>>, response: Response<List<PreferenciasDTO>>) {
-                if (response.isSuccessful) {
-                    val resposta = response.body()
-                    if (!resposta.isNullOrEmpty()) {
-                        println("Resposta: "+resposta)
-
-                    } else {
-                        println("Lista de datas de pedidos vazia ou nula")
-                    }
-                } else {
-                    println("Erro na resposta do getDatasPedidos: $response")
-                }
-            }
-
-            override fun onFailure(call: Call<List<PreferenciasDTO>>, t: Throwable) {
-                println("Erro ao obter datas de pedidos: $t")
-            }
-        })
-    }
-}
-
-
-
-@Composable
-fun TelaPreferencias(screenDataDtoRemember: MutableLiveData<List<PreferenciasDTO>>) {
-    //if (screenDataDtoRemember.observeAsState().value != null) {
-
-        val screenDataDto = screenDataDtoRemember.observeAsState().value
-        val preferencia1 = PreferenciasDTO(1, "Mexicana", "NACIONALIDADE", "006341", "FFFFFF")
-        val preferencia2 = PreferenciasDTO(2, "Americana", "NACIONALIDADE", "0A3161", "FFFFFF")
-        val mock = listOf(preferencia1, preferencia2)
-        MaterialTheme {
-            Column {
-                if (screenDataDto != null) {
-                    mock.forEach { preferencia ->
-                        Preferencia(preferencia)
-                    }
-                }
-            }
-        }
-    }
-//}
 @Composable
 fun Preferencia(preferencia: PreferenciasDTO) {
     Box(
@@ -325,7 +285,7 @@ fun Preferencia(preferencia: PreferenciasDTO) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = preferencia.nome ?: "",
+                text = "teste",
                 color = Color(0xFF045D53),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -333,14 +293,14 @@ fun Preferencia(preferencia: PreferenciasDTO) {
             )
             Spacer(modifier = Modifier.height(14.dp))
             Text(
-                text = "Cor Fundo: #${preferencia.corFundo ?: ""}",
+                text = "Cor Fundo: #${"ffffff"}",
                 color = Color(0xFF045D53),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Cor Texto: #${preferencia.corTexto ?: ""}",
+                text = "Cor Texto: #${"000000"}",
                 color = Color(0xFF045D53),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
@@ -353,5 +313,5 @@ fun Preferencia(preferencia: PreferenciasDTO) {
 @Preview(showBackground = true)
 @Composable
 fun TelaPreferenciasPreview() {
-    TelaPreferencias(screenDataDtoRemember = MutableLiveData<List<PreferenciasDTO>>())
+    TelaPreferencias(screenDataDtoRemember = MutableLiveData(), screenDataDtoUsuarioRemember = MutableLiveData())
 }
