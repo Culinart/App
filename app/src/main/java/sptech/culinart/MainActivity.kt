@@ -202,7 +202,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         val usuarioApiService = RetrofitInstace.getUsuarioApiService()
 
 //                        val credenciais = UsuarioLoginDTO(email = email.value, senha = senha.value)
-                        val credenciais = UsuarioLoginDTO(email = "orlindo@yahoo.com", senha = "sptech123")
+                        val credenciais = UsuarioLoginDTO(email = "lucasakiama@gmail.com", senha = "senhaQualquer123")
                         usuarioApiService.login(credenciais).enqueue(object : Callback<UsuarioTokenDTO> {
                             override fun onResponse(call: Call<UsuarioTokenDTO>, response: Response<UsuarioTokenDTO>) {
                                 if (response.isSuccessful) {
@@ -218,7 +218,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                                         usuarioTokenDTO.isAtivo.let { prefsManager.saveIsAtivo(it) }
 
                                         if (usuarioTokenDTO.permissao == "CLIENTE") {
-                                            val pedido = Intent(contexto, Preferencias::class.java)
+                                            val pedido = Intent(contexto, Pedido::class.java)
                                             pedido.putExtra("token", usuarioTokenDTO.token)
                                             pedido.putExtra("nome", usuarioTokenDTO.nome)
                                             pedido.putExtra("permissao", usuarioTokenDTO.permissao)
