@@ -63,8 +63,11 @@ import sptech.culinart.api.data.pedido.DatasPedidosDto
 import sptech.culinart.api.data.pedido.PedidoByDataDto
 import sptech.culinart.api.data.pedido.ReceitaPedidoDto
 import sptech.culinart.api.data.receita.ReceitaDTO
+import sptech.culinart.api.data.receita.ReceitaExibicaoDTO
 import sptech.culinart.api.data.receita.ReceitaExibicaoPedidoDto
 import sptech.culinart.ui.theme.CulinartTheme
+import java.io.Serializable
+import java.time.LocalDate
 
 class Receitas : ComponentActivity() {
     private val pedidosApiService = RetrofitInstace.getPedidosApiService()
@@ -161,7 +164,7 @@ fun TelaReceitas(
     getDatasPedidosDto: () -> Unit
 ) {
     val screenDataDto = screenDataDtoRemember.observeAsState().value
-
+    val contexto = LocalContext.current
     println("ScreenDataDto: $screenDataDto")
 
     Column(
@@ -176,8 +179,9 @@ fun TelaReceitas(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val stringReceita = contexto.getString(R.string.receitas)
             Text(
-                text = "Receitas",
+                text = stringReceita,
                 color = Color(0xFF045D53),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Medium
@@ -187,7 +191,8 @@ fun TelaReceitas(
             var pesquisaText = remember { mutableStateOf("") }
             var receitas = remember { mutableStateOf<List<ReceitaDTO>>(emptyList()) }
 
-
+            val stringPesquisar = contexto.getString(R.string.text_label_pesquisar)
+            val stringPlaceholderBolo = contexto.getString(R.string.text_placeholder_bolo_de_chocolate)
             TextField(
                 value = pesquisaText.value,
                 onValueChange = {
@@ -202,8 +207,9 @@ fun TelaReceitas(
                         }
                     }
                 },
-                label = { Text("Pesquisar") },
-                placeholder = { Text("Ex: Bolo de Chocolate") },
+
+                label = { Text(stringPesquisar) },
+                placeholder = { Text(stringPlaceholderBolo) },
                 colors = TextFieldDefaults.colors(
                     unfocusedLabelColor = Color(4, 93, 83),
                     focusedLabelColor = Color(4, 93, 83),
@@ -295,8 +301,9 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val stringNenhumaReceitaEncontrada= contexto.getString(R.string.text_field_nenhuma_receita_encontrada)
             Text(
-                text = "Nenhuma receita encontrada!",
+                text = stringNenhumaReceitaEncontrada,
                 color = Color.Gray,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Medium
@@ -313,16 +320,52 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
                         .padding(18.dp)
                         .fillMaxWidth()
                 ) {
-
+                    val stringContentDescriptionImagemReceita= contexto.getString(R.string.text_content_description_imagem_receita)
                     AsyncImage(
                         model = "https://drive.google.com/thumbnail?id=" + receita.imagem,
-                        contentDescription = "Imagem da Receita",
+                        contentDescription = stringContentDescriptionImagemReceita,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(175.dp)
                             .padding(4.dp)
-                            .clip(shape = RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop
+                            .clip(shape = RoundedCornerShape(8.dp))
+                            .clickable(onClick = {
+                                val receitaApiService = RetrofitInstace.getReceitasApiService()
+                                receitaApiService
+                                    .getOneReceita(receita.id)
+                                    .enqueue(object : Callback<ReceitaExibicaoDTO> {
+                                        override fun onResponse(
+                                            call: Call<ReceitaExibicaoDTO>,
+                                            response: Response<ReceitaExibicaoDTO>
+                                        ) {
+                                            if (response.isSuccessful) {
+                                                println("Resposta do getOneReceita com sucesso: $response")
+                                                val receitaFull = response.body()
+                                                val infosReceita = Intent(
+                                                    contexto,
+                                                    ComponenteReceita::class.java
+                                                ).apply {
+                                                    putExtra(
+                                                        "receita",
+                                                        receitaFull as Serializable
+                                                    )
+
+                                                }
+                                                contexto.startActivity(infosReceita)
+                                            } else {
+                                                error("Erro na resposta do getOneReceita: $response")
+                                            }
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<ReceitaExibicaoDTO>,
+                                            t: Throwable
+                                        ) {
+                                            println("Erro ao obter getOneReceita: $t")
+                                        }
+                                    })
+                            }),
+                        contentScale = ContentScale.Crop,
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -339,24 +382,29 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        val stringImagemReceita= contexto.getString(R.string.text_content_description_imagem_receita)
                         Image(
                             painter = painterResource(id = R.drawable.icon_tempo_receita),
-                            contentDescription = "Imagem da Receita",
+                            contentDescription = stringImagemReceita,
                             modifier = Modifier
                                 .width(16.dp)
                                 .height(16.dp),
                             contentScale = ContentScale.Crop
                         )
                         Spacer(modifier = Modifier.width(3.dp))
+                        val stringMinutos= contexto.getString(R.string.text_field_minutos)
+                        val stringE= contexto.getString(R.string.text_e)
                         if (receita.horas == 1) {
+                            val stringHora= contexto.getString(R.string.text_field_hora)
                             Text(
-                                text = "1 Hora e " + receita.minutos + " minutos",
+                                text = "1 $stringMinutos $stringE " + receita.minutos + " $stringMinutos",
                                 fontSize = 16.sp,
                                 color = Color.Black,
                             )
                         } else {
+                            val stringHoras= contexto.getString(R.string.text_field_horas)
                             Text(
-                                text = "" + receita.horas + " Horas e " + receita.minutos + " minutos",
+                                text = "" + receita.horas + " $stringHoras $stringE " + receita.minutos + " $stringMinutos",
                                 fontSize = 16.sp,
                                 color = Color.Black,
                             )
@@ -410,9 +458,10 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Row {
+                            val stringIconEstrelaAvaliacao= contexto.getString(R.string.text_icon_estrela_avalicao)
                             Image(
                                 painter = painterResource(id = R.drawable.icon_star_receita),
-                                contentDescription = "Icone de estrela de avaliação",
+                                contentDescription = "$stringIconEstrelaAvaliacao",
                                 modifier = Modifier
                                     .width(10.dp)
                                     .height(10.dp),
@@ -420,18 +469,22 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
                             )
                         }
                         Spacer(modifier = Modifier.width(3.dp))
+                        val stringAvaliacoes= contexto.getString(R.string.text_avaliacoes)
                         Text(
-                            text = "" + receita.mediaAvaliacoes + " (" + receita.qtdAvaliacoes + " avaliações)",
+                            text = "" + receita.mediaAvaliacoes + " (" + receita.qtdAvaliacoes + " $stringAvaliacoes)",
                             fontSize = 16.sp,
                             color = Color.Black,
                             fontWeight = FontWeight.Light
                         )
                         Spacer(modifier = Modifier.width(80.dp))
                         val pedidoActivity = Intent(contexto, Pedido::class.java)
+
+                        if(LocalDate.parse(pedido.dataEntrega).minusDays(3).isAfter(LocalDate.now())){
                         if (pedido.listaReceitas.any { it.id == receita.id }) {
+                            val stringIconReceitasAdicionada= contexto.getString(R.string.text_icon_receitas_adicionadas)
                             Image(
                                 painter = painterResource(id = R.drawable.icon_check_receita),
-                                contentDescription = "Icone de receita já adicionada",
+                                contentDescription = stringIconReceitasAdicionada,
                                 modifier = Modifier
                                     .width(25.dp)
                                     .height(25.dp)
@@ -463,9 +516,10 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
                                 contentScale = ContentScale.Crop,
                             )
                         } else {
+                            val stringIconAdicionarReceita= contexto.getString(R.string.text_icon_adicionar_receita)
                             Image(
                                 painter = painterResource(id = R.drawable.icon_add_receita),
-                                contentDescription = "Icone de adicionar receita",
+                                contentDescription = stringIconAdicionarReceita,
                                 modifier = Modifier
                                     .width(30.dp)
                                     .height(30.dp)
@@ -499,7 +553,9 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
                                             })
                                     },
                                 contentScale = ContentScale.Crop
-                            )
+                            )}
+                        }else{
+                            Spacer(modifier = Modifier.width(30.dp))
                         }
                     }
                 }

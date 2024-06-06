@@ -46,6 +46,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -139,8 +140,10 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
 
                 Spacer(modifier = Modifier.height(30.dp))
 
+                val tituloPagina = stringResource(R.string.text_chekout_titulo_pagina)
                 Text(
-                    "Checkout", style = TextStyle(
+                    text = tituloPagina,
+                    style = TextStyle(
                         Color(255, 159, 28),
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
@@ -156,8 +159,9 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
                 ) {
                     val qtdRefeicoes = extras?.getInt("qtdRefeicoes") ?: 0
                     val valorPlano = extras?.getDouble("valorPlano") ?: 0.0
+                    val textRefeicoes = stringResource(R.string.text_chekout_refeicoes)
                     Text(
-                        "$qtdRefeicoes - Refeições", style = TextStyle(
+                        "$qtdRefeicoes $textRefeicoes", style = TextStyle(
                             color = Color.Black
                         )
                     )
@@ -299,7 +303,8 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
                 contentColor = Color.White
             )
         ) {
-            Text("Finalizar Assinatura")
+            val textFinalizarAssinatura = stringResource(R.string.text_button_finalizar_assinatura)
+            Text(text = textFinalizarAssinatura)
         }
         if (exibirModal.value) {
             AlertDialog(
@@ -318,7 +323,7 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
                             style = TextStyle(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = Color.Black
                             )
                         )
                     }
@@ -340,7 +345,7 @@ fun TelaCadastroCheckout(extras: Bundle?, modifier: Modifier = Modifier) {
                             text = "Aguarde um momento por favor...",
                             style = TextStyle(
                                 fontSize = 14.sp,
-                                color = Color.Gray
+                                color = Color.Black
                             )
                         )
                     }

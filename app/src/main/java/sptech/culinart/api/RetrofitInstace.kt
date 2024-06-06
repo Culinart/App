@@ -17,10 +17,8 @@ object RetrofitInstace {
     //local
 
     val BASE_URL = "http://192.168.15.42:8080/"
-
     //internet
-    //private const val BASE_URL = "https://sua-api.com/"
-
+    //val BASE_URL = "http://34.235.192.141:80/"
 
     // Cria uma instância Retrofit
     private val retrofit = Retrofit.Builder()

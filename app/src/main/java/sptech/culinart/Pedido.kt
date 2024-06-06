@@ -1,6 +1,8 @@
 package sptech.culinart
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -64,9 +66,11 @@ import sptech.culinart.api.RetrofitInstace
 import sptech.culinart.api.data.PreferencesManager
 import sptech.culinart.api.data.pedido.DatasPedidosDto
 import sptech.culinart.api.data.pedido.PedidoByDataDto
+import sptech.culinart.api.data.receita.ReceitaExibicaoDTO
 import sptech.culinart.api.data.receita.ReceitaExibicaoPedidoDto
 import sptech.culinart.api.utils.converterDataParaFormatoDescritivo
 import sptech.culinart.ui.theme.CulinartTheme
+import java.io.Serializable
 import java.time.LocalDate
 
 
@@ -159,10 +163,6 @@ class Pedido : ComponentActivity() {
                 }
             })
     }
-
-//    private fun mapDatasPedidosToDataEntrega(datasPedidosDto: DatasPedidosDto): DataEntregaDto {
-//        return DataEntregaDto(LocalDate.parse(datasPedidosDto.datasPedidos))
-//    }
 }
 
 
@@ -237,7 +237,7 @@ fun Greeting(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ComponenteHeader("Android")
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 "Pedido", modifier = Modifier.fillMaxWidth(), style = TextStyle(
@@ -250,7 +250,7 @@ fun Greeting(
 
             //RecipeCardPedido()
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Canvas(
                 modifier = Modifier
@@ -262,7 +262,7 @@ fun Greeting(
                 )
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -363,7 +363,7 @@ fun Greeting(
 
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Column(
                 modifier = Modifier
@@ -386,124 +386,140 @@ fun Greeting(
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(10.dp))
-
+                    Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
-                        "${categorias}\n"
-                                + "${screenDataDto?.listaReceitas?.size} Receitas \n"
-                                + "${qtdPocoesTotal} Porções",
+                        "Status: ${screenDataDtoRemember.value?.status} ",
                         style = TextStyle(
                             textAlign = TextAlign.Start,
                             color = Color.Black
                         )
                     )
 
+                    //val stringReceitas = contexto.getString(R.string.receitas)
+                    //val stringPocoes = contexto.getString(R.string.porcoes)
+                    //Text(
+                    //    "${categorias}\n"
+                    //            + "${screenDataDto?.listaReceitas?.size} $stringReceitas \n"
+                    //            + "${qtdPocoesTotal} $stringPocoes",
+                    //    style = TextStyle(
+                    //        textAlign = TextAlign.Start,
+                    //        color = Color.Black
+                    //    )
+                    //)
+
 
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 if (position == listadeDatasPedidos.size - 1) {
-                    Button(
-                        onClick = {
+                    if (screenDataDtoRemember.value?.status.equals("PREPARANDO")) {
+                        Button(
+                            onClick = {
 
-                            if (screenDataDto != null) {
-                                pedidosApiService.putPedidoConcluido(screenDataDto.id)
-                                    .enqueue(object : Callback<Void> {
-                                        override fun onResponse(
-                                            call: Call<Void>,
-                                            response: Response<Void>
-                                        ) {
-                                            if (response.isSuccessful) {
-                                                getDatasPedidos()
-                                            } else {
-                                                println("Deu ruim")
+                                if (screenDataDto != null) {
+                                    pedidosApiService.putPedidoConcluido(screenDataDto.id)
+                                        .enqueue(object : Callback<Void> {
+                                            override fun onResponse(
+                                                call: Call<Void>,
+                                                response: Response<Void>
+                                            ) {
+                                                if (response.isSuccessful) {
+                                                    getDatasPedidos()
+                                                } else {
+                                                    println("Deu ruim")
+                                                }
                                             }
-                                        }
 
-                                        override fun onFailure(call: Call<Void>, t: Throwable) {
-                                            println(t)
-                                        }
-                                    })
-                            }
+                                            override fun onFailure(call: Call<Void>, t: Throwable) {
+                                                println(t)
+                                            }
+                                        })
+                                }
 
 
-                        },
-                        modifier = Modifier.width(300.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = ButtonDefaults.buttonElevation(
-                            defaultElevation = 8.dp, pressedElevation = 4.dp
-                        ),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(243, 140, 0), contentColor = Color.White
-                        )
-                    ) {
-                        Text(
-                            "Confirmar Entrega", style = TextStyle(
-                                fontWeight = FontWeight.Bold, fontSize = 16.sp,
-                                color = Color.Black
+                            },
+                            modifier = Modifier.width(250.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = ButtonDefaults.buttonElevation(
+                                defaultElevation = 8.dp, pressedElevation = 4.dp
+                            ),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(243, 140, 0), contentColor = Color.White
                             )
-                        )
+                        ) {
+                            val stringConfirmarEntrega = contexto.getString(R.string.text_button_confirmar_entrega)
+                            Text(
+                                stringConfirmarEntrega, style = TextStyle(
+                                    fontWeight = FontWeight.Bold, fontSize = 14.sp,
+                                    color = Color.White
+                                )
+                            )
+                        }
                     }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
                 }
 
                 if (position == listadeDatasPedidos.size - 1) {
-                    Button(
-                        onClick = {
-                            if (screenDataDto != null) {
-                                pedidosApiService.putPedidoCancelado(screenDataDto.id)
-                                    .enqueue(object : Callback<Void> {
-                                        override fun onResponse(
-                                            call: Call<Void>,
-                                            response: Response<Void>
-                                        ) {
-                                            if (response.isSuccessful) {
-                                                getDatasPedidos()
+                    if (screenDataDtoRemember.value?.status.equals("ATIVO")) {
+                        Button(
+                            onClick = {
+                                if (screenDataDto != null) {
+                                    pedidosApiService.putPedidoCancelado(screenDataDto.id)
+                                        .enqueue(object : Callback<Void> {
+                                            override fun onResponse(
+                                                call: Call<Void>,
+                                                response: Response<Void>
+                                            ) {
+                                                if (response.isSuccessful) {
+                                                    getDatasPedidos()
 
-                                            } else {
-                                                println("Deu ruim")
+                                                } else {
+                                                    println("Deu ruim")
+                                                }
                                             }
-                                        }
 
-                                        override fun onFailure(call: Call<Void>, t: Throwable) {
-                                            println(t)
-                                        }
-                                    })
-                            }
-                        },
-                        modifier = Modifier.width(300.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = ButtonDefaults.buttonElevation(
-                            defaultElevation = 8.dp, pressedElevation = 4.dp
-                        ),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(105, 160, 155), contentColor = Color.White
-                        )
-                    ) {
-                        Text(
-                            "Pular Entrega", style = TextStyle(
-                                fontWeight = FontWeight.Bold, fontSize = 16.sp
+                                            override fun onFailure(call: Call<Void>, t: Throwable) {
+                                                println(t)
+                                            }
+                                        })
+                                }
+                            },
+                            modifier = Modifier.width(250.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = ButtonDefaults.buttonElevation(
+                                defaultElevation = 8.dp, pressedElevation = 4.dp
+                            ),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(105, 160, 155), contentColor = Color.White
                             )
-                        )
+                        ) {
+                            val stringPularEntrega =
+                                contexto.getString(R.string.text_button_pular_entrega)
+                            Text(
+                                stringPularEntrega, style = TextStyle(
+                                    fontWeight = FontWeight.Bold, fontSize = 14.sp
+                                )
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(6.dp))
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
-
+            Spacer(modifier = Modifier.height(10.dp))
+            val stringReceitasDaEntrega = contexto.getString(R.string.text_field_receitas_da_entrega_pedido)
             Text(
-                "Receitas da Entrega", modifier = Modifier.fillMaxWidth(0.75f), style = TextStyle(
+                stringReceitasDaEntrega, modifier = Modifier.fillMaxWidth(0.75f), style = TextStyle(
                     Color(4, 93, 83),
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Start,
                     fontSize = 20.sp
                 )
             )
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             if (screenDataDto != null) {
                 var ultimoPedido = false
                 if (position == listadeDatasPedidos.size - 1) {
@@ -512,12 +528,15 @@ fun Greeting(
                 RecipeCard(
                     receitas = screenDataDto.listaReceitas,
                     pedidoId = screenDataDto.id,
+                    pedidoData = screenDataDto.dataEntrega,
                     getDatasPedidos = getDatasPedidos,
-                    ultimoPedido
+                    ultimoPedido,
+                    contexto
                 )
-            } else {
+            }  else {
+                val stringNenhumaReceitaEncontrada= contexto.getString(R.string.text_field_nenhuma_receita_encontrada)
                 Text(
-                    text = "Nenhuma receita encontrada!",
+                    text = stringNenhumaReceitaEncontrada,
                     modifier = Modifier.fillMaxWidth(),
                     style = TextStyle(
                         Color(4, 93, 83),
@@ -535,8 +554,10 @@ fun Greeting(
 fun RecipeCard(
     receitas: List<ReceitaExibicaoPedidoDto>,
     pedidoId: Int,
+    pedidoData: String,
     getDatasPedidos: () -> Unit,
-    ultimoPedido: Boolean
+    ultimoPedido: Boolean,
+    contexto: Context
 ) {
 
     if (receitas.isEmpty()) {
@@ -547,8 +568,9 @@ fun RecipeCard(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val stringNenhumaReceitaEncontrada= contexto.getString(R.string.text_field_nenhuma_receita_encontrada)
             Text(
-                text = "Nenhuma receita encontrada!",
+                text = stringNenhumaReceitaEncontrada,
                 color = Color.Gray,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Medium
@@ -565,17 +587,55 @@ fun RecipeCard(
                         .padding(18.dp)
                         .fillMaxWidth()
                 ) {
-
+                    val stringContentDescriptionImagem= contexto.getString(R.string.text_content_description_imagem_receita)
                     AsyncImage(
                         model = "https://drive.google.com/thumbnail?id=" + receita.imagem,
-                        contentDescription = "Imagem da Receita",
+
+                        contentDescription = stringContentDescriptionImagem,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(175.dp)
                             .padding(4.dp)
-                            .clip(shape = RoundedCornerShape(8.dp)),
+                            .clip(shape = RoundedCornerShape(8.dp))
+                            .clickable(onClick = {
+                                val receitaApiService = RetrofitInstace.getReceitasApiService()
+                                receitaApiService
+                                    .getOneReceita(receita.id)
+                                    .enqueue(object : Callback<ReceitaExibicaoDTO> {
+                                        override fun onResponse(
+                                            call: Call<ReceitaExibicaoDTO>,
+                                            response: Response<ReceitaExibicaoDTO>
+                                        ) {
+                                            if (response.isSuccessful) {
+                                                println("Resposta do getOneReceita com sucesso: $response")
+                                                val receitaFull = response.body()
+                                                val infosReceita = Intent(
+                                                    contexto,
+                                                    ComponenteReceita::class.java
+                                                ).apply {
+                                                    putExtra(
+                                                        "receita",
+                                                        receitaFull as Serializable
+                                                    )
+                                                    putExtra("qtdPorcoes", receita.qtdPorcoes)
+                                                }
+                                                contexto.startActivity(infosReceita)
+                                            } else {
+                                                error("Erro na resposta do getOneReceita: $response")
+                                            }
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<ReceitaExibicaoDTO>,
+                                            t: Throwable
+                                        ) {
+                                            println("Erro ao obter getOneReceita: $t")
+                                        }
+                                    })
+                            }),
                         contentScale = ContentScale.Crop,
                     )
+
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -593,22 +653,26 @@ fun RecipeCard(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.icon_tempo_receita),
-                            contentDescription = "Imagem da Receita",
+                            contentDescription = stringContentDescriptionImagem,
                             modifier = Modifier
                                 .width(16.dp)
                                 .height(16.dp),
                             contentScale = ContentScale.Crop
                         )
                         Spacer(modifier = Modifier.width(3.dp))
+                        val stringMinutos= contexto.getString(R.string.text_field_minutos)
+                        val stringE= contexto.getString(R.string.text_e)
                         if (receita.horas == 1) {
+                            val stringHora= contexto.getString(R.string.text_field_hora)
                             Text(
-                                text = "1 Hora e " + receita.minutos + " minutos",
+                                text = "1 $stringHora $stringE " + receita.minutos + " $stringMinutos",
                                 fontSize = 16.sp,
                                 color = Color.Black,
                             )
                         } else {
+                            val stringHoras = contexto.getString(R.string.text_field_horas)
                             Text(
-                                text = "" + receita.horas + " Horas e " + receita.minutos + " minutos",
+                                text = "" + receita.horas + " $stringHoras $stringE " + receita.minutos + " $stringMinutos",
                                 fontSize = 16.sp,
                                 color = Color.Black,
                             )
@@ -622,7 +686,7 @@ fun RecipeCard(
                             fontWeight = FontWeight.Light
                         )
                     }
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                     LazyRow {
                         items(receita.preferencias) { preferencia ->
                             Box(
@@ -656,65 +720,56 @@ fun RecipeCard(
                             Spacer(modifier = Modifier.width(5.dp))
                         }
                     }
+                    Spacer(modifier = Modifier.height(6.dp))
 
-                    Spacer(modifier = Modifier.height(12.dp))
-                    if (ultimoPedido) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.icon_star_receita),
-                                contentDescription = "Icone de estrela de avaliação",
-                                modifier = Modifier
-                                    .width(10.dp)
-                                    .height(10.dp),
-                                contentScale = ContentScale.Crop
-                            )
-                            Spacer(modifier = Modifier.width(3.dp))
-                            Text(
-                                text = "" + receita.mediaNotas + " (" + receita.qtdAvaliacoes + " avaliações)",
-                                fontSize = 16.sp,
-                                color = Color.Black,
-                                fontWeight = FontWeight.Light
-                            )
-                            Spacer(modifier = Modifier.weight(50f)) // Espaço flexível para empurrar o ícone para a direita
-                            Image(
-                                painter = painterResource(id = R.drawable.icon_lixo),
-                                contentDescription = "Icone de excluir receita",
-                                modifier = Modifier
-                                    .width(20.dp)
-                                    .height(25.dp)
-                                    .clickable(onClick = { /* Adicione aqui a ação que deseja quando o ícone for clicado */
-                                        val pedidosApiService =
-                                            RetrofitInstace.getPedidosApiService()
-                                        pedidosApiService
-                                            .deleteReceitaPedido(receita.id, pedidoId)
-                                            .enqueue(object : Callback<Void> {
-                                                override fun onResponse(
-                                                    call: Call<Void>,
-                                                    response: Response<Void>
-                                                ) {
-                                                    if (response.isSuccessful) {
-                                                        println("Resposta do deleteReceitaPedido com sucesso: $response")
-                                                        getDatasPedidos()
-                                                    } else {
-                                                        error("Erro na resposta do deleteReceitaPedido: $response")
+                    //Preciso de uma logica que verifique se a data do pedido é 3 dias antes da data de entrega do pedido
+                    if(LocalDate.parse(pedidoData).minusDays(3).isAfter(LocalDate.now())){
+                        if (ultimoPedido) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Spacer(modifier = Modifier.weight(1f)) // Espaço flexível para empurrar o ícone para a direita
+                                val stringContentDescriptionIconLixeira = contexto.getString(R.string.text_content_description_icon_lixeira)
+                                Image(
+                                    painter = painterResource(id = R.drawable.icon_lixo),
+                                    contentDescription = stringContentDescriptionIconLixeira,
+                                    modifier = Modifier
+                                        .width(20.dp)
+                                        .height(25.dp)
+                                        .clickable(onClick = { /* Adicione aqui a ação que deseja quando o ícone for clicado */
+                                            val pedidosApiService =
+                                                RetrofitInstace.getPedidosApiService()
+                                            pedidosApiService
+                                                .deleteReceitaPedido(receita.id, pedidoId)
+                                                .enqueue(object : Callback<Void> {
+                                                    override fun onResponse(
+                                                        call: Call<Void>,
+                                                        response: Response<Void>
+                                                    ) {
+                                                        if (response.isSuccessful) {
+                                                            println("Resposta do deleteReceitaPedido com sucesso: $response")
+                                                            getDatasPedidos()
+                                                        } else {
+                                                            error("Erro na resposta do deleteReceitaPedido: $response")
+                                                        }
                                                     }
-                                                }
 
-                                                override fun onFailure(
-                                                    call: Call<Void>,
-                                                    t: Throwable
-                                                ) {
-                                                    println("Erro ao obter próximo pedido: $t")
-                                                }
-                                            })
+                                                    override fun onFailure(
+                                                        call: Call<Void>,
+                                                        t: Throwable
+                                                    ) {
+                                                        println("Erro ao obter próximo pedido: $t")
+                                                    }
+                                                })
 
-                                    }),
-                                contentScale = ContentScale.Crop
-                            )
-
+                                        }),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(3.dp))
                         }
+                    }else{
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
             }

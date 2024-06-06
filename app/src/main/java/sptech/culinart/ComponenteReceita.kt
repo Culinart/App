@@ -3,7 +3,6 @@ package sptech.culinart
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -19,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,211 +43,242 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import coil.compose.AsyncImage
+import sptech.culinart.api.data.ingrediente.IngredienteDTO
+import sptech.culinart.api.data.modoPreparo.ModoPreparoDTO
+import sptech.culinart.api.data.receita.ReceitaExibicaoDTO
 import sptech.culinart.ui.theme.CulinartTheme
 
 class ComponenteReceita : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val receita = intent.getSerializableExtra("receita") as? ReceitaExibicaoDTO
+        val qtdPorcoes = intent.getIntExtra("qtdPorcoes", 0)
         setContent {
             CulinartTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ComponenteReceita("Android")
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ComponenteReceita(name: String, modifier: Modifier = Modifier) {
-    var selectedTabIndex = remember { mutableStateOf(0) }
-
-    ComponenteHeader("Android", modifier = Modifier.zIndex(99f))
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 70.dp, bottom = 30.dp)
-            .zIndex(1f),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text(
-            text = "Bulgogi",
-            style = TextStyle(
-                Color(220, 119, 30),
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold
-            )
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Column(
-            modifier = Modifier
-                .width(320.dp),
-            horizontalAlignment = Alignment.End
-        ) {
-            Row(
-                modifier = Modifier
-                    .width(105.dp)
-                    .padding(end = 5.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-
-            ) {
-                Text(
-                    text = "5.0",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.ExtraLight
-                    ),
-                    modifier = Modifier.padding(end = 1.5.dp)
-                )
-                Text(
-                    text = "(100)",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.ExtraLight
-                    ),
-                    modifier = Modifier.padding(end = 1.5.dp)
-                )
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_estrela_avaliacao_14dp),
-                        contentDescription = "Estrela da avaliação de receita",
-                        tint = Color(android.graphics.Color.parseColor("#FCDC7C")).copy(0.8f)
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_estrela_avaliacao_14dp),
-                        contentDescription = "Estrela da avaliação de receita",
-                        tint = Color(android.graphics.Color.parseColor("#FCDC7C")).copy(0.8f)
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_estrela_avaliacao_14dp),
-                        contentDescription = "Estrela da avaliação de receita",
-                        tint = Color(android.graphics.Color.parseColor("#FCDC7C")).copy(0.8f)
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_estrela_avaliacao_14dp),
-                        contentDescription = "Estrela da avaliação de receita",
-                        tint = Color(android.graphics.Color.parseColor("#FCDC7C")).copy(0.8f)
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_estrela_avaliacao_14dp),
-                        contentDescription = "Estrela da avaliação de receita",
-                        tint = Color(android.graphics.Color.parseColor("#FCDC7C")).copy(0.8f)
-                    )
-                }
-
-            }
-            Image(
-                painter = painterResource(id = R.mipmap.img_receita),
-                contentDescription = "Imagem de receita para o componente Receita",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(170.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .padding(top = 1.2.dp),
-                contentScale = ContentScale.FillBounds
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text(
-                    text = "Categoria:",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    ),
-                    modifier = Modifier.padding(end = 2.5.dp)
-                )
-                Box(
-                    modifier = Modifier
-                        .width(70.dp)
-                        .height(20.dp)
-                        .border(
-                            width = 0.25.dp,
-                            color = Color.Black,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .background(
-                            color = Color(android.graphics.Color.parseColor("#001581")).copy(
-                                0.26f
-                            ),
-                            shape = RoundedCornerShape(8.dp)
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Koreana",
-                        style = TextStyle(
-                            fontSize = 14.sp
-                        )
-                    )
-                }
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 11.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text(
-                    text = "Tempo de preparo:",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    ),
-                    modifier = Modifier.padding(end = 2.dp)
-                )
-                Text(
-                    text = "1 hora e 20 minutos",
-                    style = TextStyle(fontSize = 16.sp)
-                )
-            }
-        }
-        Box(
-            modifier = Modifier
-                .padding(top = 15.dp)
-                .shadow(elevation = 3.dp, shape = RoundedCornerShape(4.dp))
-                .padding(8.dp)
-                .size(width = 320.dp, height = 355.dp)
-                .pointerInput(Unit) {
-                    detectHorizontalDragGestures { change, dragAmount ->
-                        if (dragAmount > 0) {
-                            selectedTabIndex.value = 0
-                        } else if (dragAmount < 0) {
-                            selectedTabIndex.value = 1
-                        }
+                    if (receita != null) {
+                        ComponenteReceita(receita = receita, qtdPorcoes = qtdPorcoes)
                     }
                 }
-        ) {
-            if (selectedTabIndex.value == 0) {
-                CardIngredientes()
-            } else {
-                CardModoDePreparo()
             }
         }
-
     }
+}
+
+@Composable
+fun ComponenteReceita(receita: ReceitaExibicaoDTO, qtdPorcoes: Int, modifier: Modifier = Modifier) {
+    var selectedTabIndex = remember { mutableStateOf(0) }
+    Column {
+
+
+        ComponenteHeader("Android", modifier = Modifier.zIndex(99f))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 70.dp, bottom = 30.dp)
+                .zIndex(1f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = receita.nome,
+                style = TextStyle(
+                    Color(220, 119, 30),
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Column(
+                modifier = Modifier
+                    .width(320.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .width(105.dp)
+                            .padding(end = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            text = "${receita.mediaAvaliacoes}",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.ExtraLight
+                            ),
+                            modifier = Modifier.padding(end = 1.5.dp)
+                        )
+                        Text(
+                            text = "(${receita.qtdAvaliacoes})",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.ExtraLight
+                            ),
+                            modifier = Modifier.padding(end = 1.5.dp)
+                        )
+                    }
+
+                    val fullStars = receita.mediaAvaliacoes.toInt()
+                    val halfStar = receita.mediaAvaliacoes - fullStars >= 0.5f
+
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End,
+                        content = {
+                            repeat(fullStars) {
+                                item {
+                                    Icon(
+                                        modifier = Modifier.width(14.dp).height(14.dp),
+                                        painter = painterResource(id = R.drawable.icon_estrela_inteira_avaliacao),
+                                        contentDescription = "Estrela da avaliação de receita",
+                                        tint = Color(android.graphics.Color.parseColor("#FCDC7C"))
+                                    )
+                                }
+                            }
+                            if (halfStar) {
+                                item {
+                                    Icon(
+                                        modifier = Modifier.width(14.dp).height(14.dp).padding(end = 5.dp),
+                                        painter = painterResource(id = R.drawable.icon_meia_estrela_avaliacao),
+                                        contentDescription = "Meia estrela da avaliação de receita",
+                                        tint = Color(android.graphics.Color.parseColor("#FCDC7C"))
+                                    )
+                                }
+                            }
+                        }
+                    )
+                }
+
+
+                AsyncImage(
+                    model = "https://drive.google.com/thumbnail?id=" + receita.imagem,
+                    contentDescription = "Imagem da Receita",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(170.dp)
+                        .padding(4.dp)
+                        .clip(shape = RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop,
+                )
+
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    item {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start,
+
+                            ) {
+                            Text(
+                                text = "Preferências:",
+                                style = TextStyle(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp
+                                ),
+                                modifier = Modifier.padding(end = 2.5.dp)
+                            )
+                        }
+                    }
+                    items(receita.preferencias) { preferencia ->
+                        Box(
+                            modifier = Modifier
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Black,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .background(
+                                    color = Color(
+                                        android.graphics.Color.parseColor(
+                                            "#" + preferencia.preferencia.corFundo
+                                        )
+                                    ),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                        ) {
+                            Text(
+                                text = preferencia.preferencia.nome,
+                                fontSize = 12.sp,
+                                color = Color(
+                                    android.graphics.Color.parseColor(
+                                        "#" + preferencia.preferencia.corTexto
+                                    )
+                                ),
+                                modifier = Modifier.padding(4.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(5.dp))
+                    }
+                }
+
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 11.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = "Tempo de preparo:",
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        ),
+                        modifier = Modifier.padding(end = 2.dp)
+                    )
+                    Text(
+                        text = "${receita.horas} Hora e ${receita.minutos} minutos",
+                        style = TextStyle(fontSize = 16.sp)
+                    )
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .padding(top = 15.dp)
+                    .shadow(elevation = 3.dp, shape = RoundedCornerShape(4.dp))
+                    .padding(8.dp)
+                    .size(width = 320.dp, height = 355.dp)
+                    .pointerInput(Unit) {
+                        detectHorizontalDragGestures { change, dragAmount ->
+                            if (dragAmount > 0) {
+                                selectedTabIndex.value = 0
+                            } else if (dragAmount < 0) {
+                                selectedTabIndex.value = 1
+                            }
+                        }
+                    }
+            ) {
+                if (selectedTabIndex.value == 0) {
+                    CardIngredientes(receita.ingredientes, qtdPorcoes)
+                } else {
+                    CardModoDePreparo(receita.modoPreparos)
+                }
+            }
+
+        }
+    }
+
 }
 
 
 @Composable
-fun CardIngredientes() {
+fun CardIngredientes(listaReceitaIndrediente: List<IngredienteDTO> = listOf(), qtdPorcoes : Int) {
     val ingredientes = listOf(
         "300 gramas de alcatra",
         "½ cebola pequena",
@@ -280,9 +311,9 @@ fun CardIngredientes() {
                 .padding(top = 10.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            items(ingredientes) { ingrediente ->
+            items(listaReceitaIndrediente) { ingrediente ->
                 Text(
-                    text = "•  $ingrediente",
+                    text = "•  ${ingrediente.quantidade} ${ingrediente.unidadeMedidaEnum}(s) (${ingrediente.nome})",
                     style = TextStyle(
                         fontSize = 16.sp,
                     ),
@@ -296,13 +327,15 @@ fun CardIngredientes() {
                 .padding(top = 10.dp, end = 3.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Ingredientes para render 4 porções",
-                style = TextStyle(
-                    color = Color.Gray,
-                    fontSize = 14.sp
+            if(qtdPorcoes >= 1) {
+                Text(
+                    text = "Ingredientes para render ${qtdPorcoes} porções",
+                    style = TextStyle(
+                        color = Color.Gray,
+                        fontSize = 14.sp
+                    )
                 )
-            )
+            }
             Row(
                 modifier = Modifier
                     .width(90.dp)
@@ -328,7 +361,7 @@ fun CardIngredientes() {
 }
 
 @Composable
-fun CardModoDePreparo() {
+fun CardModoDePreparo(passosModoPreparo: List<ModoPreparoDTO>) {
     val passos = listOf(
         "Em uma tigela grande, misture todos os ingredientes da marinada.",
         "Adicione a carne e misture bem para que todos os pedaços estejam cobertos pela marinada.",
@@ -359,9 +392,9 @@ fun CardModoDePreparo() {
                 .padding(top = 10.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            itemsIndexed(passos) { index, passo ->
+            itemsIndexed(passosModoPreparo) { index, passo ->
                 Text(
-                    text = "${index + 1}. $passo",
+                    text = "${index + 1}. ${passo.passo}",
                     style = TextStyle(
                         fontSize = 16.sp,
                     ),
@@ -403,6 +436,22 @@ fun CardModoDePreparo() {
 @Composable
 fun ComponenteReceitaPreview() {
     CulinartTheme {
-        ComponenteReceita("Android")
+        val receita = ReceitaExibicaoDTO(
+            id = 1,
+            nome = "Bulgi",
+            horas = 1,
+            minutos = 20,
+            descricao = "Descrição da receita",
+            imagem = "imagem_url",
+            mediaAvaliacoes = 4.5,
+            qtdAvaliacoes = 100,
+            ingredientes = listOf(),
+            modoPreparos = listOf(),
+            categorias = listOf(),
+            preferencias = listOf(),
+            avaliacoes = listOf(),
+
+            )
+        ComponenteReceita(receita = receita, qtdPorcoes = 4)
     }
 }

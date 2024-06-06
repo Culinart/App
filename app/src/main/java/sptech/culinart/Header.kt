@@ -176,36 +176,36 @@ fun ComponenteHeader(name: String, modifier: Modifier = Modifier) {
 
                 Spacer(modifier = Modifier.height(50.dp))
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(.8f)
-                        .clickable {
-                            val telaMeuPlano = Intent(contexto, Plano::class.java)
-                            contexto.startActivity(telaMeuPlano)
-                        },
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth(.8f)
+//                        .clickable {
+//                            val telaMeuPlano = Intent(contexto, Plano::class.java)
+//                            contexto.startActivity(telaMeuPlano)
+//                        },
+//                    horizontalArrangement = Arrangement.Center,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//
+//                    Icon(
+//                        painter = painterResource(id = R.drawable.icon_meu_plano_header),
+//                        contentDescription = "Icone de Meu Plano do Header",
+//                        tint = Color.White,
+//                        modifier = Modifier.padding(start = 1.75.dp)
+//                    )
+//
+//                    Text(
+//                        text = "Meu Plano",
+//                        style = TextStyle(
+//                            Color(255, 255, 255),
+//                            fontSize = 18.sp
+//                        ),
+//                        modifier = Modifier.padding(start = 11.25.dp)
+//                    )
+//
+//                }
 
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_meu_plano_header),
-                        contentDescription = "Icone de Meu Plano do Header",
-                        tint = Color.White,
-                        modifier = Modifier.padding(start = 1.75.dp)
-                    )
-
-                    Text(
-                        text = "Meu Plano",
-                        style = TextStyle(
-                            Color(255, 255, 255),
-                            fontSize = 18.sp
-                        ),
-                        modifier = Modifier.padding(start = 11.25.dp)
-                    )
-
-                }
-
-                Spacer(modifier = Modifier.height(50.dp))
+ //               Spacer(modifier = Modifier.height(50.dp))
 
                 Row(
                     modifier = Modifier
@@ -239,38 +239,43 @@ fun ComponenteHeader(name: String, modifier: Modifier = Modifier) {
 
                 Spacer(modifier = Modifier.height(50.dp))
 
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth(.8f)
+//                        .clickable {
+//                            val telaEscolhas = Intent(contexto, PerfilEscolhas::class.java)
+//                            contexto.startActivity(telaEscolhas)
+//                        },
+//                    horizontalArrangement = Arrangement.Center,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//
+//                    Icon(
+//                        painter = painterResource(id = R.drawable.icon_user_header),
+//                        contentDescription = "Icone de Perfil do Header",
+//                        tint = Color.White
+//                    )
+//
+//                    Text(
+//                        text = "Perfil",
+//                        style = TextStyle(
+//                            Color(255, 255, 255),
+//                            fontSize = 18.sp
+//                        ),
+//                        modifier = Modifier.padding(start = 8.dp)
+//                    )
+//                }
+
+//                Spacer(modifier = Modifier.height(50.dp))
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(.8f)
                         .clickable {
-                            val telaEscolhas = Intent(contexto, PerfilEscolhas::class.java)
-                            contexto.startActivity(telaEscolhas)
+
+                           val telaLogin = Intent(contexto, MainActivity::class.java)
+                          contexto.startActivity(telaLogin)
                         },
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_user_header),
-                        contentDescription = "Icone de Perfil do Header",
-                        tint = Color.White
-                    )
-
-                    Text(
-                        text = "Perfil",
-                        style = TextStyle(
-                            Color(255, 255, 255),
-                            fontSize = 18.sp
-                        ),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(50.dp))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(.8f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

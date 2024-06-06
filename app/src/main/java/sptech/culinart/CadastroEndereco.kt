@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -60,7 +61,10 @@ class CadastroEndereco : ComponentActivity() {
         val extras = intent.extras
         setContent {
             CulinartTheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
                     TelaCadastroEndereco(extras)
                 }
             }
@@ -76,7 +80,6 @@ fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
 
     val prefsManager = PreferencesManager.getInstance(contexto);
     val userId = prefsManager.getUserId()
-
 
 
     val cep = remember {
@@ -136,8 +139,9 @@ fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(60.dp))
 
+        val tituloPagina = stringResource(R.string.text_cadastro_endereco_titulo)
         Text(
-            "Onde fica sua cozinha, Chef?",
+            text = tituloPagina,
             modifier = Modifier.fillMaxWidth(),
             style = TextStyle(
                 Color(255, 159, 28),
@@ -149,214 +153,221 @@ fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-            Row(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth()) {
 
-                Spacer(modifier = Modifier.width(30.dp))
-                TextField(
-                    value = cep.value,
-                    onValueChange = { cep.value = it },
-                    label = {
-                        Text("CEP")
-                    },
-                    placeholder = { Text("00000-000") },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedLabelColor = Color(4, 93, 83),
-                        focusedLabelColor = Color(4, 93, 83),
-                        unfocusedContainerColor = Color(249, 251, 251),
-                        focusedContainerColor = Color(232, 240, 239),
-                        unfocusedTextColor = Color(107, 107, 107, 255),
-                        focusedTextColor = Color.Black
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
+            val textCep = stringResource(R.string.text_cadastro_endereco_CEP)
+            Spacer(modifier = Modifier.width(30.dp))
+            TextField(
+                value = cep.value,
+                onValueChange = { cep.value = it },
+                label = {
+                    Text(text = textCep)
+                },
+                placeholder = { Text("00000-000") },
+                colors = TextFieldDefaults.colors(
+                    unfocusedLabelColor = Color(4, 93, 83),
+                    focusedLabelColor = Color(4, 93, 83),
+                    unfocusedContainerColor = Color(249, 251, 251),
+                    focusedContainerColor = Color(232, 240, 239),
+                    unfocusedTextColor = Color(107, 107, 107, 255),
+                    focusedTextColor = Color.Black
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
+                modifier = Modifier.weight(1f)
+            )
 
-                Spacer(modifier = Modifier.width(30.dp))
+            Spacer(modifier = Modifier.width(30.dp))
 
-                Column {
-                    Column(
-                        modifier = Modifier
-                            .width(150.dp)
-                    ) {
+            Column {
+                Column(
+                    modifier = Modifier
+                        .width(150.dp)
+                ) {
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                        Box() {
-                            TextButton(onClick = { expanded.value = !expanded.value }) {
+                    Box() {
+                        TextButton(onClick = { expanded.value = !expanded.value }) {
 
-                                Text(
-                                    text = if (selectedEstado.value.isNotEmpty()) selectedEstado.value else "Estado",
-                                    color = if (selectedEstado.value.isNotEmpty()) Color.Black else Color.Gray
-                                )
-                            }
-
+                            val textEstado = stringResource(R.string.text_cadastro_endereco_estado)
+                            Text(
+                                text = if (selectedEstado.value.isNotEmpty()) selectedEstado.value else textEstado,
+                                color = if (selectedEstado.value.isNotEmpty()) Color.Black else Color.Gray
+                            )
                         }
-                        DropdownMenu(
-                            expanded = expanded.value,
-                            onDismissRequest = { expanded.value = false },
-                            modifier = Modifier
-                                .background(Color.White)
-                                .border(1.dp, Color(160, 160, 160))
-                                .height(300.dp)
-                        ) {
-                            estados.forEach { estado ->
-                                DropdownMenuItem(
-                                    text = { Text(estado, color = Color.Black) },
-                                    onClick = {
-                                        selectedEstado.value = estado
-                                        expanded.value = false
-                                    }
-                                )
-                            }
-                        }
-                        Box(
-                            modifier = Modifier
-                                .width(180.dp)
-                                .height(1.dp)
-                                .background(color = Color.Black)
-                        )
+
                     }
+                    DropdownMenu(
+                        expanded = expanded.value,
+                        onDismissRequest = { expanded.value = false },
+                        modifier = Modifier
+                            .background(Color.White)
+                            .border(1.dp, Color(160, 160, 160))
+                            .height(300.dp)
+                    ) {
+                        estados.forEach { estado ->
+                            DropdownMenuItem(
+                                text = { Text(estado, color = Color.Black) },
+                                onClick = {
+                                    selectedEstado.value = estado
+                                    expanded.value = false
+                                }
+                            )
+                        }
+                    }
+                    Box(
+                        modifier = Modifier
+                            .width(180.dp)
+                            .height(1.dp)
+                            .background(color = Color.Black)
+                    )
                 }
-
-                Spacer(modifier = Modifier.width(30.dp))
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.width(30.dp))
+        }
 
-            Row(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(20.dp))
 
-                Spacer(modifier = Modifier.width(30.dp))
-                TextField(
-                    value = cidade.value,
-                    onValueChange = { cidade.value = it },
-                    label = {
-                        Text("Cidade")
-                    },
-                    placeholder = { Text("São Paulo") },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedLabelColor = Color(4, 93, 83),
-                        focusedLabelColor = Color(4, 93, 83),
-                        unfocusedContainerColor = Color(249, 251, 251),
-                        focusedContainerColor = Color(232, 240, 239),
-                        unfocusedTextColor = Color(107, 107, 107, 255),
-                        focusedTextColor = Color.Black
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
+        Row(modifier = Modifier.fillMaxWidth()) {
 
-                Spacer(modifier = Modifier.width(30.dp))
+            val textCidade = stringResource(R.string.text_cadastro_endereco_cidade)
+            Spacer(modifier = Modifier.width(30.dp))
+            TextField(
+                value = cidade.value,
+                onValueChange = { cidade.value = it },
+                label = {
+                    Text(text=textCidade)
+                },
+                placeholder = { Text("São Paulo") },
+                colors = TextFieldDefaults.colors(
+                    unfocusedLabelColor = Color(4, 93, 83),
+                    focusedLabelColor = Color(4, 93, 83),
+                    unfocusedContainerColor = Color(249, 251, 251),
+                    focusedContainerColor = Color(232, 240, 239),
+                    unfocusedTextColor = Color(107, 107, 107, 255),
+                    focusedTextColor = Color.Black
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text
+                ),
+                modifier = Modifier.weight(1f)
+            )
 
-                TextField(
-                    value = bairro.value,
-                    onValueChange = { bairro.value = it },
-                    label = {
-                        Text("Bairro")
-                    },
-                    placeholder = { Text("Morumbi") },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedLabelColor = Color(4, 93, 83),
-                        focusedLabelColor = Color(4, 93, 83),
-                        unfocusedContainerColor = Color(249, 251, 251),
-                        focusedContainerColor = Color(232, 240, 239),
-                        unfocusedTextColor = Color(107, 107, 107, 255),
-                        focusedTextColor = Color.Black
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
-                Spacer(modifier = Modifier.width(30.dp))
-            }
+            Spacer(modifier = Modifier.width(30.dp))
 
-            Spacer(modifier = Modifier.height(20.dp))
+            val textBairro = stringResource(R.string.text_cadastro_endereco_bairro)
+            TextField(
+                value = bairro.value,
+                onValueChange = { bairro.value = it },
+                label = {
+                    Text(text=textBairro)
+                },
+                placeholder = { Text("Morumbi") },
+                colors = TextFieldDefaults.colors(
+                    unfocusedLabelColor = Color(4, 93, 83),
+                    focusedLabelColor = Color(4, 93, 83),
+                    unfocusedContainerColor = Color(249, 251, 251),
+                    focusedContainerColor = Color(232, 240, 239),
+                    unfocusedTextColor = Color(107, 107, 107, 255),
+                    focusedTextColor = Color.Black
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text
+                ),
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(30.dp))
+        }
 
-            Row(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(20.dp))
 
-                Spacer(modifier = Modifier.width(30.dp))
-                TextField(
-                    value = logradouro.value,
-                    onValueChange = { logradouro.value = it },
-                    label = {
-                        Text("Logradouro")
-                    },
-                    placeholder = { Text("Rua Haddock Lobo") },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedLabelColor = Color(4, 93, 83),
-                        focusedLabelColor = Color(4, 93, 83),
-                        unfocusedContainerColor = Color(249, 251, 251),
-                        focusedContainerColor = Color(232, 240, 239),
-                        unfocusedTextColor = Color(107, 107, 107, 255),
-                        focusedTextColor = Color.Black
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
+        Row(modifier = Modifier.fillMaxWidth()) {
 
-                Spacer(modifier = Modifier.width(30.dp))
-            }
+            val textLogradouro = stringResource(R.string.text_cadastro_endereco_logradouro)
+            Spacer(modifier = Modifier.width(30.dp))
+            TextField(
+                value = logradouro.value,
+                onValueChange = { logradouro.value = it },
+                label = {
+                    Text(text=textLogradouro)
+                },
+                placeholder = { Text("Rua Haddock Lobo") },
+                colors = TextFieldDefaults.colors(
+                    unfocusedLabelColor = Color(4, 93, 83),
+                    focusedLabelColor = Color(4, 93, 83),
+                    unfocusedContainerColor = Color(249, 251, 251),
+                    focusedContainerColor = Color(232, 240, 239),
+                    unfocusedTextColor = Color(107, 107, 107, 255),
+                    focusedTextColor = Color.Black
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text
+                ),
+                modifier = Modifier.weight(1f)
+            )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.width(30.dp))
+        }
 
-            Row(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(20.dp))
 
-                Spacer(modifier = Modifier.width(30.dp))
-                TextField(
-                    value = numero.value,
-                    onValueChange = { numero.value = it },
-                    label = {
-                        Text("Número")
-                    },
-                    placeholder = { Text("000") },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedLabelColor = Color(4, 93, 83),
-                        focusedLabelColor = Color(4, 93, 83),
-                        unfocusedContainerColor = Color(249, 251, 251),
-                        focusedContainerColor = Color(232, 240, 239),
-                        unfocusedTextColor = Color(107, 107, 107, 255),
-                        focusedTextColor = Color.Black
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
+        Row(modifier = Modifier.fillMaxWidth()) {
 
-                Spacer(modifier = Modifier.width(30.dp))
+            Spacer(modifier = Modifier.width(30.dp))
+            val textNumero = stringResource(R.string.text_cadastro_endereco_numero)
+            TextField(
+                value = numero.value,
+                onValueChange = { numero.value = it },
+                label = {
+                    Text(text=textNumero)
+                },
+                placeholder = { Text("000") },
+                colors = TextFieldDefaults.colors(
+                    unfocusedLabelColor = Color(4, 93, 83),
+                    focusedLabelColor = Color(4, 93, 83),
+                    unfocusedContainerColor = Color(249, 251, 251),
+                    focusedContainerColor = Color(232, 240, 239),
+                    unfocusedTextColor = Color(107, 107, 107, 255),
+                    focusedTextColor = Color.Black
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
+                modifier = Modifier.weight(1f)
+            )
 
-                TextField(
-                    value = complemento.value,
-                    onValueChange = { complemento.value = it },
-                    label = {
-                        Text("Complemento")
-                    },
-                    placeholder = { Text("Apto 1") },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedLabelColor = Color(4, 93, 83),
-                        focusedLabelColor = Color(4, 93, 83),
-                        unfocusedContainerColor = Color(249, 251, 251),
-                        focusedContainerColor = Color(232, 240, 239),
-                        unfocusedTextColor = Color(107, 107, 107, 255),
-                        focusedTextColor = Color.Black
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
-                Spacer(modifier = Modifier.width(30.dp))
-            }
+            Spacer(modifier = Modifier.width(30.dp))
+
+            val textComplemento = stringResource(R.string.text_cadastro_endereco_complemento)
+            TextField(
+                value = complemento.value,
+                onValueChange = { complemento.value = it },
+                label = {
+                    Text(text=textComplemento)
+                },
+                placeholder = { Text("Apto 1") },
+                colors = TextFieldDefaults.colors(
+                    unfocusedLabelColor = Color(4, 93, 83),
+                    focusedLabelColor = Color(4, 93, 83),
+                    unfocusedContainerColor = Color(249, 251, 251),
+                    focusedContainerColor = Color(232, 240, 239),
+                    unfocusedTextColor = Color(107, 107, 107, 255),
+                    focusedTextColor = Color.Black
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text
+                ),
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(30.dp))
+        }
 
 
 
-            Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
 
         Button(
@@ -364,7 +375,12 @@ fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
             {
                 println(userId)
                 val api = RetrofitInstace.getApiEnderecoService()
-                val call = api.createEnderecoUsuario(userId, cep.value, numero.value.toInt(), complemento.value)
+                val call = api.createEnderecoUsuario(
+                    userId,
+                    cep.value,
+                    numero.value.toInt(),
+                    complemento.value
+                )
                 call.enqueue(object : Callback<Endereco> {
                     override fun onResponse(call: Call<Endereco>, response: Response<Endereco>) {
                         if (response.isSuccessful) {
@@ -383,6 +399,7 @@ fun TelaCadastroEndereco(extras: Bundle?, modifier: Modifier = Modifier) {
                             feedback.value = "Erro ao cadastrar endereço"
                         }
                     }
+
                     override fun onFailure(call: Call<Endereco>, t: Throwable) {
                         println("Entrou no failure")
                         feedback.value = "Falha na conexão: ${t.message}"
