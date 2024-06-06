@@ -20,6 +20,11 @@
             android:exported="false"
             android:label="ComponenteReceita" />
         <activity
+            android:name=".Preferencias"
+            android:exported="false"
+            android:label="Preferencias"
+            android:theme="@style/Theme.Culinart" />
+        <activity
             android:name=".Pedido"
             android:exported="false"
             android:label="@string/title_activity_pedido"
