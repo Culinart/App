@@ -6,7 +6,7 @@ import retrofit2.http.Path
 import sptech.culinart.api.data.usuario.UsuarioPreferenciaDTO
 
 interface PreferenciaUsuarioApiService {
-    @GET("/usuarios/preferencias/{idUsuario}")
+    @GET("/api/usuarios/preferencias/{idUsuario}")
     fun getPreferenciasUsuario(@Path("idUsuario") idUsuario: Int): Call<List<UsuarioPreferenciaDTO>>
 
 }
