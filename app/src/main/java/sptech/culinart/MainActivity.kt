@@ -40,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -188,9 +189,8 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         unfocusedTextColor = Color(107, 107, 107, 255),
                         focusedTextColor = Color.Black
                     ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password
-                    )
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    visualTransformation = PasswordVisualTransformation(),
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
@@ -202,7 +202,7 @@ fun TelaLogin(name: String, modifier: Modifier = Modifier) {
                         val usuarioApiService = RetrofitInstace.getUsuarioApiService()
 
                         val credenciais = UsuarioLoginDTO(email = email.value, senha = senha.value)
-                        //val credenciais = UsuarioLoginDTO(email = "lucasakiama@gmail.com", senha = "senhaQualquer123")
+                        //val credenciais = UsuarioLoginDTO(email = "orlindo@yahoo.com", senha = "sptech123")
                         usuarioApiService.login(credenciais).enqueue(object : Callback<UsuarioTokenDTO> {
                             override fun onResponse(call: Call<UsuarioTokenDTO>, response: Response<UsuarioTokenDTO>) {
                                 if (response.isSuccessful) {

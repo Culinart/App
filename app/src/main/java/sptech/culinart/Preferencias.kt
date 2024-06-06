@@ -107,137 +107,126 @@ fun TelaPreferencias(
     val preferencias by screenDataDtoRemember.observeAsState(emptyList())
     val preferenciasUsuario by screenDataDtoUsuarioRemember.observeAsState(emptyList())
 
-    LazyColumn(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
-    ) {
-        item {
-            // Top Bar
-            Row(
-                modifier = Modifier
-                    .background(Color(0xFF00AE9E))
-                    .padding(30.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.lista),
-                    contentDescription = "Imagem da Receita",
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(shape = RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = "Culinart",
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
+    val preferenciasFiltradas = preferencias.filter { it.id !in preferenciasUsuario.map { pref -> pref.preferencia.id } }
+    val preferenciasPorTipo = preferenciasFiltradas.groupBy { it.tipoPreferenciaEnum }
 
-        item {
-            // Title
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Preferências",
-                    color = Color(0xFF045D53),
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-            }
-        }
+    Column(modifier = Modifier.fillMaxSize()) {
+        ComponenteHeader("Android")
 
-        item {
-            // Chosen Preferences
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .border(1.dp, Color(0xFFFFA500), shape = RoundedCornerShape(8.dp))
-            ) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 16.dp, vertical = 10.dp)
+        ) {
+            item {
+                // Title
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .padding(vertical = 8.dp),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Preferências Escolhidas",
+                        text = "Preferências",
                         color = Color(0xFF045D53),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Medium
                     )
-                    Spacer(modifier = Modifier.height(14.dp))
-                    for (i in preferenciasUsuario.indices step 2) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Column(
-                                modifier = Modifier.weight(1f),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+            }
+
+            item {
+                // Chosen Preferences
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .border(1.dp, Color(0xFFFFA500), shape = RoundedCornerShape(8.dp))
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Preferências Escolhidas",
+                            color = Color(0xFF045D53),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Spacer(modifier = Modifier.height(14.dp))
+                        for (i in preferenciasUsuario.indices step 2) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
                             ) {
-                                if (i < preferenciasUsuario.size) {
-                                    Preferencia(preferencia = preferenciasUsuario[i].preferencia)
-                                    Spacer(modifier = Modifier.height(14.dp))
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    if (i < preferenciasUsuario.size) {
+                                        Preferencia(preferencia = preferenciasUsuario[i].preferencia)
+                                        Spacer(modifier = Modifier.height(14.dp))
+                                    }
                                 }
-                            }
-                            Column(
-                                modifier = Modifier.weight(1f),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                if (i + 1 < preferenciasUsuario.size) {
-                                    Preferencia(preferencia = preferenciasUsuario[i + 1].preferencia)
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    if (i + 1 < preferenciasUsuario.size) {
+                                        Preferencia(preferencia = preferenciasUsuario[i + 1].preferencia)
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
-        val preferenciasUsuarioIds = preferenciasUsuario.map { it.preferencia.id }
-        val preferenciasFiltradas = preferencias.filter { it.id !in preferenciasUsuarioIds }
 
-        items(preferenciasFiltradas.chunked(2)) { preferenciasPorLinha ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                preferenciasPorLinha.forEach { preferencia ->
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Preferencia(preferencia = preferencia)
-                        Spacer(modifier = Modifier.height(14.dp))
-                    }
+            // Preferences by Type
+            preferenciasPorTipo.forEach { (tipo, preferencias) ->
+                item {
+                    Text(
+                        text = tipo.name,
+                        color = Color(0xFF045D53),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 15.dp)
+                    )
                 }
+                item {
+                    Divider(color = Color(0xFF045D53), thickness = 1.dp, modifier = Modifier.padding(bottom = 10.dp))
+                }
+                items(preferencias.chunked(2)) { preferenciasPorLinha ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        preferenciasPorLinha.forEach { preferencia ->
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Preferencia(preferencia = preferencia)
+                                Spacer(modifier = Modifier.height(14.dp))
+                            }
+                        }
 
-                // Adicionar um espaço vazio se houver apenas uma preferência na linha
-                if (preferenciasPorLinha.size == 1) {
-                    Spacer(modifier = Modifier.weight(1f))
+                        // Add an empty space if there is only one preference in the row
+                        if (preferenciasPorLinha.size == 1) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
                 }
             }
         }
-
-
-        }
     }
-
-
-
-
+}
 
 @Composable
 fun Preferencia(preferencia: PreferenciasDTO) {
@@ -247,7 +236,7 @@ fun Preferencia(preferencia: PreferenciasDTO) {
             .width(150.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(Color(android.graphics.Color.parseColor("#${preferencia.corFundo}"))),
-            //.border(1.dp, Color(0xFF000000), shape = RoundedCornerShape(8.dp)),
+        //.border(1.dp, Color(0xFF000000), shape = RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
         Text(
