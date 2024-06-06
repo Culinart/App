@@ -68,4 +68,12 @@ object RetrofitInstace {
         return retrofit.create(PlanoApiService::class.java)
     }
 
+    fun getPreferenciaApiService(): PreferenciaApiService {
+        return retrofit.create(PreferenciaApiService::class.java)
+    }
+
+    fun getPreferenciaUsuarioApiService(): PreferenciaUsuarioApiService {
+        return retrofit.create(PreferenciaUsuarioApiService::class.java)
+    }
+
 }
