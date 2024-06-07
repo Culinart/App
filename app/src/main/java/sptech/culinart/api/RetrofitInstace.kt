@@ -16,9 +16,9 @@ import sptech.culinart.api.endpoints.UsuarioApiService
 object RetrofitInstace {
     //local
 
-    //val BASE_URL = "http://192.168.15.42:8080/"
+    val BASE_URL = "http://192.168.15.42:8080/"
     //internet
-    val BASE_URL = "http://34.235.192.141:80/"
+    //val BASE_URL = "http://34.235.192.141:80/"
 
     // Cria uma instância Retrofit
     private val retrofit = Retrofit.Builder()

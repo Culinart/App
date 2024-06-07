@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -65,6 +67,7 @@ import sptech.culinart.api.data.pedido.ReceitaPedidoDto
 import sptech.culinart.api.data.receita.ReceitaDTO
 import sptech.culinart.api.data.receita.ReceitaExibicaoDTO
 import sptech.culinart.api.data.receita.ReceitaExibicaoPedidoDto
+import sptech.culinart.api.data.usuario.UsuarioPreferenciaDTO
 import sptech.culinart.ui.theme.CulinartTheme
 import java.io.Serializable
 import java.time.LocalDate
@@ -74,7 +77,7 @@ class Receitas : ComponentActivity() {
 
     //    private var screenDataDto: PedidoByDataDto? = null
     private var screenDataDto = MutableLiveData<PedidoByDataDto>()
-
+    private var screenDataUsuarioPreferencia = MutableLiveData<List<UsuarioPreferenciaDTO>>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -82,11 +85,10 @@ class Receitas : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    println("Entrou aqui")
                     runBlocking {
                         async { getDatasPedido() }.await()
                     }
-                    TelaReceitas(screenDataDto) { getDatasPedido() }
+                    TelaReceitas(screenDataDto, { getDatasPedido() }, screenDataUsuarioPreferencia)
                 }
             }
 
@@ -98,7 +100,7 @@ class Receitas : ComponentActivity() {
         val prefsManager = PreferencesManager.getInstance(this)
         val userId = prefsManager.getUserId()
         val token = prefsManager.getToken()
-
+        getPreferenciasUsuario()
         pedidosApiService.getDatasPedidos(userId).enqueue(object : Callback<List<DatasPedidosDto>> {
             override fun onResponse(
                 call: Call<List<DatasPedidosDto>>,
@@ -153,6 +155,31 @@ class Receitas : ComponentActivity() {
             })
     }
 
+    private fun getPreferenciasUsuario() {
+        val prefsManager = PreferencesManager.getInstance(this)
+        val userId = prefsManager.getUserId()
+        val preferenciaUsuarioApiService = RetrofitInstace.getPreferenciaUsuarioApiService()
+        preferenciaUsuarioApiService.getPreferenciasUsuario(userId).enqueue(object :
+            retrofit2.Callback<List<UsuarioPreferenciaDTO>> {
+            override fun onResponse(call: Call<List<UsuarioPreferenciaDTO>>, response: Response<List<UsuarioPreferenciaDTO>>) {
+                if (response.isSuccessful) {
+                    val resposta = response.body()
+                    if (!resposta.isNullOrEmpty()) {
+                        screenDataUsuarioPreferencia.postValue(resposta!!)
+                    } else {
+                        println("Lista preferencias Usuario vazia ou nula")
+                    }
+                } else {
+                    println("Erro na resposta do getPreferenciasUsuario(tela de recitas): $response")
+                }
+            }
+
+            override fun onFailure(call: Call<List<UsuarioPreferenciaDTO>>, t: Throwable) {
+                println("Erro ao obter preferencias do usuário(tela de receitas): $t")
+            }
+        })
+    }
+
 //    private fun mapDatasPedidosToDataEntrega(datasPedidosDto: DatasPedidosDto): DataEntregaDto {
 //        return DataEntregaDto(LocalDate.parse(datasPedidosDto.datasPedidos))
 //    }
@@ -161,7 +188,8 @@ class Receitas : ComponentActivity() {
 @Composable
 fun TelaReceitas(
     screenDataDtoRemember: MutableLiveData<PedidoByDataDto>,
-    getDatasPedidosDto: () -> Unit
+    getDatasPedidosDto: () -> Unit,
+    preferenciaUser: MutableLiveData<List<UsuarioPreferenciaDTO>>,
 ) {
     val screenDataDto = screenDataDtoRemember.observeAsState().value
     val contexto = LocalContext.current
@@ -236,7 +264,7 @@ fun TelaReceitas(
             }
 
             if (screenDataDto != null) {
-                ReceitaCard(receitas = receitas.value, pedido = screenDataDto)
+                preferenciaUser.value?.let { ReceitaCard(receitas = receitas.value, pedido = screenDataDto, preferenciaUser = it) }
             }
         }
     }
@@ -289,7 +317,7 @@ fun ObterReceitasDaApi(onReceitasCarregadas: (List<ReceitaDTO>) -> Unit) {
 }
 
 @Composable
-fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
+fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto, preferenciaUser: List<UsuarioPreferenciaDTO>) {
     val contexto = LocalContext.current
     val pedidosApiService = RetrofitInstace.getPedidosApiService()
 
@@ -311,6 +339,45 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
         }
     } else {
         LazyColumn {
+
+
+            item{
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier
+                        .padding(start = 35.dp)
+                        .padding(vertical = 8.dp)
+
+                ) {
+
+                    Text(
+                        text = "Preferências",
+                        color = Color(0xFF045D53),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontSize = 22.sp,
+                        //modifier = Modifier.weight(1f)
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.icon_edit),
+                        contentDescription = "Edit Icon",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .padding(bottom = 5.dp)
+                            .size(20.dp)
+                            .clickable(onClick = {
+                                val telaPreferencia = Intent(
+                                    contexto,
+                                    Preferencias::class.java
+                                )
+                                contexto.startActivity(telaPreferencia)
+                            })
+                    )
+                }
+            }
+            item {
+                PreferenciasGrid(preferencias = preferenciaUser)
+            }
             items(receitas) { receita ->
                 Column(
                     modifier = Modifier
@@ -564,13 +631,57 @@ fun ReceitaCard(receitas: List<ReceitaDTO>, pedido: PedidoByDataDto) {
     }
 }
 
+@Composable
+fun PreferenciasGrid(preferencias: List<UsuarioPreferenciaDTO>) {
+    val rows = preferencias.chunked(3)
+
+    rows.forEach { row ->
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(start = 35.dp)
+        ) {
+            row.forEach { preferencia ->
+                Box(
+                    modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = Color.Black,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .background(
+                            color = Color(
+                                android.graphics.Color.parseColor(
+                                    "#" + preferencia.preferencia.corFundo
+                                )
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(3.dp)
+                ) {
+                    Text(
+                        text = preferencia.preferencia.nome,
+                        fontSize = 12.sp,
+                        color = Color(
+                            android.graphics.Color.parseColor(
+                                "#" + preferencia.preferencia.corTexto
+                            )
+                        ),
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
 fun TelaReceitasPreview() {
     CulinartTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            TelaReceitas(screenDataDtoRemember = MutableLiveData<PedidoByDataDto>(), { Unit })
+            TelaReceitas(screenDataDtoRemember = MutableLiveData<PedidoByDataDto>(), { Unit }, MutableLiveData<List<UsuarioPreferenciaDTO>>())
         }
     }
 }
