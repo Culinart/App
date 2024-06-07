@@ -3,9 +3,9 @@ package sptech.culinart
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,14 +17,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import sptech.culinart.api.RetrofitInstace
 import sptech.culinart.api.data.PreferencesManager
@@ -45,16 +45,17 @@ class Preferencias : ComponentActivity() {
                 Surface(color = MaterialTheme.colorScheme.background) {
                     getPreferencias()
                     getPreferenciasUsuario()
-                    TelaPreferencias(screenDataDto, screenDataDtoUsuario)
+                    TelaPreferencias(screenDataDto, screenDataDtoUsuario,
+                        { getPreferencias() }, { getPreferenciasUsuario() })
                 }
             }
         }
     }
 
-    private fun getPreferenciasUsuario() {
+     fun getPreferenciasUsuario() {
         val prefsManager = PreferencesManager.getInstance(this)
         val userId = prefsManager.getUserId()
-
+        screenDataDtoUsuario.postValue(emptyList())
         preferenciaUsuarioApiService.getPreferenciasUsuario(userId).enqueue(object :
             retrofit2.Callback<List<UsuarioPreferenciaDTO>> {
             override fun onResponse(call: Call<List<UsuarioPreferenciaDTO>>, response: Response<List<UsuarioPreferenciaDTO>>) {
@@ -76,7 +77,8 @@ class Preferencias : ComponentActivity() {
         })
     }
 
-    private fun getPreferencias() {
+     fun getPreferencias() {
+         screenDataDto.postValue(emptyList())
         preferenciaApiService.getAllPreferencias().enqueue(object :
             retrofit2.Callback<List<PreferenciasDTO>> {
             override fun onResponse(call: Call<List<PreferenciasDTO>>, response: Response<List<PreferenciasDTO>>) {
@@ -102,8 +104,14 @@ class Preferencias : ComponentActivity() {
 @Composable
 fun TelaPreferencias(
     screenDataDtoRemember: MutableLiveData<List<PreferenciasDTO>>,
-    screenDataDtoUsuarioRemember: MutableLiveData<List<UsuarioPreferenciaDTO>>
+    screenDataDtoUsuarioRemember: MutableLiveData<List<UsuarioPreferenciaDTO>>,
+    getPreferenciasUsuario: () -> Unit,
+    getPreferencias: () -> Unit
 ) {
+    fun onChangePrefs() {
+        getPreferencias()
+        getPreferenciasUsuario()
+    }
     val preferencias by screenDataDtoRemember.observeAsState(emptyList())
     val preferenciasUsuario by screenDataDtoUsuarioRemember.observeAsState(emptyList())
 
@@ -170,7 +178,12 @@ fun TelaPreferencias(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     if (i < preferenciasUsuario.size) {
-                                        Preferencia(preferencia = preferenciasUsuario[i].preferencia)
+                                        Preferencia(
+                                            preferencia = preferenciasUsuario[i].preferencia,
+                                            tipoPref = "usuario",
+                                            idPreferenciaUsuario = preferenciasUsuario[i].id,
+                                            onChangePrefs = { onChangePrefs() }
+                                        )
                                         Spacer(modifier = Modifier.height(14.dp))
                                     }
                                 }
@@ -179,7 +192,12 @@ fun TelaPreferencias(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     if (i + 1 < preferenciasUsuario.size) {
-                                        Preferencia(preferencia = preferenciasUsuario[i + 1].preferencia)
+                                        Preferencia(
+                                            preferencia = preferenciasUsuario[i + 1].preferencia,
+                                            tipoPref = "usuario",
+                                            idPreferenciaUsuario = preferenciasUsuario[i + 1].id,
+                                            onChangePrefs = { onChangePrefs() }
+                                        )
                                     }
                                 }
                             }
@@ -212,7 +230,8 @@ fun TelaPreferencias(
                                 modifier = Modifier.weight(1f),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Preferencia(preferencia = preferencia)
+                                Preferencia(preferencia = preferencia, tipoPref = "geral", idPreferenciaUsuario = null,
+                                    { onChangePrefs() })
                                 Spacer(modifier = Modifier.height(14.dp))
                             }
                         }
@@ -229,7 +248,13 @@ fun TelaPreferencias(
 }
 
 @Composable
-fun Preferencia(preferencia: PreferenciasDTO) {
+fun Preferencia(
+    preferencia: PreferenciasDTO,
+    tipoPref: String,
+    idPreferenciaUsuario: Int?,
+    onChangePrefs: () -> Unit // Alterado para uma função
+) {
+    val prefsManager = PreferencesManager.getInstance(LocalContext.current)
     Box(
         modifier = Modifier
             .padding(8.dp)
@@ -245,11 +270,69 @@ fun Preferencia(preferencia: PreferenciasDTO) {
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(8.dp)
+                .clickable(onClick = {
+                    if (tipoPref == "usuario") {
+                        val preferenciaUsuarioApiService = RetrofitInstace.getPreferenciaUsuarioApiService()
+                        if (idPreferenciaUsuario != null) {
+                            preferenciaUsuarioApiService
+                                .deletePreferenciasUsuario(idPreferenciaUsuario)
+                                .enqueue(object : Callback<Void> {
+                                    override fun onResponse(
+                                        call: Call<Void>,
+                                        response: Response<Void>
+                                    ) {
+                                        if (response.isSuccessful) {
+                                            println("Resposta do deletePreferenciasUsuario com sucesso: $response")
+                                            onChangePrefs() // Chamada da função corrigida
+
+                                        } else {
+                                            error("Erro na resposta do deletePreferenciasUsuario: $response")
+                                        }
+                                    }
+
+                                    override fun onFailure(
+                                        call: Call<Void>,
+                                        t: Throwable
+                                    ) {
+                                        println("Erro ao obter deletePreferenciasUsuario: $t")
+                                    }
+                                })
+                        }
+
+                    } else if (tipoPref == "geral"){
+                        val preferenciaUsuarioApiService = RetrofitInstace.getPreferenciaUsuarioApiService()
+                        val userId = prefsManager.getUserId()
+                        preferenciaUsuarioApiService
+                            .postPreferenciasUsuario(preferencia.id, userId)
+                            .enqueue(object : Callback<Void> {
+                                override fun onResponse(
+                                    call: Call<Void>,
+                                    response: Response<Void>
+                                ) {
+                                    if (response.isSuccessful) {
+                                        println("Resposta do postPreferenciasUsuario com sucesso: $response")
+                                        onChangePrefs() // Chamada da função corrigida
+                                    } else {
+                                        error("Erro na resposta do postPreferenciasUsuario: $response")
+                                    }
+                                }
+
+                                override fun onFailure(
+                                    call: Call<Void>,
+                                    t: Throwable
+                                ) {
+                                    println("Erro ao obter postPreferenciasUsuario: $t")
+                                }
+                            })
+
+                    }
+
+                })
         )
     }
 }
 @Preview(showBackground = true)
 @Composable
 fun TelaPreferenciasPreview() {
-    TelaPreferencias(screenDataDtoRemember = MutableLiveData(), screenDataDtoUsuarioRemember = MutableLiveData())
+    TelaPreferencias(screenDataDtoRemember = MutableLiveData(), screenDataDtoUsuarioRemember = MutableLiveData(), {}, {})
 }
