@@ -18,7 +18,7 @@ object RetrofitInstace {
 
     //val BASE_URL = "http://192.168.15.42:8080/"
     //internet
-    val BASE_URL = "http://culinart.ddns.net:443/"
+    val BASE_URL = "https://culinart.ddns.net:443/"
 
     // Cria uma instância Retrofit
     private val retrofit = Retrofit.Builder()
