@@ -436,13 +436,13 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                 TextButton(onClick = {
                     isRapidoFacilClicked.value = !isRapidoFacilClicked.value
                     if (isRapidoFacilClicked.value) {
-                        categorias.firstOrNull { it.nome.equals("Rápido e Fácil", ignoreCase = true) }?.let {
+                        categorias.firstOrNull { it.nome.equals("Rapido e Facil", ignoreCase = true) }?.let {
                             if (!categoriasSelecionadas.contains(it)) {
                                 categoriasSelecionadas.add(it)
                             }
                         }
                     } else {
-                        categoriasSelecionadas.removeAll { it.nome.equals("Rápido e Fácil", ignoreCase = true) }
+                        categoriasSelecionadas.removeAll { it.nome.equals("Rapido e Facil", ignoreCase = true) }
                     }
                 }) {
                     Column(
@@ -453,7 +453,7 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                     ) {
                         Image(
                             painter = painterResource(id = R.mipmap.iconerapidoefacil),
-                            contentDescription = "Ícone rápido e fácil"
+                            contentDescription = "Ícone rapido e facil"
                         )
                         val categoriaRapidoEFacil = stringResource(R.string.text_cadastro_plano_categoria_rapido_e_facil)
                         Text(
@@ -487,13 +487,13 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                 TextButton(onClick = {
                     isFitSaudavelClicked.value = !isFitSaudavelClicked.value
                     if (isFitSaudavelClicked.value) {
-                        categorias.firstOrNull { it.nome.equals("Fit e Saudável", ignoreCase = true) }?.let {
+                        categorias.firstOrNull { it.nome.equals("Fit e Saudavel", ignoreCase = true) }?.let {
                             if (!categoriasSelecionadas.contains(it)) {
                                 categoriasSelecionadas.add(it)
                             }
                         }
                     } else {
-                        categoriasSelecionadas.removeAll { it.nome.equals("Fit e Saudável", ignoreCase = true) }
+                        categoriasSelecionadas.removeAll { it.nome.equals("Fit e Saudavel", ignoreCase = true) }
                     }
                 }) {
                     Column(
@@ -502,7 +502,7 @@ fun TelaCadastroPlano(extras: Bundle?, modifier: Modifier = Modifier) {
                             .wrapContentHeight(align = Alignment.CenterVertically),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Image(painter = painterResource(id = R.mipmap.iconefitesaudavel), contentDescription = "Ícone fit e saudável")
+                        Image(painter = painterResource(id = R.mipmap.iconefitesaudavel), contentDescription = "Ícone fit e saudavel")
                         val categoriaFitESaudavael = stringResource(R.string.text_cadastro_plano_categoria_fit_e_saudavel)
                         Text(
                             text = categoriaFitESaudavael,
